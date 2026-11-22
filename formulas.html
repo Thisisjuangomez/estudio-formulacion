@@ -81,10 +81,10 @@ button.b.g{background:transparent;color:var(--ink);border-color:var(--line)}
 .bkc-lcd{background:#a9b39a;border-radius:8px;border:6px solid #8c8473;box-shadow:inset 0 3px 8px #0006;padding:3px 7px 7px;color:#1b2016;margin-bottom:10px}
 .bkc-ann{display:flex;gap:10px;font:700 11px "Archivo Narrow",system-ui,sans-serif;height:13px;line-height:13px}
 .bkc-ann span{opacity:.08}.bkc-ann span.on{opacity:.9}
-.bkc-dig{display:flex;justify-content:flex-end;align-items:flex-end;gap:1px;height:46px}
-.bkc-dig .sign{width:12px;height:100%;display:flex;align-items:center}
+.bkc-dig{display:flex;justify-content:flex-end;align-items:flex-end;gap:1px}
+.bkc-dig .sign{width:10px;flex:none;align-self:stretch;display:flex;align-items:center}
 .bkc-dig .sign i{display:block;width:10px;height:3px;background:currentColor;opacity:.06;border-radius:2px}.bkc-dig .sign i.on{opacity:.9}
-.seg{height:100%;width:auto;flex:none}
+.seg{flex:1 1 0;min-width:0;height:auto;display:block}
 .seg rect,.seg circle,.seg path{fill:#1b2016;opacity:.06}.seg .on{opacity:.9}
 .bkc-pad{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:44px;gap:7px}
 .ck{border:0;border-radius:9px;font:600 20px "Archivo Narrow","Arial Narrow",system-ui,sans-serif;cursor:pointer;background:linear-gradient(180deg,#fffdf8,#f7f3ea);color:#2b2a27;box-shadow:0 3px 0 #b9b09c,inset 0 1px 0 #fff;transition:transform .06s,filter .06s;touch-action:manipulation}
@@ -451,7 +451,7 @@ const Demo=(()=>{
  function moveHand(k){const b=btn(k),h=$('hand');if(!b)return;const cw=$('cw').getBoundingClientRect(),r=b.getBoundingClientRect();
   h.style.transitionDuration=(0.26/sp)+'s';h.style.left=(r.left-cw.left+r.width/2)+'px';h.style.top=(r.top-cw.top+r.height/2)+'px';
   document.querySelectorAll('#cPad .hl').forEach(x=>x.classList.remove('hl'));b.classList.add('hl')}
- function rest(){const h=$('hand');h.style.transitionDuration='.3s';h.style.left='255px';h.style.top=($('cw').offsetHeight-30)+'px';document.querySelectorAll('#cPad .hl').forEach(x=>x.classList.remove('hl'))}
+ function rest(){const h=$('hand');h.style.transitionDuration='.3s';h.style.left='255px';h.style.top=($('cw').offsetHeight-75)+'px';document.querySelectorAll('#cPad .hl').forEach(x=>x.classList.remove('hl'))}
  function chips(keys){let out=[],num='';const fl=()=>{if(num){out.push(`<span class="kc num">${num}</span>`);num=''}};
   keys.forEach(k=>{if(/^\d$/.test(k)||k==='.'||k==='00')num+=k;else{fl();out.push(`<span class="kc">${LBL[k]||k}</span>`)}});fl();
   // compactar "=" repetidos
