@@ -62,6 +62,57 @@ button.b.g{background:transparent;color:var(--ink);border-color:var(--line)}
 .psol.show{display:block}
 .data{margin:8px 0}
 .float{position:fixed;right:16px;bottom:16px;z-index:9}
+
+/* ---- calculadora + mano ---- */
+.ov{position:fixed;inset:0;z-index:50;background:#0009;display:flex;align-items:center;justify-content:center;padding:12px}
+.ov[hidden]{display:none}
+.md{background:var(--card);color:var(--ink);border-radius:18px;width:100%;max-width:960px;max-height:96vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #0007}
+.md-h{display:flex;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.md-h b{font-size:16px}
+.md-q{font-size:13px;color:var(--muted);margin-top:3px;max-height:4.6em;overflow:auto}
+.md-q table{font-size:12px}
+.md-x{border:0;background:var(--fx);color:var(--ink);border-radius:8px;width:34px;height:34px;font-size:16px;cursor:pointer;flex:none}
+.md-b{display:flex;gap:18px;padding:16px 18px;overflow:auto;flex-wrap:wrap;justify-content:center}
+.cw{position:relative;flex:none;width:300px}
+.bkc{background:linear-gradient(180deg,#f3eee3,#e9e2d2 30%);border-radius:20px;padding:12px 12px 14px;box-shadow:inset 0 1px 0 #fff,0 8px 24px #0005;color:#2b2a27;user-select:none;-webkit-user-select:none}
+.bkc-top{display:flex;justify-content:space-between;align-items:center;padding:0 4px 8px}
+.bkc-top b{font-family:"Archivo Narrow","Arial Narrow",system-ui,sans-serif;font-size:12px;letter-spacing:.08em;color:#6b5a3e}
+.bkc-solar{width:84px;height:20px;border-radius:3px;background:repeating-linear-gradient(90deg,#33281f 0 20px,#1f1813 20px 22px);box-shadow:inset 0 1px 3px #000}
+.bkc-lcd{background:#a9b39a;border-radius:8px;border:6px solid #8c8473;box-shadow:inset 0 3px 8px #0006;padding:3px 7px 7px;color:#1b2016;margin-bottom:10px}
+.bkc-ann{display:flex;gap:10px;font:700 11px "Archivo Narrow",system-ui,sans-serif;height:13px;line-height:13px}
+.bkc-ann span{opacity:.08}.bkc-ann span.on{opacity:.9}
+.bkc-dig{display:flex;justify-content:flex-end;align-items:flex-end;gap:1px;height:46px}
+.bkc-dig .sign{width:12px;height:100%;display:flex;align-items:center}
+.bkc-dig .sign i{display:block;width:10px;height:3px;background:currentColor;opacity:.06;border-radius:2px}.bkc-dig .sign i.on{opacity:.9}
+.seg{height:100%;width:auto;flex:none}
+.seg rect,.seg circle,.seg path{fill:#1b2016;opacity:.06}.seg .on{opacity:.9}
+.bkc-pad{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:44px;gap:7px}
+.ck{border:0;border-radius:9px;font:600 20px "Archivo Narrow","Arial Narrow",system-ui,sans-serif;cursor:pointer;background:linear-gradient(180deg,#fffdf8,#f7f3ea);color:#2b2a27;box-shadow:0 3px 0 #b9b09c,inset 0 1px 0 #fff;transition:transform .06s,filter .06s;touch-action:manipulation}
+.ck.dk{background:linear-gradient(180deg,#6d6862,#5b5650);color:#f6f2ea;font-size:15px;box-shadow:0 3px 0 #34312d}
+.ck.red{background:linear-gradient(180deg,#e2715a,#d4553a);color:#fff;font-size:15px;box-shadow:0 3px 0 #8f3524}
+.ck.op{background:linear-gradient(180deg,#ece5d6,#ddd4c1)}
+.ck.eq{background:linear-gradient(180deg,#5b9874,#3f7d5a);color:#fff;box-shadow:0 3px 0 #23503a}
+.ck.tall{grid-row:span 2}
+.ck.down{transform:translateY(2px) scale(.95);filter:brightness(1.15);box-shadow:0 1px 0 #0004}
+.ck.hl{outline:3px solid #e2a43a;outline-offset:1px}
+.hand{position:absolute;left:250px;top:470px;font-size:46px;line-height:1;pointer-events:none;transform:translate(-36%,-4%);transition:left .28s ease,top .28s ease,transform .12s;filter:drop-shadow(0 4px 6px #0006);z-index:3}
+.hand.press{transform:translate(-36%,-4%) scale(.86)}
+.side{flex:1;min-width:280px;max-width:560px;display:flex;flex-direction:column;gap:10px}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ctrl select{font:inherit;font-size:13px;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.cap{background:var(--acc2);border-radius:12px;padding:10px 12px;font-size:15px;min-height:3.2em}
+.cap .w{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--warn)}
+.pbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden}.pbar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.stl{list-style:none;margin:0;padding:0;overflow:auto;max-height:46vh;display:flex;flex-direction:column;gap:6px}
+.stl li{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13.5px;cursor:pointer;background:var(--bg)}
+.stl li.cur{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc2)}
+.stl li.done{opacity:.75}
+.stl .n{font-weight:700;color:var(--muted);margin-right:4px}
+.kc{display:inline-block;font:600 12px "JetBrains Mono",monospace;background:var(--card);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;margin:3px 3px 0 0}
+.kc.num{background:var(--fx)}
+.res{margin-top:4px;font-size:12.5px;color:var(--acc)}
+.note-free{font-size:13px;color:var(--muted)}
+@media (max-width:640px){.cw{width:270px}.bkc-pad{grid-auto-rows:38px;gap:6px}.stl{max-height:30vh}.md-b{padding:10px}}
 </style>
 </head>
 <body>
@@ -90,7 +141,22 @@ Las cifras en pesos están en millones salvo que el enunciado diga otra cosa. Tr
 <div id="list"></div>
 </div>
 <button class="b float" id="rand">🎲 Ejercicio sorpresa</button>
-
+<div class="ov" id="ov" hidden><div class="md" role="dialog" aria-modal="true">
+ <div class="md-h"><div><b id="mdT">Cómo calcularlo en tu calculadora</b><div class="md-q" id="mdQ"></div></div><button class="md-x" id="mdX" aria-label="Cerrar">✕</button></div>
+ <div class="md-b">
+  <div class="cw" id="cw"><div class="bkc"><div class="bkc-top"><b>PANADERÍA · 12 DÍGITOS</b><div class="bkc-solar"></div></div>
+   <div class="bkc-lcd"><div class="bkc-ann" id="cAnn"></div><div class="bkc-dig" id="cDig"></div></div><div class="bkc-pad" id="cPad"></div></div>
+   <div class="hand" id="hand">👆</div></div>
+  <div class="side">
+   <div class="ctrl"><button class="b" id="pPlay">⏸ Pausa</button><button class="b g" id="pStep">⏭ Siguiente paso</button><button class="b g" id="pRe">⏮ Repetir</button>
+    <select id="pSp" aria-label="Velocidad"><option value="0.5">Lento</option><option value="1" selected>Normal</option><option value="2">Rápido</option></select></div>
+   <div class="pbar"><i id="pBar"></i></div>
+   <div class="cap" id="cap"></div>
+   <ol class="stl" id="stl"></ol>
+   <p class="note-free">En la calculadora el punto <b>.</b> es la coma decimal. Puedes tocar las teclas tú mismo en cualquier momento. Toca un paso de la lista para saltar a él.</p>
+  </div></div></div></div>
+<button class="b g float" id="calcBtn" style="right:auto;left:16px">🧮 Calculadora</button>
+<script src="calc-engine.js"></script>
 <script>
 /* ---------- utilidades ---------- */
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -110,6 +176,20 @@ function parseNum(s,exp){s=String(s).trim().replace(/[%$\s]/g,'');if(!s)return N
 const tolM=(a,min)=>Math.max(min,Math.abs(a)*0.0005);
 function factRows(i,n,start=1){let r=[];for(let t=start;t<=n;t++)r.push(Math.pow(1+i,-t));return r}
 
+/* ---------- secuencias de teclas para la calculadora ---------- */
+const MI='−',X='×',DV='÷';
+function N(x,d=6){const neg=x<0;let t=Math.abs(x).toFixed(d);if(t.includes('.'))t=t.replace(/0+$/,'').replace(/\.$/,'');const k=t.split('');if(neg)k.push('NEG');return k}
+const S=(note,keys,w)=>({note,keys:keys.flat(),w:!!w});
+const EQ=k=>Array(k).fill('=');
+const CLR=()=>S('Borra memoria y pantalla: MRC dos veces y AC',['MRC','MRC','AC']);
+const AC=()=>S('Limpia la pantalla',['AC']);
+const pvKs=(fl,b,start=1)=>fl.map((f,k)=>S(`Año ${k+start}: escribe ${fmt(f,0)}${f<0?' y +/− (es negativo)':''}, ÷ ${fmt(b,2)} y = hasta ${k+1} división${k?'es':''}; luego M+`,[N(f),DV,N(b,4),EQ(k+1),'M+']));
+function cuotaKs(P,i,n,lab='préstamo'){const b=1+i,f=Math.pow(b,-n);return[AC(),
+ S(`Factor (1+i)<sup>−${n}</sup>: 1 ÷ ${fmt(b,2)} y = hasta ${n} divisiones`,['1',DV,N(b,4),EQ(n)],true),
+ S('1 − factor: resta 1 y cambia el signo con +/−',[MI,'1','=','NEG'],true),
+ S(`Multiplica ${lab} × tasa`,[N(P,2),X,N(i,4),'=']),
+ S('Divide entre (1 − factor) que anotaste',[DV,N(1-f,6),'='])]}
+
 /* ---------- fórmulas ---------- */
 const G=['Tasas de interés','Valor del dinero y crédito','Costos y capital de trabajo','Financiación, depreciación y salvamento','Indicadores de evaluación'];
 const F=[
@@ -120,6 +200,7 @@ const F=[
  steps:['Identifica j (el % anual) y m (por la letra: M=12, T=4, S=2).','Divide: <span class="k">j ÷ m =</span>.','El resultado es la tasa de cada periodo. <b>No</b> es efectiva anual.'],
  gen(r){const m=pick(r,[12,4,2]),j=pick(r,[12,14,15,16,18,20,24]),ip=j/m;
   return{q:`Un crédito cobra <b>${j}% ${ab[m]}</b> (nominal anual capitalizable ${per[m]}). ¿Cuál es la tasa ${per[m]}?`,a:ip,u:'%',d:3,tol:0.005,
+  ks:[AC(),S(`Divide la tasa nominal ${j} entre ${m}`,[N(j),DV,N(m),'='])],
   sol:[`j = ${j}% y m = ${m} (${per[m]})`,`i<sub>p</sub> = ${j} ÷ ${m} = <b>${fmt(ip,3)}% ${per[m]}</b>`]}}},
 /* 2 */{id:'ea',g:0,t:'Tasa periódica → efectiva anual (EA)',
  use:'Para comparar tasas o usar una tasa periódica como tasa anual en el flujo de caja.',
@@ -128,6 +209,7 @@ const F=[
  steps:['Pasa la tasa a decimal y súmale 1: 2% → <span class="k">1,02</span>.','Eleva a la m: <span class="k">1,02 × =</span> y repite <span class="k">=</span> hasta multiplicar m veces (m − 1 veces el =).','Réstale 1 y multiplica por 100.'],
  gen(r){const m=pick(r,[12,4,2]);const ip=m===12?rs(r,0.8,2.5,0.1):m===4?rs(r,2.5,6,0.25):rs(r,4,10,0.5);const b=1+ip/100,p=Math.pow(b,m),ea=(p-1)*100;
   return{q:`La tasa es <b>${fmt(ip,2)}% ${per[m]}</b>. ¿Cuál es la tasa efectiva anual?`,a:ea,u:'%',d:2,tol:0.02,
+  ks:[AC(),S(`Escribe 1 + i = ${fmt(b,4)} y elévalo a la ${m}: × y luego = ${m-1} veces`,[N(b,4),X,EQ(m-1)]),S('Réstale 1',[MI,'1','=']),S('Pásalo a porcentaje',[X,'1','0','0','='])],
   sol:[`1 + i<sub>p</sub> = ${fmt(b,4)}`,`(${fmt(b,4)})<sup>${m}</sup> = ${f6(p)} <span class="unit">(${fmt(b,4)} × y luego = ${m-1} veces)</span>`,`EA = ${f6(p)} − 1 = ${f6(p-1)} → <b>${fmt(ea,2)}% EA</b>`]}}},
 /* 3 */{id:'eap',g:0,t:'Efectiva anual → tasa periódica',
  use:'Para llevar el costo de capital (EA) a meses o trimestres, por ejemplo al capitalizar inversiones previas al momento 0.',
@@ -139,7 +221,9 @@ const F=[
   if(m===4)s.push(`√√${fmt(b,4)} = ${f6(Math.pow(b,.25))}`);
   if(m===12){const q=Math.pow(b,.25)-1;s.push(`√√${fmt(b,4)} = ${f6(1+q)} → q = ${f6(q)}`,`i<sub>m</sub> ≈ q/3 − q²/9 = ${f6(q/3)} − ${f6(q*q/9)} = ${f6(q/3-q*q/9)}`,`(Valor exacto: ${f6(ip/100)})`)}
   s.push(`i<sub>p</sub> = <b>${fmt(ip,3)}% ${per[m]}</b>`);
-  return{q:`El costo de capital es <b>${fmt(ea,1)}% EA</b>. ¿Cuál es la tasa ${per[m]} equivalente?`,a:ip,u:'%',d:3,tol:0.01,sol:s}}},
+  let ks;if(m!==12)ks=[AC(),S(`Escribe 1 + EA = ${fmt(b,4)} y saca raíz ${m===2?'una vez':'dos veces'}`,[N(b,4),m===2?['SQRT']:['SQRT','SQRT']]),S('Réstale 1',[MI,'1','=']),S('Pásalo a porcentaje',[X,'1','0','0','='])];
+  else{const q=Math.pow(b,.25)-1;ks=[CLR(),S(`Escribe ${fmt(b,4)} y saca raíz dos veces (√ √)`,[N(b,4),'SQRT','SQRT']),S('Réstale 1: ese es q (anótalo)',[MI,'1','='],true),S('q ÷ 3 y guárdalo con M+',[DV,'3','=','M+']),S('Escribe otra vez q y elévalo al cuadrado (× =)',[N(q,6),X,'=']),S('÷ 9 y réstalo de la memoria con M−',[DV,'9','=','M-']),S('MRC: tasa mensual en decimal',['MRC']),S('Pásalo a porcentaje',[X,'1','0','0','='])]}
+  return{ks,q:`El costo de capital es <b>${fmt(ea,1)}% EA</b>. ¿Cuál es la tasa ${per[m]} equivalente?`,a:ip,u:'%',d:3,tol:0.01,sol:s}}},
 /* 4 */{id:'ant',g:0,t:'Tasa anticipada → tasa vencida',
  use:'Cuando el interés se cobra al inicio del periodo (tasas "anticipadas"). Las fórmulas del curso usan tasas vencidas.',
  fx:'i<sub>v</sub> = i<sub>a</sub> ÷ (1 − i<sub>a</sub>)',
@@ -147,6 +231,7 @@ const F=[
  steps:['Si te dan una nominal anticipada (ej. 24% NMA), primero divide entre m.','Pasa i<sub>a</sub> a decimal y calcula <span class="k">1 − i<sub>a</sub></span>.','Divide: <span class="k">i<sub>a</sub> ÷ (1 − i<sub>a</sub>) =</span>. La vencida siempre sale mayor que la anticipada.'],
  gen(r){const m=pick(r,[12,4]),ia=m===12?rs(r,1,3,0.1):rs(r,3,8,0.5),a=ia/100,iv=a/(1-a)*100;
   return{q:`Un préstamo cobra <b>${fmt(ia,2)}% ${per[m]} anticipada</b>. ¿Cuál es la tasa ${per[m]} vencida?`,a:iv,u:'%',d:3,tol:0.005,
+  ks:[AC(),S('Calcula 1 − i<sub>a</sub> (anótalo)',['1',MI,N(a,4),'='],true),S('Divide i<sub>a</sub> entre ese valor',[N(a,4),DV,N(1-a,4),'=']),S('Pásalo a porcentaje',[X,'1','0','0','='])],
   sol:[`i<sub>a</sub> = ${fmt(a,4)} → 1 − i<sub>a</sub> = ${fmt(1-a,4)}`,`i<sub>v</sub> = ${fmt(a,4)} ÷ ${fmt(1-a,4)} = ${f6(iv/100)} → <b>${fmt(iv,3)}% ${per[m]} vencida</b>`]}}},
 /* 5 */{id:'vf',g:1,t:'Valor futuro y valor presente',
  use:'Mover un valor en el tiempo: llevar inversiones al momento 0 (VF) o traer flujos futuros a hoy (VP).',
@@ -155,9 +240,11 @@ const F=[
  steps:['Revisa que i y n estén en la misma unidad (años con EA, meses con mensual).','Calcula (1+i)<sup>n</sup>: <span class="k">1,12 × = =</span>… (n − 1 veces =).','VF: multiplica. VP: divide. Atajo para descontar: <span class="k">VF ÷ 1,12 = = =</span> (n veces =).'],
  gen(r){const vp=rs(r,1000,9000,250),i=rs(r,8,20,1),n=ri(r,2,6),p=Math.pow(1+i/100,n),vf=vp*p,v=r()<.5;
   if(v)return{q:`Se invierten <b>$${fmt(vp,0)}</b> millones hoy al <b>${i}% EA</b>. ¿Cuánto valen en <b>${n} años</b>?`,a:vf,u:'$',d:2,tol:tolM(vf,0.5),
+   ks:[AC(),S(`Escribe 1 + i = ${fmt(1+i/100,2)} y elévalo a la ${n}: × y = ${n-1} veces`,[N(1+i/100,4),X,EQ(n-1)]),S('Multiplica por el valor presente',[X,N(vp),'='])],
    sol:[`(1 + ${fmt(i/100,2)})<sup>${n}</sup> = ${f6(p)}`,`VF = ${fmt(vp,0)} × ${f6(p)} = <b>$${fmt(vf,2)}</b>`]};
   const VF=+vf.toFixed(2),VP=VF/p;
   return{q:`Dentro de <b>${n} años</b> recibirás <b>$${fmt(VF,2)}</b> millones. Con una tasa de <b>${i}% EA</b>, ¿cuánto valen hoy?`,a:VP,u:'$',d:2,tol:tolM(VP,0.5),
+   ks:[AC(),S(`Escribe el valor futuro, ÷ ${fmt(1+i/100,2)} y repite = hasta completar ${n} divisiones`,[N(VF,2),DV,N(1+i/100,4),EQ(n)])],
    sol:[`(1 + ${fmt(i/100,2)})<sup>${n}</sup> = ${f6(p)}`,`VP = ${fmt(VF,2)} ÷ ${f6(p)} = <b>$${fmt(VP,2)}</b>`]}}},
 /* 6 */{id:'cuota',g:1,t:'Cuota fija de un crédito (anualidad)',
  use:'Para saber cuánto se paga cada periodo por un préstamo, o para pasar un valor presente a una cuota.',
@@ -166,6 +253,7 @@ const F=[
  steps:['Calcula (1+i)<sup>n</sup> con <span class="k">×</span> y <span class="k">=</span>.','Factor de descuento: <span class="k">1 ÷ (1+i)<sup>n</sup> =</span>.','Calcula 1 − factor.','<span class="k">i ÷ (1 − factor) =</span> y luego <span class="k">× P =</span>.'],
  gen(r){const P=rs(r,1000,6000,250),i=rs(r,10,22,1)/100,n=ri(r,3,6),p=Math.pow(1+i,n),f=1/p,A=P*i/(1-f);
   return{q:`Un banco presta <b>$${fmt(P,0)}</b> millones al <b>${fmt(i*100,0)}% EA</b>, con <b>${n} cuotas anuales iguales</b>. ¿Cuál es la cuota?`,a:A,u:'$',d:2,tol:tolM(A,0.5),
+  ks:cuotaKs(P,i,n),
   sol:[`(1 + ${fmt(i,2)})<sup>${n}</sup> = ${f6(p)}`,`(1 + i)<sup>−${n}</sup> = 1 ÷ ${f6(p)} = ${f6(f)}`,`1 − ${f6(f)} = ${f6(1-f)}`,`${fmt(i,2)} ÷ ${f6(1-f)} = ${f6(i/(1-f))}`,`A = ${fmt(P,0)} × ${f6(i/(1-f))} = <b>$${fmt(A,2)}</b>`]}}},
 /* 7 */{id:'amort',g:1,t:'Tabla de amortización',
  use:'Para el flujo del inversionista: los intereses se restan antes de impuestos y el abono a capital después.',
@@ -173,9 +261,12 @@ const F=[
  sym:[['Saldo<sub>t−1</sub>','Lo que se debe al inicio del periodo t (en t=1 es el préstamo P)'],['i','Tasa por periodo'],['A','Cuota fija (fórmula anterior)'],['Interés<sub>t</sub>','Costo del dinero en el periodo; es deducible de impuestos'],['Abono<sub>t</sub>','Parte de la cuota que reduce la deuda; no es deducible']],
  steps:['Calcula la cuota A.','Periodo 1: interés = P × i; abono = A − interés; saldo = P − abono.','Repite con el nuevo saldo. Al final el saldo debe quedar en 0 (prueba de que está bien).'],
  gen(r){const P=rs(r,1000,5000,250),i=rs(r,10,20,1)/100,n=ri(r,3,5),k=ri(r,1,n),v=pick(r,['interés','abono a capital','saldo final']);
-  const A=P*i/(1-Math.pow(1+i,-n));let s=P,rows=[],ans;
-  for(let t=1;t<=n;t++){const I=s*i,Ab=A-I,ns=s-Ab;if(t<=k)rows.push([t,fmt(s,2),fmt(I,2),fmt(Ab,2),fmt(Math.max(ns,0),2)]);if(t===k)ans=v==='interés'?I:v==='abono a capital'?Ab:ns;s=ns}
-  return{q:`Préstamo de <b>$${fmt(P,0)}</b> millones al <b>${fmt(i*100,0)}% EA</b> en <b>${n} cuotas anuales iguales</b>. ¿Cuál es el <b>${v}</b> del <b>año ${k}</b>?`,a:ans,u:'$',d:2,tol:tolM(ans,0.5),
+  const A=P*i/(1-Math.pow(1+i,-n));let s=P,rows=[],ans,ks=cuotaKs(P,i,n);ks.push(S(`Anota la cuota: ${fmt(A,2)}`,[],true));
+  for(let t=1;t<=n;t++){const I=s*i,Ab=A-I,ns=s-Ab;if(t<=k)rows.push([t,fmt(s,2),fmt(I,2),fmt(Ab,2),fmt(Math.max(ns,0),2)]);if(t<=k){ks.push(t===1?S('Año 1 · interés = préstamo × tasa (anótalo)',[N(P,2),X,N(i,4),'='],true):S(`Año ${t} · interés = saldo × tasa (anótalo)`,[X,N(i,4),'='],true));
+   if(!(t===k&&v==='interés')){ks.push(S(`Año ${t} · abono = cuota − interés: +/−, + cuota, =`,['NEG','+',N(A,2),'='],true));
+    if(!(t===k&&v==='abono a capital'))ks.push(S(`Año ${t} · saldo = saldo anterior − abono: +/−, + saldo anterior, =`,['NEG','+',N(s,2),'='],true))}}
+  if(t===k)ans=v==='interés'?I:v==='abono a capital'?Ab:ns;s=ns}
+  return{ks,q:`Préstamo de <b>$${fmt(P,0)}</b> millones al <b>${fmt(i*100,0)}% EA</b> en <b>${n} cuotas anuales iguales</b>. ¿Cuál es el <b>${v}</b> del <b>año ${k}</b>?`,a:ans,u:'$',d:2,tol:tolM(ans,0.5),
   sol:[`Cuota A = ${fmt(P,0)} × ${fmt(i,2)} ÷ [1 − (1+${fmt(i,2)})<sup>−${n}</sup>] = ${fmt(A,2)}`,tbl(['Año','Saldo inicial','Interés','Abono','Saldo final'],rows),`Respuesta: <b>$${fmt(ans,2)}</b>`]}}},
 /* 8 */{id:'pe',g:2,t:'Punto de equilibrio',
  use:'Cantidad mínima que hay que vender para no ganar ni perder (estudio técnico y de costos).',
@@ -184,6 +275,7 @@ const F=[
  steps:['Calcula el margen de contribución: P − CV<sub>u</sub>.','Divide los costos fijos entre ese margen.','Si sale con decimales, redondea <b>hacia arriba</b>: no se venden fracciones de unidad.'],
  gen(r){const CF=rs(r,10,60,2)*1e6,P=rs(r,20,80,5)*1000,CV=Math.round(P*rs(r,0.4,0.7,0.05)/100)*100,mc=P-CV,Q=CF/mc;
   return{q:`Costos fijos mensuales de <b>$${fmt(CF,0)}</b>, precio de <b>$${fmt(P,0)}</b> por unidad y costo variable de <b>$${fmt(CV,0)}</b> por unidad. ¿Cuántas unidades al mes son el punto de equilibrio? (Cifras en pesos.)`,a:Q,u:'unid.',d:0,tol:1,
+  ks:[AC(),S('Margen = precio − costo variable (anótalo)',[N(P),MI,N(CV),'='],true),S('Costos fijos ÷ margen',[N(CF),DV,N(mc),'='])],
   sol:[`Margen = ${fmt(P,0)} − ${fmt(CV,0)} = ${fmt(mc,0)}`,`Q = ${fmt(CF,0)} ÷ ${fmt(mc,0)} = ${fmt(Q,2)} → <b>${fmt(Math.ceil(Q),0)} unidades</b>`]}}},
 /* 9 */{id:'desf',g:2,t:'Capital de trabajo – periodo de desfase',
  use:'Método rápido para proyectos nuevos: cuánto dinero se necesita para operar mientras llegan los cobros.',
@@ -192,6 +284,7 @@ const F=[
  steps:['Divide el costo anual entre 365 para tener el costo diario.','Multiplica por los días de desfase.','Ese valor va como inversión en el año 0 y se recupera al final.'],
  gen(r){const Ca=rs(r,600,3600,60),nd=pick(r,[30,45,60,75,90,120]),d=Ca/365,I=d*nd;
   return{q:`El costo anual de operación es <b>$${fmt(Ca,0)}</b> millones y el ciclo desde el gasto hasta el cobro es de <b>${nd} días</b>. ¿Cuál es la inversión en capital de trabajo?`,a:I,u:'$',d:2,tol:tolM(I,0.05),
+  ks:[AC(),S('Costo anual ÷ 365 = costo diario',[N(Ca),DV,'3','6','5','=']),S(`× ${nd} días de desfase`,[X,N(nd),'='])],
   sol:[`Costo diario = ${fmt(Ca,0)} ÷ 365 = ${fmt(d,4)}`,`ICT = ${fmt(d,4)} × ${nd} = <b>$${fmt(I,2)}</b>`]}}},
 /* 10 */{id:'defi',g:2,t:'Capital de trabajo – déficit acumulado máximo',
  use:'El método del parcial modelo: el capital de trabajo es el peor saldo acumulado.',
@@ -201,8 +294,8 @@ const F=[
  gen(r){const n=5;let E=[],I=[],e0=rs(r,4000,5000,100),i0=e0-rs(r,800,1800,100),g=rs(r,500,1500,100);
   for(let t=0;t<n;t++){E.push(e0+rs(r,-300,300,100));I.push(i0+g*t)}
   let ac=0,mn=0,rows=[];for(let t=0;t<n;t++){const s=I[t]-E[t];ac+=s;if(ac<mn)mn=ac;rows.push([t+1,fmt(I[t],0),fmt(E[t],0),fmt(s,0),fmt(ac,0)])}
-  const KT=-mn;
-  return{q:`Ingresos y egresos proyectados (millones):<div class="data">${tbl(['Año','Ingresos','Egresos'],I.map((x,t)=>[t+1,fmt(x,0),fmt(E[t],0)]))}</div>¿Cuál es el capital de trabajo por el método del déficit acumulado máximo?`,a:KT,u:'$',d:0,tol:0.5,
+  const KT=-mn;const ks=[CLR()];for(let t=0;t<n;t++){ks.push(S(`Año ${t+1}: ingresos − egresos y M+ (suma al acumulado)`,[N(I[t]),MI,N(E[t]),'M+']),S(`Año ${t+1}: MRC muestra el acumulado (anótalo)`,['MRC'],true))};ks.push(S(`El capital de trabajo es el acumulado más negativo que anotaste, en positivo: ${fmt(KT,0)}`,[]))
+  return{ks,q:`Ingresos y egresos proyectados (millones):<div class="data">${tbl(['Año','Ingresos','Egresos'],I.map((x,t)=>[t+1,fmt(x,0),fmt(E[t],0)]))}</div>¿Cuál es el capital de trabajo por el método del déficit acumulado máximo?`,a:KT,u:'$',d:0,tol:0.5,
   sol:[tbl(['Año','Ingresos','Egresos','Saldo','Acumulado'],rows),`El acumulado más negativo es ${fmt(mn,0)} → <b>KT = $${fmt(KT,0)}</b>`]}}},
 /* 11 */{id:'kd',g:3,t:'Costo de la deuda después de impuestos',
  use:'Los intereses se descuentan de impuestos, así que la deuda cuesta menos que su tasa. Los aportes de socios no se ajustan.',
@@ -211,6 +304,7 @@ const F=[
  steps:['Calcula 1 − t (con 30%: 0,7).','Multiplica la tasa del banco por ese valor: <span class="k">18 × 0,7 =</span>.','Solo aplica a bancos o deuda, nunca a los socios.'],
  gen(r){const kd=rs(r,10,28,1),t=pick(r,[30,33,35]),k=kd*(1-t/100);
   return{q:`Un banco cobra <b>${kd}% EA</b> y la tasa de impuesto es <b>${t}%</b>. ¿Cuál es el costo de la deuda después de impuestos?`,a:k,u:'%',d:2,tol:0.005,
+  ks:[AC(),S('Calcula 1 − t',['1',MI,N(t/100,2),'=']),S('× tasa del banco',[X,N(kd),'='])],
   sol:[`1 − t = 1 − ${fmt(t/100,2)} = ${fmt(1-t/100,2)}`,`K<sub>d</sub>' = ${kd} × ${fmt(1-t/100,2)} = <b>${fmt(k,2)}% EA</b>`]}}},
 /* 12 */{id:'wacc',g:3,t:'Costo de capital ponderado (WACC)',
  use:'Es la tasa de descuento del proyecto: con ella se calculan el VPN, el salvamento, el B/C y el CAUE.',
@@ -219,8 +313,8 @@ const F=[
  steps:['Ajusta las tasas de los bancos por impuestos (× 0,7 con t = 30%).','Multiplica cada monto por su costo.','Suma esos productos y divide entre el total de montos.','Si el parcial pide "costo óptimo", ordena las fuentes de más barata a más cara (ya ajustadas) y llena hasta cubrir la inversión.'],
  gen(r){const t=0.3,src=[['Banco A',rs(r,500,2000,50),rs(r,12,20,1),1],['Banco B',rs(r,300,1500,50),rs(r,14,26,1),1],['Socios',rs(r,500,2500,50),rs(r,18,28,1),0]];
   let sm=0,sp=0,rows=[];for(const[n,m,c,b]of src){const cc=b?c*(1-t):c;sm+=m;sp+=m*cc/100;rows.push([n,fmt(m,0),c+'%',fmt(cc,2)+'%',fmt(m*cc/100,2)])}
-  const K=sp/sm*100;
-  return{q:`El proyecto se financia así (millones, impuesto 30%):<div class="data">${tbl(['Fuente','Monto','Tasa EA'],src.map(s=>[s[0],fmt(s[1],0),s[2]+'%']))}</div>¿Cuál es el costo de capital ponderado?`,a:K,u:'%',d:2,tol:0.02,
+  const K=sp/sm*100;const ks=[CLR(),...src.map(([nm,m,c,b])=>b?S(`${nm}: monto × tasa × 0,7 y M+`,[N(m),X,N(c),X,'0','.','7','M+']):S(`${nm}: monto × tasa (sin ajuste) y M+`,[N(m),X,N(c),'M+'])),S('MRC ÷ total financiado = costo de capital en %',['MRC',DV,N(sm),'='])];
+  return{ks,q:`El proyecto se financia así (millones, impuesto 30%):<div class="data">${tbl(['Fuente','Monto','Tasa EA'],src.map(s=>[s[0],fmt(s[1],0),s[2]+'%']))}</div>¿Cuál es el costo de capital ponderado?`,a:K,u:'%',d:2,tol:0.02,
   sol:[tbl(['Fuente','Monto','Tasa','Costo (bancos × 0,7)','Monto × costo'],rows),`K = ${fmt(sp,2)} ÷ ${fmt(sm,0)} = <b>${fmt(K,2)}% EA</b>`]}}},
 /* 13 */{id:'dep',g:3,t:'Depreciación en línea recta y valor en libros',
  use:'La depreciación se resta antes de impuestos y se vuelve a sumar en el flujo, porque no es una salida de dinero.',
@@ -229,8 +323,10 @@ const F=[
  steps:['Resta el valor residual al costo.','Divide entre la vida útil: esa es la depreciación de cada año.','Para el valor en libros: multiplica D por los años que pasaron y réstalo al costo.'],
  gen(r){const C=rs(r,200,1200,10),VR=Math.round(C*pick(r,[0,0.1,0.2])),n=pick(r,[5,10]),k=ri(r,1,n-1),D=(C-VR)/n,v=r()<.5,VL=C-D*k;
   return v?{q:`Una máquina cuesta <b>$${fmt(C,0)}</b> millones, tiene vida útil de <b>${n} años</b> y valor residual de <b>$${fmt(VR,0)}</b>. ¿Cuál es la depreciación anual?`,a:D,u:'$',d:2,tol:0.01,
+   ks:[AC(),S('Costo − valor residual',[N(C),MI,N(VR),'=']),S(`÷ ${n} años de vida útil`,[DV,N(n),'='])],
    sol:[`C − VR = ${fmt(C,0)} − ${fmt(VR,0)} = ${fmt(C-VR,0)}`,`D = ${fmt(C-VR,0)} ÷ ${n} = <b>$${fmt(D,2)}</b>`]}
   :{q:`Un activo cuesta <b>$${fmt(C,0)}</b> millones, vida útil de <b>${n} años</b> y valor residual de <b>$${fmt(VR,0)}</b>. ¿Cuál es su valor en libros al final del <b>año ${k}</b>?`,a:VL,u:'$',d:2,tol:0.01,
+   ks:[AC(),S('Costo − valor residual',[N(C),MI,N(VR),'=']),S(`÷ ${n} años = depreciación anual`,[DV,N(n),'=']),S(`× ${k} años = depreciación acumulada`,[X,N(k),'=']),S('+/− y súmale el costo = valor en libros',['NEG','+',N(C),'='])],
    sol:[`D = (${fmt(C,0)} − ${fmt(VR,0)}) ÷ ${n} = ${fmt(D,2)}`,`Depreciación acumulada = ${fmt(D,2)} × ${k} = ${fmt(D*k,2)}`,`VL = ${fmt(C,0)} − ${fmt(D*k,2)} = <b>$${fmt(VL,2)}</b>`]}}},
 /* 14 */{id:'salv',g:3,t:'Valor de salvamento (método económico)',
  use:'Cuando el proyecto dura más que el horizonte evaluado: lo que generaría después se trae al último año.',
@@ -239,7 +335,7 @@ const F=[
  steps:['Calcula el flujo de cada año posterior (ingresos − egresos).','Saca los factores con <span class="k">1 ÷ (1+i) =</span> y repite <span class="k">÷ (1+i) =</span>.','Multiplica cada flujo por su factor y suma (los negativos restan).','Suma el VS al flujo del último año evaluado.'],
  gen(r){const i=rs(r,10,18,1)/100,fl=[];for(let k=0;k<5;k++)fl.push(rs(r,1000,4000,250));if(r()<.5)fl[ri(r,1,4)]=-rs(r,500,2000,250);
   const fr=factRows(i,5);let VS=0;const rows=fl.map((f,k)=>{VS+=f*fr[k];return['Año '+(k+6),fmt(f,0),k+1,f6(fr[k]),fmt(f*fr[k],2)]});
-  return{q:`El proyecto se evalúa a 5 años pero vive 10. Flujos de los años 6 a 10 (millones): <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital: <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es el valor de salvamento en el año 5?`,a:VS,u:'$',d:2,tol:tolM(VS,0.5),
+  return{ks:[CLR(),...pvKs(fl,1+i,6).map((x,k)=>(x.note=x.note.replace(/^Año \d+/,'Año '+(k+6)),x)),S('MRC = valor de salvamento',['MRC'])],q:`El proyecto se evalúa a 5 años pero vive 10. Flujos de los años 6 a 10 (millones): <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital: <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es el valor de salvamento en el año 5?`,a:VS,u:'$',d:2,tol:tolM(VS,0.5),
   sol:[tbl(['Año','Flujo','k','Factor (1+i)<sup>−k</sup>','VP'],rows),`VS = <b>$${fmt(VS,2)}</b>`]}}},
 /* 15 */{id:'vpn',g:4,t:'Valor presente neto (VPN)',
  use:'Riqueza que el proyecto agrega en pesos de hoy, después de pagar el costo de capital.',
@@ -248,7 +344,7 @@ const F=[
  steps:['Saca los factores de descuento una vez y escríbelos.','Multiplica cada flujo por su factor.','Suma todo y resta la inversión.','Decisión: VPN > 0 se acepta; VPN < 0 se rechaza.'],
  gen(r){const I0=rs(r,3000,7000,100),i=rs(r,10,18,1)/100,fl=[];for(let t=0;t<5;t++)fl.push(rs(r,800,2800,100));
   const fr=factRows(i,5);let s=0;const rows=fl.map((f,t)=>{s+=f*fr[t];return[t+1,fmt(f,0),f6(fr[t]),fmt(f*fr[t],2)]});const V=s-I0;
-  return{q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es el VPN?`,a:V,u:'$',d:2,tol:tolM(V,0.5),
+  return{ks:[CLR(),...pvKs(fl,1+i),S('MRC − inversión = VPN',['MRC',MI,N(I0),'='])],q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es el VPN?`,a:V,u:'$',d:2,tol:tolM(V,0.5),
   sol:[tbl(['Año','Flujo','Factor','VP'],rows),`Σ VP = ${fmt(s,2)}`,`VPN = ${fmt(s,2)} − ${fmt(I0,0)} = <b>$${fmt(V,2)}</b> → ${V>0?'se acepta':'se rechaza'}`]}}},
 /* 16 */{id:'tir',g:4,t:'Tasa interna de retorno (TIR) por interpolación',
  use:'La rentabilidad del proyecto. Se compara con el costo de capital: si la TIR es mayor, se acepta.',
@@ -257,7 +353,8 @@ const F=[
  steps:['Prueba tasas hasta encontrar dos <b>seguidas</b> (a 1 punto) con VPN de signo contrario.','Calcula el VPN con cada una.','Aplica la fórmula. Ojo: VPN<sub>1</sub> − VPN<sub>2</sub> es una resta de un negativo, así que se suma.','Interpolar entre tasas muy separadas da una TIR inflada.'],
  gen(r){let I0,fl,T;do{I0=rs(r,3000,7000,100);fl=[];for(let t=0;t<5;t++)fl.push(rs(r,800,2800,100));const c=[-I0,...fl];let lo=-0.5,hi=2;for(let k=0;k<80;k++){const m=(lo+hi)/2;pv(c,m)>0?lo=m:hi=m}T=lo}while(T<0.03||T>0.45);
   const c=[-I0,...fl],i1=Math.floor(T*100),i2=i1+1,V1=pv(c,i1/100),V2=pv(c,i2/100),tir=i1+(V1/(V1-V2));
-  return{q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Calcula la TIR por interpolación. <span class="unit">(Pista: está entre ${i1}% y ${i2}%.)</span>`,a:tir,u:'%',d:2,tol:0.03,
+  const ks=[S(`VPN al ${i1}%:`,[]),CLR(),...pvKs(fl,1+i1/100),S(`MRC − inversión = VPN al ${i1}% (anótalo)`,['MRC',MI,N(I0),'='],true),S(`VPN al ${i2}%:`,[]),CLR(),...pvKs(fl,1+i2/100),S(`MRC − inversión = VPN al ${i2}% (anótalo)`,['MRC',MI,N(I0),'='],true),S('Suma VPN₁ + |VPN₂| (anótalo)',[N(V1,2),'+',N(-V2,2),'='],true),S('VPN₁ ÷ ese total',[N(V1,2),DV,N(V1-V2,2),'=']),S(`Súmale ${i1}: TIR en %`,['+',N(i1),'='])];
+  return{ks,q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Calcula la TIR por interpolación. <span class="unit">(Pista: está entre ${i1}% y ${i2}%.)</span>`,a:tir,u:'%',d:2,tol:0.03,
   sol:[`VPN al ${i1}% = ${fmt(V1,2)}`,`VPN al ${i2}% = ${fmt(V2,2)}`,`TIR = ${i1} + 1 × ${fmt(V1,2)} ÷ (${fmt(V1,2)} + ${fmt(-V2,2)}) = ${i1} + ${fmt(V1/(V1-V2),4)} = <b>${fmt(tir,2)}%</b>`]}}},
 /* 17 */{id:'bc',g:4,t:'Relación beneficio/costo (B/C)',
  use:'Cuántos pesos se recuperan por cada peso invertido, todo en valor presente.',
@@ -265,8 +362,9 @@ const F=[
  sym:[['VP entradas','Suma del valor presente de los flujos positivos'],['VP salidas','Inversión + valor presente (sin signo) de los flujos negativos'],['B/C > 1','Se acepta: se recupera más de lo que se invierte']],
  steps:['Descuenta cada flujo con su factor.','Suma por separado los positivos y los negativos (incluida la inversión).','Divide entradas entre salidas. Comprobación: entradas − salidas = VPN.'],
  gen(r){const I0=rs(r,3000,7000,100),i=rs(r,10,18,1)/100,fl=[];for(let t=0;t<5;t++)fl.push(rs(r,800,3000,100));if(r()<.6)fl[0]=-rs(r,500,1500,100);
-  const fr=factRows(i,5);let inn=0,out=I0;const rows=[[0,fmt(-I0,0),'1',fmt(-I0,2)]];fl.forEach((f,t)=>{const v=f*fr[t];v>0?inn+=v:out+=-v;rows.push([t+1,fmt(f,0),f6(fr[t]),fmt(v,2)])});const bc=inn/out;
-  return{q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es la relación B/C?`,a:bc,u:'',d:2,tol:0.006,
+  const fr=factRows(i,5);let inn=0,out=I0;const rows=[[0,fmt(-I0,0),'1',fmt(-I0,2)]];fl.forEach((f,t)=>{const v=f*fr[t];v>0?inn+=v:out+=-v;rows.push([t+1,fmt(f,0),f6(fr[t]),fmt(v,2)])});const bc=inn/out;const b=1+i,ks=[AC()];let nv=0;fl.forEach((f,t)=>{if(f<0){nv+=-f*fr[t];ks.push(S(`Año ${t+1} es negativo: ${fmt(-f,0)} ÷ ${fmt(b,2)} y = hasta ${t+1} divisiones (anótalo)`,[N(-f),DV,N(b,4),EQ(t+1)],true))}});
+  if(nv>0)ks.push(S('Salidas = inversión + VP de los negativos (anótalo)',[N(I0),'+',N(nv,2),'='],true));ks.push(CLR());fl.forEach((f,t)=>{if(f>0)ks.push(S(`Año ${t+1}: ${fmt(f,0)} ÷ ${fmt(b,2)} y = hasta ${t+1} divisiones; M+`,[N(f),DV,N(b,4),EQ(t+1),'M+']))});ks.push(S('B/C = MRC ÷ salidas',['MRC',DV,N(out,2),'=']));
+  return{ks,q:`Inversión de <b>$${fmt(I0,0)}</b> millones. Flujos años 1 a 5: <b>${fl.map(x=>fmt(x,0)).join(' · ')}</b>. Costo de capital <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es la relación B/C?`,a:bc,u:'',d:2,tol:0.006,
   sol:[tbl(['Año','Flujo','Factor','VP'],rows),`VP entradas = ${fmt(inn,2)} · VP salidas = ${fmt(out,2)}`,`B/C = ${fmt(inn,2)} ÷ ${fmt(out,2)} = <b>${fmt(bc,2)}</b> → ${bc>1?'se acepta':'se rechaza'}`]}}},
 /* 18 */{id:'caue',g:4,t:'Costo (valor) anual uniforme equivalente – CAUE',
  use:'Convierte el VPN en una ganancia fija por año durante el horizonte. Sirve para comparar proyectos de distinta duración.',
@@ -275,27 +373,28 @@ const F=[
  steps:['Es la misma fórmula de la cuota fija, usando el VPN como P.','Reusa el factor (1+i)<sup>−n</sup> que ya sacaste para el VPN.','1 − factor; luego i ÷ eso; luego × VPN.'],
  gen(r){const V=rs(r,50000,300000,1)/100,i=rs(r,10,18,1)/100,n=ri(r,3,8),f=Math.pow(1+i,-n),C=V*i/(1-f);
   return{q:`Un proyecto tiene VPN de <b>$${fmt(V,2)}</b> millones, se evalúa a <b>${n} años</b> y el costo de capital es <b>${fmt(i*100,0)}% EA</b>. ¿Cuál es el CAUE?`,a:C,u:'$',d:2,tol:tolM(C,0.05),
+  ks:cuotaKs(V,i,n,'VPN'),
   sol:[`(1 + ${fmt(i,2)})<sup>−${n}</sup> = ${f6(f)}`,`1 − ${f6(f)} = ${f6(1-f)}`,`${fmt(i,2)} ÷ ${f6(1-f)} = ${f6(i/(1-f))}`,`CAUE = ${fmt(V,2)} × ${f6(i/(1-f))} = <b>$${fmt(C,2)}</b> por año`]}}}
 ];
 
 /* ---------- estado ---------- */
 const KEY='formulas-practica-v1';let st={};try{st=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
-const cur={};let filter=-1;
+const cur={},EXS={};let filter=-1;
 
 /* ---------- render ---------- */
 function render(){
  const L=document.getElementById('list');let h='';
  G.forEach((g,gi)=>{h+=`<div class="grp" data-g="${gi}"><div class="group-title">${gi+1}. ${g}</div>`;
-  F.filter(f=>f.g===gi).forEach(f=>{const n=F.indexOf(f)+1,ex=f.gen(rng(n*97+13));
+  F.filter(f=>f.g===gi).forEach(f=>{const n=F.indexOf(f)+1,ex=f.gen(rng(n*97+13));EXS[f.id]=ex;
    h+=`<article class="card" id="f-${f.id}"><div class="card-h"><h2>${n}. ${f.t}</h2><span class="badge" id="bd-${f.id}"></span></div>
    <p class="use">${f.use}</p><div class="fx">${f.fx}</div>
    <div class="grid"><div><h3>Qué significa cada símbolo</h3><table>${f.sym.map(s=>`<tr><td class="s">${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</table></div>
-   <div><h3>Cómo se calcula</h3><ol class="steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div></div>
+   <div><h3>Cómo se calcula</h3><ol class="steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ol><button class="b g" style="margin-top:10px" data-a="demoex" data-f="${f.id}">✋ Ver la mano en la calculadora (ejemplo)</button></div></div>
    <details><summary>Ejemplo resuelto</summary><div class="sol"><p>${ex.q}</p>${ex.sol.map(s=>s.startsWith('<table')?s:`<p>${s}</p>`).join('')}</div></details>
    <div class="practice"><h3>Practica</h3><div class="q" id="q-${f.id}"></div>
    <div class="ans-row"><input id="in-${f.id}" inputmode="decimal" placeholder="Tu respuesta" autocomplete="off"><span class="unit" id="u-${f.id}"></span>
-   <button class="b" data-a="chk" data-f="${f.id}">Verificar</button><button class="b g" data-a="sol" data-f="${f.id}">Ver solución</button><button class="b g" data-a="new" data-f="${f.id}">Otro ejercicio</button></div>
+   <button class="b" data-a="chk" data-f="${f.id}">Verificar</button><button class="b g" data-a="demo" data-f="${f.id}">▶ Ver cómo calcular</button><button class="b g" data-a="sol" data-f="${f.id}">Ver solución</button><button class="b g" data-a="new" data-f="${f.id}">Otro ejercicio</button></div>
    <div class="fb" id="fb-${f.id}"></div><div class="psol" id="ps-${f.id}"></div></div></article>`});
   h+='</div>'});
  L.innerHTML=h;F.forEach(f=>{newEx(f.id);badge(f.id)});
@@ -321,9 +420,74 @@ document.addEventListener('click',ev=>{const t=ev.target.closest('button');if(!t
  if(t.dataset.a==='chk')check(t.dataset.f);
  if(t.dataset.a==='sol')document.getElementById('ps-'+t.dataset.f).classList.toggle('show');
  if(t.dataset.a==='new')newEx(t.dataset.f);
+ if(t.dataset.a==='demo')Demo.open(cur[t.dataset.f],F.find(x=>x.id===t.dataset.f).t);
+ if(t.dataset.a==='demoex')Demo.open(EXS[t.dataset.f],F.find(x=>x.id===t.dataset.f).t+' · ejemplo');
+ if(t.id==='calcBtn')Demo.open(null,'Calculadora de panadería');
  if(t.classList.contains('chip')){filter=+t.dataset.g;chips();document.querySelectorAll('.grp').forEach(g=>g.style.display=(filter<0||+g.dataset.g===filter)?'':'none')}
  if(t.id==='rand'){filter=-1;chips();document.querySelectorAll('.grp').forEach(g=>g.style.display='');const f=pick(Math.random,F);newEx(f.id);document.getElementById('f-'+f.id).scrollIntoView({behavior:'smooth'});setTimeout(()=>document.getElementById('in-'+f.id).focus({preventScroll:true}),500)}
 });
+
+/* ---------- demo: calculadora con mano ---------- */
+const Demo=(()=>{
+ const eng=makeBK();let steps=[],si=0,ki=0,play=false,tm=null,sp=1;
+ const $=id=>document.getElementById(id);
+ const LAY=[['MU','MU','dk'],['GT','GT','dk'],['MRC','MRC','dk'],['M-','M−','dk'],['M+','M+','dk'],['AC','AC','red'],['CE','C/CE','red'],['NEG','+/−','dk'],['%','%','dk'],['SQRT','√','dk'],['7','7'],['8','8'],['9','9'],['BS','▶','op'],['÷','÷','op'],['4','4'],['5','5'],['6','6'],['−','−','op'],['×','×','op'],['1','1'],['2','2'],['3','3'],['+','+','op tall'],['=','=','eq tall'],['0','0'],['00','00'],['.','.']];
+ const LBL={SQRT:'√',NEG:'+/−','M-':'M−',BS:'▶',CE:'C/CE'};
+ const SEG={a:'<rect x="4" y="1" width="12" height="3" rx="1.3"/>',b:'<rect x="16" y="4" width="3" height="12.5" rx="1.3"/>',c:'<rect x="16" y="19.5" width="3" height="12.5" rx="1.3"/>',d:'<rect x="4" y="32" width="12" height="3" rx="1.3"/>',e:'<rect x="1" y="19.5" width="3" height="12.5" rx="1.3"/>',f:'<rect x="1" y="4" width="3" height="12.5" rx="1.3"/>',g:'<rect x="4" y="16.5" width="12" height="3" rx="1.3"/>'};
+ const MAP={'0':'abcdef','1':'bc','2':'abged','3':'abgcd','4':'fgbc','5':'afgcd','6':'afgedc','7':'abc','8':'abcdefg','9':'abcdfg','E':'adefg',' ':''};
+ function cell(ch,dp,cm){const on=MAP[ch]||'';let h='<svg class="seg" viewBox="0 0 24 36">';for(const k in SEG)h+=SEG[k].replace('<rect','<rect class="'+(on.includes(k)?'on':'')+'"');return h+`<circle cx="21.5" cy="33.5" r="1.8" class="${dp?'on':''}"/><path d="M21 1 h2.4 l-1.4 4 h-1.6z" class="${cm?'on':''}"/></svg>`}
+ function draw(){const s=eng.state(),neg=s.disp[0]==='-';
+  $('cAnn').innerHTML=[['M',s.mem!==0],['GT',s.gt!==0],['K',!!(s.k&&s.lastEq)],['E',s.err],[s.op||'+',!!s.op]].map(([t,o])=>`<span class="${o?'on':''}">${t}</span>`).join('');
+  let str=s.err?'0':s.disp.replace('-','');let[ip,dp]=str.split('.');const c=[];const g=ip.split('');
+  g.forEach((ch,i)=>{const fe=g.length-1-i;c.push({ch,dp:false,cm:fe>0&&fe%3===0})});
+  if(str.includes('.')){c[c.length-1].dp=true;(dp||'').split('').forEach(ch=>c.push({ch,dp:false,cm:false}))}
+  if(s.err){c.length=0;c.push({ch:'E'},{ch:'0',dp:true})}
+  while(c.length<12)c.unshift({ch:' '});
+  $('cDig').innerHTML=`<div class="sign"><i class="${neg&&!s.err?'on':''}"></i></div>`+c.slice(-12).map(x=>cell(x.ch,x.dp,x.cm)).join('')}
+ function build(){const pad=$('cPad');pad.innerHTML=LAY.map(([id,l,c])=>`<button class="ck ${c||''}" data-k="${id}" type="button">${l}</button>`).join('');
+  pad.addEventListener('pointerdown',e=>{const b=e.target.closest('.ck');if(!b)return;e.preventDefault();pause();press(b.dataset.k)})}
+ const btn=k=>document.querySelector(`#cPad [data-k="${CSS.escape(k)}"]`);
+ function press(k){const b=btn(k);if(b){b.classList.add('down');setTimeout(()=>b.classList.remove('down'),140/sp)}eng.key(k);draw()}
+ function moveHand(k){const b=btn(k),h=$('hand');if(!b)return;const cw=$('cw').getBoundingClientRect(),r=b.getBoundingClientRect();
+  h.style.transitionDuration=(0.26/sp)+'s';h.style.left=(r.left-cw.left+r.width/2)+'px';h.style.top=(r.top-cw.top+r.height/2)+'px';
+  document.querySelectorAll('#cPad .hl').forEach(x=>x.classList.remove('hl'));b.classList.add('hl')}
+ function rest(){const h=$('hand');h.style.transitionDuration='.3s';h.style.left='255px';h.style.top=($('cw').offsetHeight-30)+'px';document.querySelectorAll('#cPad .hl').forEach(x=>x.classList.remove('hl'))}
+ function chips(keys){let out=[],num='';const fl=()=>{if(num){out.push(`<span class="kc num">${num}</span>`);num=''}};
+  keys.forEach(k=>{if(/^\d$/.test(k)||k==='.'||k==='00')num+=k;else{fl();out.push(`<span class="kc">${LBL[k]||k}</span>`)}});fl();
+  // compactar "=" repetidos
+  return out.join('').replace(/(<span class="kc">=<\/span>){3,}/g,m=>`<span class="kc">=</span><span class="kc">× ${m.split('</span>').length-1}</span>`)}
+ const dispTxt=()=>{const d=eng.state().disp;const v=parseFloat(d);return isNaN(v)?d:v.toLocaleString('es-CO',{maximumFractionDigits:10})};
+ function list(){$('stl').innerHTML=steps.map((s,i)=>`<li data-i="${i}"><span class="n">${i+1}.</span>${s.note}${s.w?' <b style="color:var(--warn)">📝</b>':''}<div>${chips(s.keys)}</div><div class="res" id="res${i}"></div></li>`).join('');}
+ function mark(){document.querySelectorAll('#stl li').forEach((li,i)=>{li.classList.toggle('cur',i===si);li.classList.toggle('done',i<si)});
+  const s=steps[si];$('cap').innerHTML=steps.length?(s?`<b>Paso ${si+1} de ${steps.length}.</b> ${s.note}${s.w?'<br><span class="w">📝 Anota el resultado: lo vas a usar después.</span>':''}`:`<b>¡Listo!</b> Resultado en pantalla: <b>${dispTxt()}</b>. Repítelo tú en tu calculadora.`):'Calculadora libre: toca las teclas para practicar.';
+  const tot=steps.reduce((a,s)=>a+Math.max(1,s.keys.length),0),done=steps.slice(0,si).reduce((a,s)=>a+Math.max(1,s.keys.length),0)+ki;
+  $('pBar').style.width=(tot?done/tot*100:0)+'%';
+  const li=document.querySelector(`#stl li[data-i="${si}"]`);if(li)li.scrollIntoView({block:'nearest',behavior:'smooth'})}
+ function finishStep(i){const r=$('res'+i);if(r&&steps[i].keys.length)r.innerHTML='Pantalla: <b>'+dispTxt()+'</b>'}
+ function tick(){if(!play)return;
+  if(si>=steps.length){play=false;$('pPlay').textContent='▶ Reproducir';rest();mark();return}
+  const s=steps[si];
+  if(ki>=s.keys.length){finishStep(si);si++;ki=0;mark();tm=setTimeout(tick,(s.keys.length?650:1500)/sp);return}
+  const k=s.keys[ki],prev=s.keys[ki-1],dig=/^[\d.]$/.test(k)&&prev&&/^[\d.]$/.test(prev);
+  moveHand(k);
+  tm=setTimeout(()=>{$('hand').classList.add('press');press(k);setTimeout(()=>$('hand').classList.remove('press'),130/sp);ki++;mark();tm=setTimeout(tick,(dig?170:300)/sp)},(dig?200:300)/sp)}
+ function pause(){play=false;clearTimeout(tm);$('pPlay').textContent='▶ Reproducir'}
+ function start(){if(si>=steps.length)restart(true);play=true;$('pPlay').textContent='⏸ Pausa';tick()}
+ function restart(silent){pause();eng.reset();si=0;ki=0;list();draw();mark();rest();if(!silent)setTimeout(start,400)}
+ function jump(i){pause();eng.reset();list();for(let j=0;j<i;j++){steps[j].keys.forEach(k=>eng.key(k));finishStep(j)}si=i;ki=0;draw();mark();rest()}
+ function stepNext(){pause();if(si>=steps.length)return;const s=steps[si];for(;ki<s.keys.length;ki++)eng.key(s.keys[ki]);draw();finishStep(si);si++;ki=0;mark();if(si<steps.length)moveHand((steps[si].keys[0])||'AC')}
+ function open(ex,title){steps=ex&&ex.ks?ex.ks:[];$('mdT').textContent=title?('Cómo calcularlo en tu calculadora · '+title):'Calculadora';
+  $('mdQ').innerHTML=ex?ex.q:'';$('ov').hidden=false;document.body.style.overflow='hidden';
+  $('pPlay').style.display=$('pStep').style.display=$('pRe').style.display=$('pSp').style.display=steps.length?'':'none';
+  restart(true);if(steps.length)setTimeout(start,700)}
+ function close(){pause();$('ov').hidden=true;document.body.style.overflow=''}
+ build();draw();
+ $('mdX').onclick=close;$('ov').addEventListener('click',e=>{if(e.target.id==='ov')close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ov').hidden)close()});
+ $('pPlay').onclick=()=>play?pause():start();$('pStep').onclick=stepNext;$('pRe').onclick=()=>restart(false);
+ $('pSp').onchange=e=>{sp=+e.target.value};
+ $('stl').addEventListener('click',e=>{const li=e.target.closest('li');if(li)jump(+li.dataset.i)});
+ return{open}})();
 chips();render();prog();
 if(location.hash){const el=document.querySelector(location.hash);if(el)setTimeout(()=>el.scrollIntoView(),50)}
 </script>
