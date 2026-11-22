@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulacro parcial V2 – FrutaViva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Hoja de examen: papel claro, tinta azul de esfero, semáforo para la calificación */
+  --paper:#f7f8fa; --sheet:#ffffff; --ink:#1b2230; --muted:#5b6577; --line:#d9dee7;
+  --accent:#1f4f8f; --accent-soft:#e8eef8;
+  --good:#1e7a46; --good-soft:#e4f4ea; --warn:#9a6300; --warn-soft:#fbf1dc; --bad:#b3261e; --bad-soft:#fbe7e5;
+  --f-display:"Libre Franklin",system-ui,sans-serif; --f-body:"Source Sans 3",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11151c; --sheet:#181d26; --ink:#e6e9ef; --muted:#9aa4b5; --line:#2c3442;
+  --accent:#8fb4ee; --accent-soft:#1e2a3d;
+  --good:#6fd39a; --good-soft:#15291e; --warn:#f0c06a; --warn-soft:#2e2514; --bad:#f08a82; --bad-soft:#331a19; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#11151c; --sheet:#181d26; --ink:#e6e9ef; --muted:#9aa4b5; --line:#2c3442;
+  --accent:#8fb4ee; --accent-soft:#1e2a3d;
+  --good:#6fd39a; --good-soft:#15291e; --warn:#f0c06a; --warn-soft:#2e2514; --bad:#f08a82; --bad-soft:#331a19; color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:17px/1.55 var(--f-body)}
+.wrap{max-width:920px;margin:0 auto;padding:20px 16px 80px}
+header.exam{background:var(--sheet);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:10px;padding:20px 22px;display:grid;gap:6px}
+.kicker{font:600 13px/1.3 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font:800 clamp(24px,4vw,32px)/1.15 var(--f-display);margin:0;text-wrap:balance}
+.nivel{color:var(--muted);margin:0}
+.fields-row{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:8px;font-size:15px;color:var(--muted)}
+.fields-row span b{color:var(--ink)}
+.bar{position:sticky;top:0;z-index:5;margin:14px 0;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.score{display:flex;gap:14px;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+section.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+h2{font:800 20px/1.25 var(--f-display);margin:0 0 10px}
+h3{font:600 17px/1.3 var(--f-display);margin:18px 0 6px}
+p{margin:6px 0;max-width:70ch}
+.tw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums;min-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;white-space:nowrap}
+td{white-space:normal}
+table.wide td,table.wide th{white-space:nowrap}
+th{background:var(--accent-soft);font-weight:700}
+tr.tot td{font-weight:700;background:var(--accent-soft)}
+.note{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:16px}
+.q{border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;background:var(--sheet);display:grid;gap:12px}
+.q.ok{border-left:6px solid var(--good)} .q.almost{border-left:6px solid var(--warn)} .q.no{border-left:6px solid var(--bad)}
+.qhead{display:flex;gap:12px;align-items:flex-start}
+.qnum{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--sheet);display:grid;place-items:center;font:800 16px var(--f-display)}
+.qtext{font-weight:600;padding-top:4px}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.field{display:grid;gap:4px}
+.field label{font-size:14px;color:var(--muted);font-weight:600}
+.inrow{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--paper);overflow:hidden}
+.inrow input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:600 17px var(--f-mono);padding:9px 10px}
+.inrow .unit{padding:0 10px;color:var(--muted);font:600 15px var(--f-mono)}
+.inrow:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.fb{font-size:14px;min-height:1em}
+.fb.ok{color:var(--good)} .fb.almost{color:var(--warn)} .fb.no{color:var(--bad)}
+textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:16px/1.45 var(--f-body);padding:9px 10px;resize:vertical}
+textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 15px var(--f-body);border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--accent);background:var(--sheet);color:var(--accent)}
+button.primary{background:var(--accent);color:var(--sheet)}
+button:hover{filter:brightness(1.07)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+button.ghost{border-color:var(--line);color:var(--muted)}
+.model{background:var(--good-soft);border-radius:8px;padding:10px 14px;font-size:16px}
+.model b{color:var(--good)}
+.steps{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+.steps[hidden]{display:none}
+.stephead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.step{display:grid;gap:4px;animation:in .25s ease}
+.step h4{margin:0;font:600 16px var(--f-display)}
+.step h4 span{color:var(--accent);font-family:var(--f-mono);margin-right:6px}
+@keyframes in{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.formula{font:15px/1.5 var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:7px 10px;margin:4px 0;overflow-x:auto}
+.calc{font:14px/1.5 var(--f-mono);background:var(--warn-soft);border-radius:6px;padding:7px 10px;margin:4px 0;overflow-x:auto}
+.calc span{font:700 12px var(--f-body);text-transform:uppercase;letter-spacing:.05em;color:var(--warn);margin-right:8px}
+footer{color:var(--muted);font-size:14px;margin-top:24px}
+@media (max-width:600px){.bar{position:static}}
+@media (max-width:480px){body{font-size:16px} .q,section.card{padding:14px} header.exam{padding:16px}}
+</style>
+</head>
+<body><a href="../index.html" style="position:fixed;bottom:14px;left:14px;z-index:9999;font:600 13px system-ui,sans-serif;background:#1c1c1a;color:#fff;padding:7px 12px;border-radius:99px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)">← Ruta de estudio</a>
+<div class="wrap">
+<header class="exam">
+  <div class="kicker">Formulación y Evaluación de Proyectos · Simulacro parcial final · Versión <span id="vnum"></span></div>
+  <h1 id="ptitle"></h1>
+  <p class="nivel" id="nivel"></p>
+  <div class="fields-row"><span>Nombre: <b>____________________</b></span><span>Cifras: <b>millones de pesos</b></span><span>Impuesto: <b>30%</b></span><span>Calculadora: <b>básica</b></span></div>
+</header>
+
+<div class="bar" role="status">
+  <div class="score">
+    <span class="pill"><span class="dot" style="background:var(--good)"></span>Correctas <b id="sOk">0</b></span>
+    <span class="pill"><span class="dot" style="background:var(--warn)"></span>Casi <b id="sAl">0</b></span>
+    <span class="pill"><span class="dot" style="background:var(--bad)"></span>Incorrectas <b id="sNo">0</b></span>
+    <span class="pill">Respuestas <b id="sTot">0</b></span>
+  </div>
+  <div class="actions">
+    <button class="primary" id="checkAll" type="button">Calificar todo</button>
+    <button class="ghost" id="reset" type="button">Borrar respuestas</button>
+  </div>
+</div>
+
+<section class="card">
+  <h2>Enunciado</h2>
+  <div id="enunciado"></div>
+</section>
+
+<div class="note" id="orden"></div>
+<p style="color:var(--muted);font-size:15px">Escribe los números como en la hoja: <code>5.390,43</code> o <code>5390.43</code>. Las tasas en porcentaje: <code>13,88</code>. Se acepta como correcta una diferencia pequeña de redondeo.</p>
+
+<h2 style="margin-top:22px">Preguntas</h2>
+<div id="qs"></div>
+
+<footer>Tus respuestas se guardan en este navegador. Basado en el método de clase y en Sapag, <i>Preparación y evaluación de proyectos</i>, 5.ª ed.</footer>
+</div>
+
+<script>
+const D = {"num": 2, "title": "Planta de jugos naturales “FrutaViva”", "nivel": "Más difícil: tasas nominales, financiación parcial e inversión 6 meses antes.", "enunciado": "<p>Una empresa quiere montar una planta de jugos naturales. La vida útil del proyecto es de <b>10 años<\/b> y se evalúa a <b>5 años<\/b>. El valor de salvamento se calcula por el método de los flujos futuros (años 6 a 10 traídos al año 5). Impuesto de renta: <b>30%<\/b>. Cifras en millones de pesos.<\/p><h3>Inversiones<\/h3><p>Se llevan al momento 0 con la tasa mensual equivalente al costo de capital.<\/p><div class=\"tw\"><table class=\"\"><thead><tr><th>Inversión<\/th><th>Valor<\/th><th>Momento de pago<\/th><\/tr><\/thead><tbody><tr><td>Maquinaria (extractoras y envasadora)<\/td><td>1.200,00<\/td><td>6 meses antes de iniciar<\/td><\/tr><tr><td>Vehículo refrigerado<\/td><td>300,00<\/td><td>4 meses antes<\/td><\/tr><tr><td>Local / bodega<\/td><td>900,00<\/td><td>3 meses antes<\/td><\/tr><tr><td>Licencias INVIMA<\/td><td>250,00<\/td><td>2 meses antes<\/td><\/tr><tr><td>Software de inventarios<\/td><td>200,00<\/td><td>2 meses antes<\/td><\/tr><tr><td>Constitución de la sociedad<\/td><td>150,00<\/td><td>1 mes antes<\/td><\/tr><\/tbody><\/table><\/div><p>El capital de trabajo se calcula por el método del máximo déficit acumulado.<\/p><h3>Proyección de ingresos y egresos<\/h3><div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>1<\/th><th>2<\/th><th>3<\/th><th>4<\/th><th>5<\/th><th>6<\/th><th>7<\/th><th>8<\/th><th>9<\/th><th>10<\/th><\/tr><\/thead><tbody><tr><td>Ingresos<\/td><td>2.000<\/td><td>2.800<\/td><td>6.200<\/td><td>8.200<\/td><td>9.200<\/td><td>7.200<\/td><td>7.700<\/td><td>7.200<\/td><td>6.200<\/td><td>5.700<\/td><\/tr><tr><td>Egresos<\/td><td>3.800<\/td><td>4.500<\/td><td>4.800<\/td><td>5.000<\/td><td>5.200<\/td><td>4.500<\/td><td>4.800<\/td><td>5.000<\/td><td>5.500<\/td><td>3.500<\/td><\/tr><\/tbody><\/table><\/div><h3>Fuentes de financiación disponibles<\/h3><p>Los créditos bancarios son deducibles de impuestos. Las tasas que no están en EA deben convertirse a EA antes de comparar. Las líneas específicas solo financian el porcentaje indicado del activo.<\/p><div class=\"tw\"><table class=\"\"><thead><tr><th>Fuente<\/th><th>Destino y monto máximo<\/th><th>Tasa<\/th><\/tr><\/thead><tbody><tr><td>Banco 1<\/td><td>Maquinaria, financia el 80% de su valor<\/td><td>18% nominal trimestre vencido (NTV)<\/td><\/tr><tr><td>Banco 2<\/td><td>Vehículo, financia el 70% de su valor<\/td><td>1,2% mes vencido (MV)<\/td><\/tr><tr><td>Banco 3<\/td><td>Hipotecario para el local, hasta el 100%<\/td><td>12,5% EA<\/td><\/tr><tr><td>Banco 4<\/td><td>Capital de trabajo, hasta 2.500<\/td><td>16% EA<\/td><\/tr><tr><td>Banco 5<\/td><td>Libre inversión, hasta 400<\/td><td>30% EA<\/td><\/tr><tr><td>Socio 1<\/td><td>Hasta 600<\/td><td>Exige 20% EA<\/td><\/tr><tr><td>Socio 2<\/td><td>Hasta 800<\/td><td>Exige 22% EA<\/td><\/tr><tr><td>Socio 3<\/td><td>Hasta 2.000<\/td><td>Exige 25% EA<\/td><\/tr><\/tbody><\/table><\/div>", "orden": "Orden recomendado: 2 (KT) → 3 (convertir tasas y costo de capital) → 1 (inversión) → 4 (salvamento) → 5 a 9.", "questions": [{"n": 1, "text": "Valor de la inversión en el momento 0.", "fields": [{"label": "Inversión total", "ans": 6638.06, "kind": "amount"}], "steps": [{"t": "Qué se pide", "h": "<p>Igual que siempre: cada inversión se lleva al momento 0 con la tasa mensual equivalente al costo de capital (14,20% EA, pregunta 3) y se suma el KT (3.500, pregunta 2).<\/p><div class=\"formula\">VF = Valor × (1 + i<sub>m<\/sub>)<sup>n<\/sup><\/div>"}, {"t": "Tasa mensual y factores", "h": "<div class=\"calc\"><span>Calculadora<\/span>1,142 √ √ = 1,033752 → q = 0,033752<\/div><div class=\"formula\">i<sub>m<\/sub> ≈ q/3 − q²/9 = 0,011251 − 0,000127 ≈ 1,1127%<\/div><p>Truco para 6 meses: 6 meses es medio año, así que el factor es una sola raíz:<\/p><div class=\"calc\"><span>Calculadora<\/span>1,142 √ = 1,068644<\/div><p>Factores: n=1 → 1,011127 · n=2 → 1,022377 · n=3 → 1,033752 · n=4 → 1,022377 × 1,022377 = 1,045254 · n=6 → 1,068644.<\/p>"}, {"t": "Capitalizar", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Inversión<\/th><th>Valor<\/th><th>Meses<\/th><th>Factor<\/th><th>Valor en 0<\/th><\/tr><\/thead><tbody><tr><td>Maquinaria<\/td><td>1.200,00<\/td><td>6<\/td><td>1,068644<\/td><td>1.282,37<\/td><\/tr><tr><td>Vehículo<\/td><td>300,00<\/td><td>4<\/td><td>1,045254<\/td><td>313,58<\/td><\/tr><tr><td>Local<\/td><td>900,00<\/td><td>3<\/td><td>1,033752<\/td><td>930,38<\/td><\/tr><tr><td>Licencias<\/td><td>250,00<\/td><td>2<\/td><td>1,022377<\/td><td>255,59<\/td><\/tr><tr><td>Software<\/td><td>200,00<\/td><td>2<\/td><td>1,022377<\/td><td>204,48<\/td><\/tr><tr><td>Sociedad<\/td><td>150,00<\/td><td>1<\/td><td>1,011127<\/td><td>151,67<\/td><\/tr><tr class=\"tot\"><td>Activos<\/td><td>3.000,00<\/td><td><\/td><td><\/td><td>3.138,06<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Resultado", "h": "<div class=\"formula\">Inversión = 3.138,06 + 3.500,00 = <b>6.638,06<\/b><\/div>"}]}, {"n": 2, "text": "Valor del capital de trabajo.", "fields": [{"label": "Capital de trabajo", "ans": 3500, "kind": "amount"}], "steps": [{"t": "Saldos y acumulado", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Ingresos<\/th><th>Egresos<\/th><th>Saldo<\/th><th>Acumulado<\/th><\/tr><\/thead><tbody><tr><td>1<\/td><td>2.000<\/td><td>3.800<\/td><td>−1.800<\/td><td>−1.800<\/td><\/tr><tr><td>2<\/td><td>2.800<\/td><td>4.500<\/td><td>−1.700<\/td><td><b>−3.500 ← máximo<\/b><\/td><\/tr><tr><td>3<\/td><td>6.200<\/td><td>4.800<\/td><td>1.400<\/td><td>−2.100<\/td><\/tr><tr><td>4<\/td><td>8.200<\/td><td>5.000<\/td><td>3.200<\/td><td>1.100<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Resultado", "h": "<div class=\"formula\">KT = <b>3.500<\/b><\/div>"}]}, {"n": 3, "text": "Costo de capital óptimo (EA). Muestre la conversión de las tasas de los bancos 1 y 2.", "fields": [{"label": "Costo de capital", "ans": 14.2, "kind": "rate"}], "steps": [{"t": "Banco 1: de NTV a EA", "h": "<div class=\"formula\">Tasa trimestral = 18% ÷ 4 = 4,5%<\/div><div class=\"formula\">EA = (1 + 0,045)<sup>4<\/sup> − 1<\/div><div class=\"calc\"><span>Calculadora<\/span>1,045 × = = = → 1,192519<\/div><div class=\"formula\">EA = <b>19,25%<\/b> · Monto = 80% × 1.200 = 960<\/div>"}, {"t": "Banco 2: de MV a EA", "h": "<div class=\"formula\">EA = (1 + 0,012)<sup>12<\/sup> − 1<\/div><div class=\"calc\"><span>Calculadora<\/span>1,012 × = = = → 1,048871 (potencia 4); luego 1,048871 × = = → 1,153895 (potencia 12)<\/div><div class=\"formula\">EA = <b>15,39%<\/b> · Monto = 70% × 300 = 210<\/div>"}, {"t": "Monto a financiar y costos después de impuestos", "h": "<div class=\"formula\">6.500 = 3.000 (inversiones históricas) + 3.500 (KT)<\/div><p>Bancos × 0,7: B1 13,48% · B2 10,77% · B3 8,75% · B4 11,20% · B5 21,00%. Socios sin ajuste.<\/p>"}, {"t": "Ordenar y llenar", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Fuente<\/th><th>Monto<\/th><th>Tasa EA<\/th><th>Costo desp. imp.<\/th><th>Monto × costo<\/th><\/tr><\/thead><tbody><tr><td>Banco 3 hipotecario<\/td><td>900,00<\/td><td>12,50%<\/td><td>8,75%<\/td><td>78,75<\/td><\/tr><tr><td>Banco 2 vehículo (70%)<\/td><td>210,00<\/td><td>15,39%<\/td><td>10,77%<\/td><td>22,62<\/td><\/tr><tr><td>Banco 4 capital de trabajo<\/td><td>2.500,00<\/td><td>16,00%<\/td><td>11,20%<\/td><td>280,00<\/td><\/tr><tr><td>Banco 1 maquinaria (80%)<\/td><td>960,00<\/td><td>19,25%<\/td><td>13,48%<\/td><td>129,36<\/td><\/tr><tr><td>Socio 1<\/td><td>600,00<\/td><td>20,00%<\/td><td>20,00%<\/td><td>120,00<\/td><\/tr><tr><td>Banco 5 libre inversión<\/td><td>400,00<\/td><td>30,00%<\/td><td>21,00%<\/td><td>84,00<\/td><\/tr><tr><td>Socio 2<\/td><td>800,00<\/td><td>22,00%<\/td><td>22,00%<\/td><td>176,00<\/td><\/tr><tr><td>Socio 3 (lo que falta)<\/td><td>130,00<\/td><td>25,00%<\/td><td>25,00%<\/td><td>32,50<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td>6.500,00<\/td><td><\/td><td><\/td><td>923,23<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "WACC", "h": "<div class=\"formula\">WACC = 923,23 ÷ 6.500 = <b>14,20% EA<\/b><\/div>"}]}, {"n": 4, "text": "Valor de salvamento.", "fields": [{"label": "Valor de salvamento", "ans": 7609.27, "kind": "amount"}], "steps": [{"t": "Factores al 14,20%", "h": "<div class=\"calc\"><span>Calculadora<\/span>1 ÷ 1,142 = 0,875657 → 0,766775 → 0,671431 → 0,587943 → 0,514837<\/div>"}, {"t": "Tabla", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor<\/th><th>VP al año 5<\/th><\/tr><\/thead><tbody><tr><td>6<\/td><td>2.700<\/td><td>0,875657<\/td><td>2.364,27<\/td><\/tr><tr><td>7<\/td><td>2.900<\/td><td>0,766775<\/td><td>2.223,65<\/td><\/tr><tr><td>8<\/td><td>2.200<\/td><td>0,671431<\/td><td>1.477,15<\/td><\/tr><tr><td>9<\/td><td>700<\/td><td>0,587943<\/td><td>411,56<\/td><\/tr><tr><td>10<\/td><td>2.200<\/td><td>0,514837<\/td><td>1.132,64<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td><\/td><td><\/td><td>7.609,27<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Resultado", "h": "<div class=\"formula\">VS = <b>7.609,27<\/b><\/div>"}]}, {"n": 5, "text": "VPN. Interprete.", "fields": [{"label": "VPN", "ans": -719.46, "kind": "amount"}], "interp": "Al 14,20% el proyecto no alcanza a pagar lo que exigen bancos y socios: le faltan 719,46 millones en pesos de hoy. Como VPN < 0, se rechaza.", "steps": [{"t": "Flujo neto", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>0<\/th><th>1<\/th><th>2<\/th><th>3<\/th><th>4<\/th><th>5<\/th><\/tr><\/thead><tbody><tr><td>Inversión<\/td><td>−6.638,06<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr><td>Ingresos − Egresos<\/td><td><\/td><td>−1.800<\/td><td>−1.700<\/td><td>1.400<\/td><td>3.200<\/td><td>4.000<\/td><\/tr><tr><td>Valor de salvamento<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><td>7.609,27<\/td><\/tr><tr class=\"tot\"><td>Flujo neto<\/td><td>−6.638,06<\/td><td>−1.800,00<\/td><td>−1.700,00<\/td><td>1.400,00<\/td><td>3.200,00<\/td><td>11.609,27<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Descontar al 14,20%", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor<\/th><th>VP<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−6.638,06<\/td><td>1<\/td><td>−6.638,06<\/td><\/tr><tr><td>1<\/td><td>−1.800,00<\/td><td>0,875657<\/td><td>−1.576,18<\/td><\/tr><tr><td>2<\/td><td>−1.700,00<\/td><td>0,766775<\/td><td>−1.303,52<\/td><\/tr><tr><td>3<\/td><td>1.400,00<\/td><td>0,671431<\/td><td>940,00<\/td><\/tr><tr><td>4<\/td><td>3.200,00<\/td><td>0,587943<\/td><td>1.881,42<\/td><\/tr><tr><td>5<\/td><td>11.609,27<\/td><td>0,514837<\/td><td>5.976,88<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td><\/td><td>−719,46<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Interpretación", "h": "<p>El VPN negativo es lo que <b>falta<\/b> para pagar el costo de capital, no una pérdida contable. <b>Se rechaza.<\/b><\/p>"}]}, {"n": 6, "text": "TIR. Interprete.", "fields": [{"label": "TIR", "ans": 12.05, "kind": "rate"}], "interp": "El proyecto rinde 12,05% EA, menos que el costo de capital de 14,20% EA. No alcanza a pagar lo que exigen bancos y socios. Como TIR < WACC, se rechaza.", "steps": [{"t": "Hacia dónde buscar", "h": "<p>El VPN al 14,20% dio negativo, así que la TIR está <b>por debajo<\/b>: prueba tasas menores.<\/p>"}, {"t": "VPN al 12% y al 13%", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor 12%<\/th><th>VP 12%<\/th><th>Factor 13%<\/th><th>VP 13%<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−6.638,06<\/td><td>1<\/td><td>−6.638,06<\/td><td>1<\/td><td>−6.638,06<\/td><\/tr><tr><td>1<\/td><td>−1.800,00<\/td><td>0,892857<\/td><td>−1.607,14<\/td><td>0,884956<\/td><td>−1.592,92<\/td><\/tr><tr><td>2<\/td><td>−1.700,00<\/td><td>0,797194<\/td><td>−1.355,23<\/td><td>0,783147<\/td><td>−1.331,35<\/td><\/tr><tr><td>3<\/td><td>1.400,00<\/td><td>0,711780<\/td><td>996,49<\/td><td>0,693050<\/td><td>970,27<\/td><\/tr><tr><td>4<\/td><td>3.200,00<\/td><td>0,635518<\/td><td>2.033,66<\/td><td>0,613319<\/td><td>1.962,62<\/td><\/tr><tr><td>5<\/td><td>11.609,27<\/td><td>0,567427<\/td><td>6.587,41<\/td><td>0,542760<\/td><td>6.301,05<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td><\/td><td>17,13<\/td><td><\/td><td>−328,39<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Interpolar", "h": "<div class=\"formula\">TIR = 0,12 + 0,01 × 17,13 ÷ (17,13 + 328,39) = 0,12 + 0,01 × 0,0496 = <b>12,05% EA<\/b><\/div>"}]}, {"n": 7, "text": "Relación beneficio/costo. Interprete.", "fields": [{"label": "R B/C", "ans": 0.92, "kind": "ratio"}], "interp": "Por cada peso que se invierte solo se recuperan 0,92 en pesos de hoy. Como B/C < 1, se rechaza.", "steps": [{"t": "Cálculo", "h": "<div class=\"formula\">VP entradas = 940,00 + 1.881,42 + 5.976,88 = 8.798,30<\/div><div class=\"formula\">VP salidas = 6.638,06 + 1.576,18 + 1.303,52 = 9.517,76<\/div><div class=\"formula\">R B/C = 8.798,30 ÷ 9.517,76 = <b>0,92<\/b><\/div><p>Comprobación: 8.798,30 − 9.517,76 = −719,46 = VPN ✔<\/p>"}]}, {"n": 8, "text": "CAUE. Interprete.", "fields": [{"label": "CAUE", "ans": -210.57, "kind": "amount"}], "interp": "Es como perder 210,57 cada año durante 5 años frente a lo que exige el costo de capital. Como es negativo, se rechaza.", "steps": [{"t": "Cálculo", "h": "<div class=\"formula\">1 − 0,514837 = 0,485163 → 0,142 ÷ 0,485163 = 0,292685<\/div><div class=\"formula\">CAUE = −719,46 × 0,292685 = <b>−210,57<\/b><\/div>"}]}, {"n": 9, "text": "Análisis: ¿cuál es el valor de salvamento mínimo que haría aceptable el proyecto? ¿Qué le recomienda a la empresa?", "fields": [{"label": "Salvamento mínimo", "ans": 9006.72, "kind": "amount"}], "interp": "Con un salvamento de 9.006,72 o más el VPN llega a 0. Con el salvamento actual (7.609,27) no se debe invertir así. Se puede reducir el capital de trabajo, aplazar la compra de la maquinaria para no capitalizarla 6 meses, o buscar financiación más barata que los socios 2 y 3.", "steps": [{"t": "Idea", "h": "<p>El salvamento está en el año 5. Cada peso adicional de salvamento vale 0,514837 hoy. Hay que cubrir los 719,46 que faltan.<\/p>"}, {"t": "Cálculo", "h": "<div class=\"formula\">Salvamento adicional = 719,46 ÷ 0,514837 = 1.397,45<\/div><div class=\"formula\">Salvamento mínimo = 7.609,27 + 1.397,45 = <b>9.006,72<\/b><\/div>"}, {"t": "Recomendación", "h": "<p>No invertir con estas condiciones. Opciones: bajar el capital de trabajo (el déficit de los años 1 y 2 es lo que más pesa), aplazar la compra de la maquinaria o conseguir financiación más barata.<\/p>"}]}]};
+const KEY = "simulacro-formulacion-v" + D.num;
+let store = {};
+try { store = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { store = {}; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+
+document.getElementById("vnum").textContent = D.num;
+document.getElementById("ptitle").textContent = D.title;
+document.getElementById("nivel").textContent = D.nivel;
+document.getElementById("enunciado").innerHTML = D.enunciado;
+document.getElementById("orden").textContent = D.orden;
+
+function fmt(x, kind){
+  const d = 2;
+  const s = Math.abs(x).toFixed(d).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return (x < 0 ? "−" : "") + s + (kind === "rate" ? "%" : "");
+}
+function parseNum(raw){
+  if (raw == null) return NaN;
+  let s = String(raw).trim().replace(/\s/g, "").replace(/%/g, "").replace(/[−–]/g, "-").replace(/\$/g, "");
+  if (!s) return NaN;
+  if (s.includes(",")) { s = s.replace(/\./g, "").replace(",", "."); }
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) { s = s.replace(/\./g, ""); }
+  else if ((s.match(/\./g) || []).length > 1) { s = s.replace(/\./g, ""); }
+  return parseFloat(s);
+}
+function grade(v, f){
+  if (isNaN(v)) return null;
+  const a = f.ans, diff = Math.abs(v - a);
+  let tOk, tAl;
+  if (f.kind === "rate") { tOk = 0.06; tAl = 0.35; }
+  else if (f.kind === "ratio") { tOk = 0.011; tAl = 0.031; }
+  else { tOk = Math.max(Math.abs(a) * 0.003, 1); tAl = Math.max(Math.abs(a) * 0.02, 5); }
+  if (diff <= tOk) return "ok";
+  if (diff <= tAl) return "almost";
+  return "no";
+}
+const MSG = {ok:"Correcto.", almost:"Casi: revisa el redondeo o un paso intermedio.", no:"Incorrecto."};
+
+const qs = document.getElementById("qs");
+D.questions.forEach(q => {
+  const el = document.createElement("article");
+  el.className = "q"; el.id = "q" + q.n;
+  const hasInterp = !!q.interp;
+  let html = `<div class="qhead"><div class="qnum">${q.n}</div><div class="qtext">${q.text}</div></div>`;
+  if (q.fields.length) {
+    html += `<div class="inputs">` + q.fields.map((f, i) => `
+      <div class="field">
+        <label for="in-${q.n}-${i}">${f.label}</label>
+        <div class="inrow"><input id="in-${q.n}-${i}" inputmode="decimal" autocomplete="off" placeholder="${f.kind === "rate" ? "0,00" : "0,00"}">${f.kind === "rate" ? '<span class="unit">% EA</span>' : ""}</div>
+        <div class="fb" id="fb-${q.n}-${i}"></div>
+      </div>`).join("") + `</div>`;
+  }
+  if (hasInterp) {
+    html += `<div class="field"><label for="tx-${q.n}">${q.fields.length ? "Tu interpretación" : "Tu respuesta"}</label><textarea id="tx-${q.n}" placeholder="Valor + comparación con el costo de capital + decisión"></textarea></div>
+      <div class="model" id="model-${q.n}" hidden><b>Respuesta modelo:</b> ${q.interp}</div>`;
+  }
+  html += `<div class="actions">
+      <button class="primary" type="button" data-check="${q.n}">${q.fields.length ? "Verificar" : "Ver respuesta modelo"}</button>
+      <button type="button" data-steps="${q.n}">Paso a paso</button>
+    </div>
+    <div class="steps" id="steps-${q.n}" hidden>
+      <div class="stephead"><span id="prog-${q.n}"></span>
+        <span class="actions"><button type="button" data-next="${q.n}">Siguiente paso</button><button type="button" class="ghost" data-all="${q.n}">Ver todos</button></span></div>
+      <div id="steplist-${q.n}" style="display:grid;gap:14px"></div>
+    </div>`;
+  el.innerHTML = html;
+  qs.appendChild(el);
+  q.fields.forEach((f, i) => {
+    const inp = el.querySelector(`#in-${q.n}-${i}`);
+    const k = `${q.n}-${i}`;
+    if (store[k] != null) inp.value = store[k];
+    inp.addEventListener("input", () => { store[k] = inp.value; save(); });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") check(q, true); });
+  });
+  if (hasInterp) {
+    const tx = el.querySelector(`#tx-${q.n}`);
+    if (store["t" + q.n] != null) tx.value = store["t" + q.n];
+    tx.addEventListener("input", () => { store["t" + q.n] = tx.value; save(); });
+  }
+  q._shown = 0;
+});
+
+function check(q, show){
+  const el = document.getElementById("q" + q.n);
+  let states = [];
+  q.fields.forEach((f, i) => {
+    const v = parseNum(document.getElementById(`in-${q.n}-${i}`).value);
+    const g = grade(v, f);
+    const fb = document.getElementById(`fb-${q.n}-${i}`);
+    fb.className = "fb";
+    if (g === null) { fb.textContent = show ? "Sin respuesta. Correcta: " + fmt(f.ans, f.kind) : ""; states.push(null); return; }
+    fb.classList.add(g);
+    fb.textContent = MSG[g] + (g === "ok" ? "" : " Correcta: " + fmt(f.ans, f.kind));
+    states.push(g);
+  });
+  if (q.interp) document.getElementById("model-" + q.n).hidden = false;
+  el.classList.remove("ok", "almost", "no");
+  const got = states.filter(s => s);
+  let overall = null;
+  if (got.length) overall = got.includes("no") ? "no" : got.includes("almost") ? "almost" : "ok";
+  if (got.length && got.length < states.length && overall === "ok") overall = "almost";
+  if (overall) el.classList.add(overall);
+  q._state = overall;
+  updateScore();
+}
+function updateScore(){
+  let ok = 0, al = 0, no = 0, tot = 0;
+  D.questions.forEach(q => { if (!q.fields.length) return; tot++; if (q._state === "ok") ok++; else if (q._state === "almost") al++; else if (q._state === "no") no++; });
+  document.getElementById("sOk").textContent = ok;
+  document.getElementById("sAl").textContent = al;
+  document.getElementById("sNo").textContent = no;
+  document.getElementById("sTot").textContent = (ok + al + no) + "/" + tot;
+}
+function renderStep(q, i){
+  const s = q.steps[i];
+  const d = document.createElement("div");
+  d.className = "step";
+  d.innerHTML = `<h4><span>${i + 1}.</span>${s.t}</h4>${s.h}`;
+  document.getElementById("steplist-" + q.n).appendChild(d);
+}
+function progress(q){
+  document.getElementById("prog-" + q.n).textContent = `Paso ${q._shown} de ${q.steps.length}`;
+  const done = q._shown >= q.steps.length;
+  document.querySelector(`[data-next="${q.n}"]`).hidden = done;
+  document.querySelector(`[data-all="${q.n}"]`).hidden = done;
+}
+function nextStep(q){ if (q._shown < q.steps.length) { renderStep(q, q._shown); q._shown++; } progress(q); }
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const find = n => D.questions.find(q => String(q.n) === n);
+  if (b.dataset.check) check(find(b.dataset.check), true);
+  if (b.dataset.steps) {
+    const q = find(b.dataset.steps), box = document.getElementById("steps-" + q.n);
+    box.hidden = !box.hidden;
+    if (!box.hidden && q._shown === 0) nextStep(q);
+    b.textContent = box.hidden ? "Paso a paso" : "Ocultar paso a paso";
+  }
+  if (b.dataset.next) nextStep(find(b.dataset.next));
+  if (b.dataset.all) { const q = find(b.dataset.all); while (q._shown < q.steps.length) nextStep(q); }
+});
+document.getElementById("checkAll").addEventListener("click", () => D.questions.forEach(q => check(q, true)));
+document.getElementById("reset").addEventListener("click", () => {
+  store = {}; save();
+  document.querySelectorAll("input,textarea").forEach(i => i.value = "");
+  D.questions.forEach(q => {
+    q._state = null;
+    const el = document.getElementById("q" + q.n); el.classList.remove("ok", "almost", "no");
+    q.fields.forEach((f, i) => { const fb = document.getElementById(`fb-${q.n}-${i}`); fb.textContent = ""; fb.className = "fb"; });
+    if (q.interp) document.getElementById("model-" + q.n).hidden = true;
+  });
+  updateScore();
+});
+updateScore();
+</script>
+</body>
+</html>

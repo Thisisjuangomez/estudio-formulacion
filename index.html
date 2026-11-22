@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruta de estudio · Parcial final de Formulación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1c1c1a;--muted:#6b6a64;--line:#e4e2da;--acc:#1f6f5c;--acc2:#e9f3ef;--warn:#9a5b00;--warnbg:#fdf3e1;
+--p1:#2f6db5;--p2:#1f6f5c;--p3:#8a4fb3;--p4:#b5532f}
+@media (prefers-color-scheme:dark){:root{--bg:#151513;--card:#1e1e1b;--ink:#ecebe6;--muted:#a09e96;--line:#33322d;--acc:#5cc3a4;--acc2:#1d2e29;--warn:#f0b35a;--warnbg:#2e2618}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 20px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 12px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.toprow{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:6px;gap:10px;flex-wrap:wrap}
+.toprow b{color:var(--ink)}
+nav.jump{display:flex;gap:6px;flex-wrap:wrap}
+nav.jump a{font-size:12px;text-decoration:none;color:var(--ink);border:1px solid var(--line);padding:3px 9px;border-radius:99px;background:var(--card)}
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 26px}
+.map div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;border-top:4px solid var(--c)}
+.map small{display:block;color:var(--muted);font-size:12px}
+.map strong{display:block;font-size:14px;margin:2px 0}
+@media (max-width:640px){.map{grid-template-columns:1fr 1fr}}
+section.phase{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 10px;margin:0 0 20px;border-left:6px solid var(--c)}
+.ph-h{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.ph-h h2{margin:0;font-size:20px}
+.tag{font-size:12px;color:var(--muted)}
+.goal{background:var(--acc2);border-radius:10px;padding:10px 12px;margin:12px 0 6px;font-size:14px}
+.step{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.step:first-of-type{border-top:none}
+.step input{width:20px;height:20px;margin-top:3px;accent-color:var(--acc);flex:none;cursor:pointer}
+.step.done .st{opacity:.55}
+.step.done h3{text-decoration:line-through}
+.st{flex:1;min-width:0}
+.st h3{margin:0 0 4px;font-size:15.5px}
+.st p{margin:4px 0;color:var(--muted)}
+.st ul,.st ol{margin:6px 0;padding-left:20px}
+.st li{margin:2px 0}
+a.btn{display:inline-block;margin:6px 6px 0 0;font-size:13px;font-weight:600;text-decoration:none;background:var(--ink);color:var(--bg);padding:6px 11px;border-radius:8px}
+a.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.time{font-size:12px;color:var(--muted);white-space:nowrap}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px}
+.ans{filter:blur(5px);cursor:pointer;transition:filter .2s;user-select:none}
+.ans.show{filter:none;user-select:auto}
+.warn{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin:10px 0}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:8px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600;font-size:14px}
+textarea{width:100%;min-height:140px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:var(--bg);color:var(--ink)}
+.small{font-size:12.5px;color:var(--muted)}
+button.reset{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:3px 9px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Ruta de estudio · Parcial final de Formulación de Proyectos</h1>
+<p class="sub">Todo en orden: primero la teoría y las fórmulas, después el parcial modelo y al final los tres simulacros. Marca cada paso cuando lo termines.</p>
+
+<div class="top">
+  <div class="toprow"><span>Progreso: <b id="pct">0%</b> · <span id="cnt">0</span> pasos</span>
+  <nav class="jump"><a href="#fase-1">1 Estudio</a><a href="#fase-2">2 Parcial modelo</a><a href="#fase-3">3 Simulacros</a><a href="#fase-4">4 Repaso final</a><a href="#formulas">Fórmulas</a><a href="#errores">Mis errores</a></nav></div>
+  <div class="bar"><i id="bar"></i></div>
+</div>
+
+<div class="map">
+  <div style="--c:var(--p1)"><small>Fase 1 · ~2,5 h</small><strong>Material de estudio</strong><small>Teoría, fórmulas y práctica en Formula Quest</small></div>
+  <div style="--c:var(--p2)"><small>Fase 2 · ~2 h</small><strong>Parcial modelo</strong><small>El parcial que adjuntaste, en blanco y luego revisado</small></div>
+  <div style="--c:var(--p3)"><small>Fase 3 · ~4 h</small><strong>Simulacros V1 → V3</strong><small>Dificultad creciente</small></div>
+  <div style="--c:var(--p4)"><small>Fase 4 · ~1 h</small><strong>Repaso final</strong><small>Errores, contrarreloj y checklist</small></div>
+</div>
+
+<!-- FASE 1 -->
+<section class="phase" id="fase-1" style="--c:var(--p1)">
+  <div class="ph-h"><h2>Fase 1 · Material de estudio</h2><span class="tag">Meta: entender qué se calcula y por qué, antes de hacer cuentas</span></div>
+  <div class="goal">Al terminar esta fase debes poder explicar con tus palabras cada estudio de la formulación y escribir de memoria las fórmulas de la hoja de abajo.</div>
+
+  <div class="step"><input type="checkbox" data-id="f1-1"><div class="st">
+    <h3>1.1 Teoría: la formulación paso a paso <span class="time">· 45 min</span></h3>
+    <p>Lee la guía completa. Concéntrate en el orden de los estudios y en qué alimenta a qué.</p>
+    <ul>
+      <li>Formulación vs. evaluación · etapas: idea → perfil → prefactibilidad → factibilidad</li>
+      <li>Estudio de mercado y de macroentorno</li>
+      <li>Estudio técnico (tamaño, localización, ingeniería, costos de mano de obra)</li>
+      <li>Estudio organizacional y legal (primas legales, prestaciones)</li>
+      <li>Estudio financiero: inversiones, capital de trabajo, financiación, flujos, indicadores</li>
+    </ul>
+    <a class="btn" href="guias/guia-estudio-teoria.pdf">Abrir guía de estudio</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f1-2"><div class="st">
+    <h3>1.2 Autoevaluación de teoría <span class="time">· 15 min</span></h3>
+    <p>Responde las preguntas del final de la guía sin mirar. Las que falles, anótalas en <a href="#errores">Mis errores</a>.</p>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f1-3"><div class="st">
+    <h3>1.3 Hoja de fórmulas <span class="time">· 20 min</span></h3>
+    <p>Repasa la <a href="#formulas">hoja de fórmulas</a> de esta página. Luego, en una hoja en blanco, escríbelas todas de memoria y compara.</p>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f1-4"><div class="st">
+    <h3>1.4 Formula Quest: mundos en este orden <span class="time">· 60–75 min</span></h3>
+    <p>Mínimo 2 estrellas por mundo antes de pasar al siguiente. Si un mundo te cuesta, abre la explicación dentro del ejercicio.</p>
+    <ol>
+      <li>Conversión de tasas (nominal, efectiva, anticipada, vencida)</li>
+      <li>Valor del dinero en el tiempo y anualidades</li>
+      <li>Crédito y tabla de amortización</li>
+      <li>Costos y punto de equilibrio</li>
+      <li>Capital de trabajo (3 métodos)</li>
+      <li>Depreciación y valor de salvamento</li>
+      <li>Flujo de caja del proyecto y del inversionista</li>
+      <li>Indicadores: VPN, TIR, B/C, CAUE</li>
+      <li>Evaluación financiera (jefe final)</li>
+    </ol>
+    <a class="btn" href="formula-quest.html">Abrir Formula Quest</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f1-5"><div class="st">
+    <h3>1.5 Practica con la calculadora básica <span class="time">· 10 min</span></h3>
+    <ul>
+      <li><b>Factores de descuento:</b> <span class="mono">1 ÷ 1,1434 =</span> y luego repites <span class="mono">÷ 1,1434 =</span> para cada año. Anota los factores; los reutilizas en salvamento, VPN, B/C y CAUE.</li>
+      <li><b>Tasa mensual desde una EA:</b> <span class="mono">1,1434 √ √</span> da (1+i)<sup>1/4</sup>. Con q = resultado − 1, la mensual ≈ q/3 − q²/9.</li>
+      <li><b>Potencias:</b> <span class="mono">1,1434 × =</span> eleva al cuadrado; cada <span class="mono">=</span> extra multiplica otra vez.</li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- FASE 2 -->
+<section class="phase" id="fase-2" style="--c:var(--p2)">
+  <div class="ph-h"><h2>Fase 2 · Parcial modelo (el que adjuntaste)</h2><span class="tag">Es el más parecido al parcial real: va primero</span></div>
+  <div class="goal">Primero lo resuelves en blanco y con tiempo, como si fuera el examen. Después lo comparas con la guía punto por punto.</div>
+
+  <div class="step"><input type="checkbox" data-id="f2-1"><div class="st">
+    <h3>2.1 Resolverlo en blanco, cronometrado <span class="time">· 90 min</span></h3>
+    <p>Sin mirar la guía. Solo calculadora básica y tu hoja de fórmulas. Resuelve en este orden (cada punto usa el anterior):</p>
+    <table>
+      <tr><th>#</th><th>Paso</th><th>Por qué va aquí</th></tr>
+      <tr><td>1</td><td>Capital de trabajo</td><td>Es parte de la inversión inicial</td></tr>
+      <tr><td>2</td><td>Costo de capital (ponderado, con escudo fiscal de la deuda)</td><td>Es la tasa con la que se descuenta todo</td></tr>
+      <tr><td>3</td><td>Inversión total en el momento 0</td><td>Lleva las compras de meses anteriores al momento 0 con la tasa</td></tr>
+      <tr><td>4</td><td>Valor de salvamento</td><td>Va en el último año del flujo</td></tr>
+      <tr><td>5</td><td>Flujo de caja año por año</td><td>Base de los indicadores</td></tr>
+      <tr><td>6</td><td>VPN</td><td>Con los factores de descuento</td></tr>
+      <tr><td>7</td><td>TIR</td><td>Interpolando entre tasas a 1 punto de distancia</td></tr>
+      <tr><td>8</td><td>Relación B/C</td><td>VP beneficios ÷ VP costos</td></tr>
+      <tr><td>9</td><td>CAUE</td><td>VPN pasado a cuota anual</td></tr>
+      <tr><td>10</td><td>Interpretaciones</td><td>Valor + comparación con el costo de capital + decisión</td></tr>
+    </table>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f2-2"><div class="st">
+    <h3>2.2 Comparar tus respuestas <span class="time">· 20 min</span></h3>
+    <p>Toca cada valor para verlo (están ocultos para que no te los aprendas de memoria antes de resolver).</p>
+    <table>
+      <tr><th>Punto</th><th>Respuesta correcta</th><th>Ojo con</th></tr>
+      <tr><td>Inversión</td><td><span class="ans">5.130,43</span></td><td>Llevar compras previas al momento 0</td></tr>
+      <tr><td>Capital de trabajo</td><td><span class="ans">3.000</span></td><td>Método que pide el enunciado</td></tr>
+      <tr><td>Costo de capital</td><td><span class="ans">14,36% EA</span></td><td>Kd × (1 − 30%)</td></tr>
+      <tr><td>Valor de salvamento</td><td><span class="ans">6.361,24</span></td><td>Método del valor presente de flujos futuros</td></tr>
+      <tr><td>VPN</td><td><span class="ans">1.669,96</span></td><td>Errores de arrastre</td></tr>
+      <tr><td>TIR</td><td><span class="ans">20,09%</span></td><td>VPN(20%) = 21,25 y VPN(21%) = −224,44</td></tr>
+      <tr><td>B/C</td><td><span class="ans">1,22</span></td><td>Redondeo</td></tr>
+      <tr><td>CAUE</td><td><span class="ans">490,41</span></td><td>Arrastra el VPN</td></tr>
+    </table>
+    <a class="btn" href="guias/guia-parcial-modelo.pdf">Abrir guía del parcial paso a paso</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f2-3"><div class="st">
+    <h3>2.3 Corregir y rehacer lo que falló <span class="time">· 10 min</span></h3>
+    <p>Rehaz desde cero solo los puntos que tuviste mal. Anota la causa en <a href="#errores">Mis errores</a> (fórmula, orden, redondeo o calculadora).</p>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f2-4"><div class="st">
+    <h3>2.4 Escribir las 8 interpretaciones <span class="time">· 10 min</span></h3>
+    <p>Cada una con tres partes: <b>el valor</b>, <b>la comparación</b> con el costo de capital (o con 0 / con 1) y <b>la decisión</b> (se acepta / se rechaza).</p>
+    <p class="mono">Ej.: "La TIR es 20,09%, mayor que el costo de capital de 14,36%; el proyecto rinde más de lo que cuesta financiarlo, por lo tanto se acepta."</p>
+  </div></div>
+
+  <div class="warn"><b>Pendiente por confirmar con el profesor:</b> las respuestas de la hoja solo cuadran si el impuesto del 30% se usa únicamente en el costo de la deuda y no en los flujos. Si él aplica el impuesto también a los flujos, el VPN cambia mucho.</div>
+</section>
+
+<!-- FASE 3 -->
+<section class="phase" id="fase-3" style="--c:var(--p3)">
+  <div class="ph-h"><h2>Fase 3 · Simulacros de práctica</h2><span class="tag">Mismo estilo de examen, dificultad creciente</span></div>
+  <div class="goal">Cada simulacro: 90 minutos en blanco → "Calificar todo" → revisar con "Paso a paso" solo los que fallaste → anotar errores.</div>
+
+  <div class="step"><input type="checkbox" data-id="f3-1"><div class="st">
+    <h3>3.1 Versión 1 · La Espiga <span class="time">· 90 min + 20 de revisión</span></h3>
+    <p>Mismo nivel que el parcial modelo, con otros valores. Si aquí te va bien, dominas la estructura.</p>
+    <a class="btn" href="simulacros/v1-la-espiga.html">Abrir V1</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f3-2"><div class="st">
+    <h3>3.2 Versión 2 · FrutaViva <span class="time">· 90 min + 20 de revisión</span></h3>
+    <p>Más difícil: tasas nominales que hay que pasar a EA, bancos que no financian todo el activo y un proyecto que se rechaza (practica interpretar un VPN negativo).</p>
+    <a class="btn" href="simulacros/v2-frutaviva.html">Abrir V2</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f3-3"><div class="st">
+    <h3>3.3 Versión 3 · AgroNorte <span class="time">· 90 min + 20 de revisión</span></h3>
+    <p>Trae tabla de amortización (intereses y abono a capital por año) y flujo del inversionista. Recuerda: los intereses restan antes de impuestos; el abono a capital resta después.</p>
+    <a class="btn" href="simulacros/v3-agronorte.html">Abrir V3</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f3-4"><div class="st">
+    <h3>3.4 (Opcional) Versión imprimible <span class="time">· —</span></h3>
+    <p>Los tres simulacros en un documento, para hacerlos en papel.</p>
+    <a class="btn ghost" href="simulacros/simulacros-imprimible.html">Abrir documento de simulacros</a>
+  </div></div>
+</section>
+
+<!-- FASE 4 -->
+<section class="phase" id="fase-4" style="--c:var(--p4)">
+  <div class="ph-h"><h2>Fase 4 · Repaso final</h2><span class="tag">La víspera o el mismo día</span></div>
+
+  <div class="step"><input type="checkbox" data-id="f4-1"><div class="st">
+    <h3>4.1 Repasar Mis errores <span class="time">· 15 min</span></h3>
+    <p>Lee tu registro de errores y rehaz un ejercicio de cada tipo que fallaste.</p>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f4-2"><div class="st">
+    <h3>4.2 Examen simulado mezclado + contrarreloj <span class="time">· 30 min</span></h3>
+    <p>En Formula Quest: un examen simulado y dos rondas de contrarreloj (120 s) para ganar velocidad.</p>
+    <a class="btn" href="formula-quest.html">Abrir Formula Quest</a>
+  </div></div>
+
+  <div class="step"><input type="checkbox" data-id="f4-3"><div class="st">
+    <h3>4.3 Checklist del día del parcial <span class="time">· 5 min</span></h3>
+    <ul>
+      <li>Calculadora básica con batería, lápiz, borrador.</li>
+      <li>Leer todo el enunciado antes de calcular; subrayar tasas (¿nominal o EA? ¿anticipada?) e impuesto.</li>
+      <li>Resolver en el orden de la Fase 2: capital de trabajo → costo de capital → inversión → salvamento → flujo → indicadores.</li>
+      <li>Sacar los factores de descuento una sola vez y reutilizarlos.</li>
+      <li>Trabajar con 4–6 decimales y redondear solo al final.</li>
+      <li>TIR: interpolar entre dos tasas a 1 punto de distancia.</li>
+      <li>Toda interpretación: valor + comparación + decisión.</li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- FÓRMULAS -->
+<section class="phase" id="formulas" style="--c:var(--ink)">
+  <div class="ph-h"><h2>Hoja de fórmulas</h2><span class="tag">Todas se pueden hacer en calculadora básica</span></div>
+  <details open><summary>Tasas de interés</summary>
+    <table>
+      <tr><td>Nominal → periódica</td><td class="mono">i<sub>p</sub> = j ÷ m</td></tr>
+      <tr><td>Periódica → EA</td><td class="mono">EA = (1 + i<sub>p</sub>)<sup>m</sup> − 1</td></tr>
+      <tr><td>EA → periódica</td><td class="mono">i<sub>p</sub> = (1 + EA)<sup>1/m</sup> − 1</td></tr>
+      <tr><td>Anticipada → vencida</td><td class="mono">i<sub>v</sub> = i<sub>a</sub> ÷ (1 − i<sub>a</sub>)</td></tr>
+    </table></details>
+  <details><summary>Valor del dinero y crédito</summary>
+    <table>
+      <tr><td>Valor futuro / presente</td><td class="mono">VF = VP (1+i)<sup>n</sup> · VP = VF ÷ (1+i)<sup>n</sup></td></tr>
+      <tr><td>Cuota fija</td><td class="mono">A = P · i ÷ [1 − (1+i)<sup>−n</sup>]</td></tr>
+      <tr><td>Amortización (cada periodo)</td><td class="mono">Interés = saldo × i · Abono = cuota − interés · Saldo nuevo = saldo − abono</td></tr>
+    </table></details>
+  <details><summary>Costos y capital de trabajo</summary>
+    <table>
+      <tr><td>Punto de equilibrio (unidades)</td><td class="mono">Q = CF ÷ (P − CVu)</td></tr>
+      <tr><td>Capital de trabajo – ciclo productivo</td><td class="mono">CT = (costo anual ÷ 365) × días del ciclo</td></tr>
+      <tr><td>Otros métodos</td><td>Déficit acumulado máximo · Contable (activo corriente − pasivo corriente)</td></tr>
+    </table></details>
+  <details><summary>Financiación y salvamento</summary>
+    <table>
+      <tr><td>Costo de la deuda después de impuestos</td><td class="mono">Kd' = Kd × (1 − t)</td></tr>
+      <tr><td>Costo de capital ponderado</td><td class="mono">K = %D · Kd' + %P · Kp</td></tr>
+      <tr><td>Depreciación lineal</td><td class="mono">D = (costo − valor residual) ÷ vida útil</td></tr>
+      <tr><td>Valor en libros</td><td class="mono">VL = costo − depreciación acumulada</td></tr>
+      <tr><td>Salvamento (método económico)</td><td>VP de los flujos futuros que seguiría generando el proyecto</td></tr>
+    </table></details>
+  <details><summary>Indicadores</summary>
+    <table>
+      <tr><td>VPN</td><td class="mono">VPN = −I<sub>0</sub> + Σ FC<sub>t</sub> ÷ (1+K)<sup>t</sup></td><td>&gt; 0 se acepta</td></tr>
+      <tr><td>TIR (interpolación)</td><td class="mono">TIR = i₁ + (i₂ − i₁) · VPN₁ ÷ (VPN₁ − VPN₂)</td><td>&gt; K se acepta</td></tr>
+      <tr><td>Relación B/C</td><td class="mono">VP ingresos ÷ VP egresos (incluida la inversión)</td><td>&gt; 1 se acepta</td></tr>
+      <tr><td>CAUE</td><td class="mono">CAUE = VPN · K ÷ [1 − (1+K)<sup>−n</sup>]</td><td>&gt; 0 se acepta</td></tr>
+    </table></details>
+  <details><summary>Flujo de caja (estructura)</summary>
+    <table>
+      <tr><th>Proyecto</th><th>Inversionista</th></tr>
+      <tr><td>+ Ingresos<br>− Costos y gastos<br>− Depreciación<br>= Utilidad antes de impuestos<br>− Impuestos<br>= Utilidad neta<br>+ Depreciación<br>− Inversión · + Salvamento · + Recuperación del CT</td>
+          <td>Igual, pero además:<br>− Intereses <b>antes</b> de impuestos<br>− Abono a capital <b>después</b> de impuestos<br>+ Préstamo recibido en el año 0<br>Se descuenta con la tasa del inversionista</td></tr>
+    </table></details>
+</section>
+
+<!-- ERRORES -->
+<section class="phase" id="errores" style="--c:var(--warn)">
+  <div class="ph-h"><h2>Mis errores</h2><span class="tag">Se guarda en este navegador</span></div>
+  <p class="small">Una línea por error: ejercicio · qué fallé · por qué · cómo se hace bien.</p>
+  <textarea id="log" placeholder="Ej.: Parcial modelo · TIR · interpolé entre 15% y 25% · usar tasas a 1 punto de distancia"></textarea>
+  <p style="margin:10px 0"><button class="reset" id="reset">Reiniciar el progreso</button></p>
+</section>
+</div>
+
+<script>
+const KEY='ruta-formulacion-v1';
+let st={};try{st=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const boxes=[...document.querySelectorAll('.step input')];
+function render(){let d=0;boxes.forEach(b=>{b.checked=!!st[b.dataset.id];b.closest('.step').classList.toggle('done',b.checked);if(b.checked)d++});
+const p=Math.round(d/boxes.length*100);document.getElementById('pct').textContent=p+'%';document.getElementById('cnt').textContent=d+' / '+boxes.length;document.getElementById('bar').style.width=p+'%'}
+boxes.forEach(b=>b.addEventListener('change',()=>{st[b.dataset.id]=b.checked;save();render()}));
+const log=document.getElementById('log');log.value=st.log||'';log.addEventListener('input',()=>{st.log=log.value;save()});
+document.querySelectorAll('.ans').forEach(a=>a.addEventListener('click',()=>a.classList.toggle('show')));
+document.getElementById('reset').addEventListener('click',()=>{const l=st.log;st={log:l};save();render()});
+render();
+</script>
+</body>
+</html>

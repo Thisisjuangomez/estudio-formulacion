@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulacro parcial V3 – AgroNorte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Hoja de examen: papel claro, tinta azul de esfero, semáforo para la calificación */
+  --paper:#f7f8fa; --sheet:#ffffff; --ink:#1b2230; --muted:#5b6577; --line:#d9dee7;
+  --accent:#1f4f8f; --accent-soft:#e8eef8;
+  --good:#1e7a46; --good-soft:#e4f4ea; --warn:#9a6300; --warn-soft:#fbf1dc; --bad:#b3261e; --bad-soft:#fbe7e5;
+  --f-display:"Libre Franklin",system-ui,sans-serif; --f-body:"Source Sans 3",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11151c; --sheet:#181d26; --ink:#e6e9ef; --muted:#9aa4b5; --line:#2c3442;
+  --accent:#8fb4ee; --accent-soft:#1e2a3d;
+  --good:#6fd39a; --good-soft:#15291e; --warn:#f0c06a; --warn-soft:#2e2514; --bad:#f08a82; --bad-soft:#331a19; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#11151c; --sheet:#181d26; --ink:#e6e9ef; --muted:#9aa4b5; --line:#2c3442;
+  --accent:#8fb4ee; --accent-soft:#1e2a3d;
+  --good:#6fd39a; --good-soft:#15291e; --warn:#f0c06a; --warn-soft:#2e2514; --bad:#f08a82; --bad-soft:#331a19; color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:17px/1.55 var(--f-body)}
+.wrap{max-width:920px;margin:0 auto;padding:20px 16px 80px}
+header.exam{background:var(--sheet);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:10px;padding:20px 22px;display:grid;gap:6px}
+.kicker{font:600 13px/1.3 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font:800 clamp(24px,4vw,32px)/1.15 var(--f-display);margin:0;text-wrap:balance}
+.nivel{color:var(--muted);margin:0}
+.fields-row{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:8px;font-size:15px;color:var(--muted)}
+.fields-row span b{color:var(--ink)}
+.bar{position:sticky;top:0;z-index:5;margin:14px 0;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.score{display:flex;gap:14px;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+section.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+h2{font:800 20px/1.25 var(--f-display);margin:0 0 10px}
+h3{font:600 17px/1.3 var(--f-display);margin:18px 0 6px}
+p{margin:6px 0;max-width:70ch}
+.tw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums;min-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;white-space:nowrap}
+td{white-space:normal}
+table.wide td,table.wide th{white-space:nowrap}
+th{background:var(--accent-soft);font-weight:700}
+tr.tot td{font-weight:700;background:var(--accent-soft)}
+.note{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:16px}
+.q{border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;background:var(--sheet);display:grid;gap:12px}
+.q.ok{border-left:6px solid var(--good)} .q.almost{border-left:6px solid var(--warn)} .q.no{border-left:6px solid var(--bad)}
+.qhead{display:flex;gap:12px;align-items:flex-start}
+.qnum{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--sheet);display:grid;place-items:center;font:800 16px var(--f-display)}
+.qtext{font-weight:600;padding-top:4px}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.field{display:grid;gap:4px}
+.field label{font-size:14px;color:var(--muted);font-weight:600}
+.inrow{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--paper);overflow:hidden}
+.inrow input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:600 17px var(--f-mono);padding:9px 10px}
+.inrow .unit{padding:0 10px;color:var(--muted);font:600 15px var(--f-mono)}
+.inrow:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.fb{font-size:14px;min-height:1em}
+.fb.ok{color:var(--good)} .fb.almost{color:var(--warn)} .fb.no{color:var(--bad)}
+textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:16px/1.45 var(--f-body);padding:9px 10px;resize:vertical}
+textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 15px var(--f-body);border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--accent);background:var(--sheet);color:var(--accent)}
+button.primary{background:var(--accent);color:var(--sheet)}
+button:hover{filter:brightness(1.07)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+button.ghost{border-color:var(--line);color:var(--muted)}
+.model{background:var(--good-soft);border-radius:8px;padding:10px 14px;font-size:16px}
+.model b{color:var(--good)}
+.steps{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+.steps[hidden]{display:none}
+.stephead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.step{display:grid;gap:4px;animation:in .25s ease}
+.step h4{margin:0;font:600 16px var(--f-display)}
+.step h4 span{color:var(--accent);font-family:var(--f-mono);margin-right:6px}
+@keyframes in{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.formula{font:15px/1.5 var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:7px 10px;margin:4px 0;overflow-x:auto}
+.calc{font:14px/1.5 var(--f-mono);background:var(--warn-soft);border-radius:6px;padding:7px 10px;margin:4px 0;overflow-x:auto}
+.calc span{font:700 12px var(--f-body);text-transform:uppercase;letter-spacing:.05em;color:var(--warn);margin-right:8px}
+footer{color:var(--muted);font-size:14px;margin-top:24px}
+@media (max-width:600px){.bar{position:static}}
+@media (max-width:480px){body{font-size:16px} .q,section.card{padding:14px} header.exam{padding:16px}}
+</style>
+</head>
+<body><a href="../index.html" style="position:fixed;bottom:14px;left:14px;z-index:9999;font:600 13px system-ui,sans-serif;background:#1c1c1a;color:#fff;padding:7px 12px;border-radius:99px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)">← Ruta de estudio</a>
+<div class="wrap">
+<header class="exam">
+  <div class="kicker">Formulación y Evaluación de Proyectos · Simulacro parcial final · Versión <span id="vnum"></span></div>
+  <h1 id="ptitle"></h1>
+  <p class="nivel" id="nivel"></p>
+  <div class="fields-row"><span>Nombre: <b>____________________</b></span><span>Cifras: <b>millones de pesos</b></span><span>Impuesto: <b>30%</b></span><span>Calculadora: <b>básica</b></span></div>
+</header>
+
+<div class="bar" role="status">
+  <div class="score">
+    <span class="pill"><span class="dot" style="background:var(--good)"></span>Correctas <b id="sOk">0</b></span>
+    <span class="pill"><span class="dot" style="background:var(--warn)"></span>Casi <b id="sAl">0</b></span>
+    <span class="pill"><span class="dot" style="background:var(--bad)"></span>Incorrectas <b id="sNo">0</b></span>
+    <span class="pill">Respuestas <b id="sTot">0</b></span>
+  </div>
+  <div class="actions">
+    <button class="primary" id="checkAll" type="button">Calificar todo</button>
+    <button class="ghost" id="reset" type="button">Borrar respuestas</button>
+  </div>
+</div>
+
+<section class="card">
+  <h2>Enunciado</h2>
+  <div id="enunciado"></div>
+</section>
+
+<div class="note" id="orden"></div>
+<p style="color:var(--muted);font-size:15px">Escribe los números como en la hoja: <code>5.390,43</code> o <code>5390.43</code>. Las tasas en porcentaje: <code>13,88</code>. Se acepta como correcta una diferencia pequeña de redondeo.</p>
+
+<h2 style="margin-top:22px">Preguntas</h2>
+<div id="qs"></div>
+
+<footer>Tus respuestas se guardan en este navegador. Basado en el método de clase y en Sapag, <i>Preparación y evaluación de proyectos</i>, 5.ª ed.</footer>
+</div>
+
+<script>
+const D = {"num": 3, "title": "Distribuidora de insumos agrícolas “AgroNorte”", "nivel": "Con tabla de amortización, depreciación, impuestos y flujo del inversionista.", "enunciado": "<p>Una empresa evalúa montar una distribuidora de insumos agrícolas. La vida útil es de <b>10 años<\/b> y se evalúa a <b>5 años<\/b>. Esta vez se pide el flujo de caja del proyecto y el flujo de caja del inversionista, con depreciación e impuestos. Impuesto de renta: <b>30%<\/b>. Cifras en millones de pesos.<\/p><h3>Inversiones<\/h3><p>Se llevan al momento 0 con la tasa mensual equivalente al costo de capital (WACC). La depreciación y la amortización se calculan sobre el valor histórico (el pagado), en línea recta.<\/p><div class=\"tw\"><table class=\"\"><thead><tr><th>Inversión<\/th><th>Valor<\/th><th>Momento de pago<\/th><th>Tratamiento contable<\/th><\/tr><\/thead><tbody><tr><td>Maquinaria y montacargas<\/td><td>1.000,00<\/td><td>3 meses antes<\/td><td>Se deprecia en 5 años<\/td><\/tr><tr><td>Vehículo de carga<\/td><td>250,00<\/td><td>2 meses antes<\/td><td>Se deprecia en 5 años<\/td><\/tr><tr><td>Terreno y bodega<\/td><td>800,00<\/td><td>2 meses antes<\/td><td>No se deprecia<\/td><\/tr><tr><td>Licencias ICA<\/td><td>150,00<\/td><td>1 mes antes<\/td><td>Se amortiza en 5 años<\/td><\/tr><tr><td>Constitución de la sociedad<\/td><td>100,00<\/td><td>1 mes antes<\/td><td>Se amortiza en 5 años<\/td><\/tr><\/tbody><\/table><\/div><p><b>Capital de trabajo.<\/b> Se calcula por el método del período de desfase: el ciclo de caja es de 90 días, se toma como base el egreso del año 1 y el año tiene 365 días.<\/p><h3>Proyección de ingresos y egresos<\/h3><p>Egresos desembolsables, sin depreciación ni intereses.<\/p><div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>1<\/th><th>2<\/th><th>3<\/th><th>4<\/th><th>5<\/th><th>6<\/th><th>7<\/th><th>8<\/th><th>9<\/th><th>10<\/th><\/tr><\/thead><tbody><tr><td>Ingresos<\/td><td>8.500<\/td><td>9.300<\/td><td>10.000<\/td><td>10.500<\/td><td>11.000<\/td><td>10.300<\/td><td>10.300<\/td><td>10.000<\/td><td>9.600<\/td><td>9.000<\/td><\/tr><tr><td>Egresos<\/td><td>7.300<\/td><td>7.800<\/td><td>8.200<\/td><td>8.500<\/td><td>8.800<\/td><td>8.500<\/td><td>8.600<\/td><td>8.500<\/td><td>8.400<\/td><td>8.000<\/td><\/tr><\/tbody><\/table><\/div><h3>Financiación<\/h3><p>El banco presta 2.500 al 16% EA, a 5 años, con cuotas anuales iguales. Los intereses son deducibles de impuestos. El banco ya entregó los datos del crédito, pero <b>no<\/b> el detalle año por año:<\/p><div class=\"tw\"><table class=\"\"><thead><tr><th>Dato del crédito<\/th><th>Valor<\/th><\/tr><\/thead><tbody><tr><td>Monto del préstamo<\/td><td>2.500,00<\/td><\/tr><tr><td>Tasa<\/td><td>16% EA<\/td><\/tr><tr><td>Plazo<\/td><td>5 años<\/td><\/tr><tr><td>Cuota anual fija<\/td><td>763,52<\/td><\/tr><tr><td>Total pagado en las 5 cuotas<\/td><td>3.817,60<\/td><\/tr><tr><td>Total de intereses del crédito<\/td><td>1.317,63<\/td><\/tr><\/tbody><\/table><\/div><p>El resto lo ponen los socios: el Socio A aporta hasta 1.000 y exige 20% EA; el Socio B aporta lo que falte y exige 24% EA.<\/p><p><b>Valor de salvamento.<\/b> Usa el método de los flujos futuros: los flujos de los años 6 a 10 después de impuestos se traen al año 5 con el WACC. En esos años ya no hay depreciación ni deuda, así que el flujo es (Ingresos − Egresos) × (1 − 0,30). Usa el mismo valor de salvamento en los dos flujos.<\/p>", "orden": "Orden recomendado: 1 (KT) → 2 (WACC y Ke) → 3 (inversión) → 4 y 5 (préstamo) → 6 (salvamento) → 7 (proyecto) → 8 (inversionista) → 9 y 10.", "questions": [{"n": 1, "text": "Valor del capital de trabajo.", "fields": [{"label": "Capital de trabajo", "ans": 1800, "kind": "amount"}], "steps": [{"t": "Método del período de desfase", "h": "<p>El capital de trabajo cubre los egresos durante los días que tarda en volver el dinero (el ciclo de caja).<\/p><div class=\"formula\">KT = (Egreso anual ÷ 365) × días del ciclo<\/div>"}, {"t": "Cálculo", "h": "<div class=\"formula\">Egreso diario = 7.300 ÷ 365 = 20<\/div><div class=\"formula\">KT = 20 × 90 = <b>1.800<\/b><\/div>"}]}, {"n": 2, "text": "Costo de capital (WACC) del proyecto y costo del patrimonio (Ke) de los socios.", "fields": [{"label": "WACC", "ans": 15.22, "kind": "rate"}, {"label": "Ke", "ans": 21.5, "kind": "rate"}], "steps": [{"t": "Monto a financiar", "h": "<div class=\"formula\">2.300 (inversiones históricas) + 1.800 (KT) = 4.100<\/div><p>Banco 2.500 · Socio A 1.000 · Socio B lo que falta = 4.100 − 2.500 − 1.000 = 600.<\/p>"}, {"t": "WACC", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Fuente<\/th><th>Monto<\/th><th>Tasa<\/th><th>Costo desp. imp.<\/th><th>Monto × costo<\/th><\/tr><\/thead><tbody><tr><td>Banco<\/td><td>2.500,00<\/td><td>16%<\/td><td>11,20%<\/td><td>280,00<\/td><\/tr><tr><td>Socio A<\/td><td>1.000,00<\/td><td>20%<\/td><td>20,00%<\/td><td>200,00<\/td><\/tr><tr><td>Socio B<\/td><td>600,00<\/td><td>24%<\/td><td>24,00%<\/td><td>144,00<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td>4.100,00<\/td><td><\/td><td><\/td><td>624,00<\/td><\/tr><\/tbody><\/table><\/div><div class=\"formula\">WACC = 624 ÷ 4.100 = <b>15,22% EA<\/b><\/div><p>Es la tasa del flujo del <b>proyecto<\/b>.<\/p>"}, {"t": "Ke (solo socios)", "h": "<div class=\"formula\">Ke = (200 + 144) ÷ (1.000 + 600) = 344 ÷ 1.600 = <b>21,50% EA<\/b><\/div><p>Es la tasa del flujo del <b>inversionista<\/b>: ese flujo ya tiene la deuda adentro, así que solo se descuenta con lo que exigen los socios.<\/p>"}]}, {"n": 3, "text": "Valor de la inversión en el momento 0.", "fields": [{"label": "Inversión total", "ans": 4164.11, "kind": "amount"}], "steps": [{"t": "Tasa mensual", "h": "<div class=\"calc\"><span>Calculadora<\/span>1,1522 √ √ = 1,036053 → q = 0,036053<\/div><div class=\"formula\">i<sub>m<\/sub> ≈ q/3 − q²/9 = 0,012018 − 0,000144 ≈ 1,1876%<\/div><p>Factores: n=1 → 1,011876 · n=2 → 1,023893 · n=3 → 1,036053.<\/p>"}, {"t": "Capitalizar", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Inversión<\/th><th>Valor<\/th><th>Meses<\/th><th>Factor<\/th><th>Valor en 0<\/th><\/tr><\/thead><tbody><tr><td>Maquinaria<\/td><td>1.000,00<\/td><td>3<\/td><td>1,036053<\/td><td>1.036,05<\/td><\/tr><tr><td>Vehículo<\/td><td>250,00<\/td><td>2<\/td><td>1,023893<\/td><td>255,97<\/td><\/tr><tr><td>Terreno y bodega<\/td><td>800,00<\/td><td>2<\/td><td>1,023893<\/td><td>819,11<\/td><\/tr><tr><td>Licencias<\/td><td>150,00<\/td><td>1<\/td><td>1,011876<\/td><td>151,78<\/td><\/tr><tr><td>Constitución<\/td><td>100,00<\/td><td>1<\/td><td>1,011876<\/td><td>101,19<\/td><\/tr><tr class=\"tot\"><td>Activos<\/td><td>2.300,00<\/td><td><\/td><td><\/td><td>2.364,11<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "Resultado", "h": "<div class=\"formula\">Inversión = 2.364,11 + 1.800 = <b>4.164,11<\/b><\/div><p>Lo que ponen los socios en el flujo del inversionista: 4.164,11 − 2.500 = 1.664,11.<\/p>"}]}, {"n": 4, "text": "Construya la tabla de amortización año por año y responda: a) intereses del año 3; b) abono a capital del año 4; c) saldo después de pagar la cuota del año 2. d) ¿Por qué los intereses bajan y el abono sube?", "fields": [{"label": "a) Intereses año 3", "ans": 274.37, "kind": "amount"}, {"label": "b) Abono año 4", "ans": 567.42, "kind": "amount"}, {"label": "c) Saldo tras año 2", "ans": 1714.8, "kind": "amount"}], "interp": "La suma de intereses da 1.317,63, igual al dato del banco. Los intereses bajan porque se cobran sobre un saldo cada vez menor. Como la cuota es fija, lo que deja de ir a intereses se va a capital, y el abono sube.", "steps": [{"t": "Las tres fórmulas", "h": "<div class=\"formula\">Intereses<sub>t<\/sub> = Saldo inicial<sub>t<\/sub> × 0,16<\/div><div class=\"formula\">Abono a capital<sub>t<\/sub> = Cuota − Intereses<sub>t<\/sub><\/div><div class=\"formula\">Saldo final<sub>t<\/sub> = Saldo inicial<sub>t<\/sub> − Abono<sub>t<\/sub><\/div>"}, {"t": "Año 1", "h": "<div class=\"formula\">Intereses = 2.500 × 0,16 = 400,00<\/div><div class=\"formula\">Abono = 763,52 − 400,00 = 363,52<\/div><div class=\"formula\">Saldo = 2.500 − 363,52 = 2.136,48<\/div>"}, {"t": "Año 2", "h": "<div class=\"formula\">Intereses = 2.136,48 × 0,16 = 341,84<\/div><div class=\"formula\">Abono = 763,52 − 341,84 = 421,68<\/div><div class=\"formula\">Saldo = 2.136,48 − 421,68 = <b>1.714,80<\/b> ← respuesta c<\/div>"}, {"t": "Años 3 a 5", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>Saldo inicial<\/th><th>Cuota<\/th><th>Intereses<\/th><th>Abono a capital<\/th><th>Saldo final<\/th><\/tr><\/thead><tbody><tr><td>1<\/td><td>2.500,00<\/td><td>763,52<\/td><td>400,00<\/td><td>363,52<\/td><td>2.136,48<\/td><\/tr><tr><td>2<\/td><td>2.136,48<\/td><td>763,52<\/td><td>341,84<\/td><td>421,68<\/td><td>1.714,80<\/td><\/tr><tr><td>3<\/td><td>1.714,80<\/td><td>763,52<\/td><td><b>274,37<\/b><\/td><td>489,15<\/td><td>1.225,65<\/td><\/tr><tr><td>4<\/td><td>1.225,65<\/td><td>763,52<\/td><td>196,10<\/td><td><b>567,42<\/b><\/td><td>658,23<\/td><\/tr><tr><td>5<\/td><td>658,23<\/td><td>763,55<\/td><td>105,32<\/td><td>658,23<\/td><td>0,00<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td><\/td><td>3.817,63<\/td><td>1.317,63<\/td><td>2.500,00<\/td><td><\/td><\/tr><\/tbody><\/table><\/div><p>La última cuota sale 3 centavos más por redondeo: el saldo debe quedar en 0.<\/p>"}, {"t": "Verificación", "h": "<p>Suma de intereses = 1.317,63 = el dato del banco ✔. Suma de abonos = 2.500 = el préstamo ✔.<\/p>"}]}, {"n": 5, "text": "Ahorro tributario de los intereses: cuánto por año y cuánto en total.", "fields": [{"label": "Ahorro total", "ans": 395.29, "kind": "amount"}], "interp": "Es el impuesto que se deja de pagar porque los intereses son gasto deducible: 120,00 · 102,55 · 82,31 · 58,83 · 31,60, para un total de 395,29.", "steps": [{"t": "Fórmula", "h": "<div class=\"formula\">Ahorro tributario<sub>t<\/sub> = Intereses<sub>t<\/sub> × 30%<\/div>"}, {"t": "Cálculo", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Intereses<\/th><th>× 0,30<\/th><\/tr><\/thead><tbody><tr><td>1<\/td><td>400,00<\/td><td>120,00<\/td><\/tr><tr><td>2<\/td><td>341,84<\/td><td>102,55<\/td><\/tr><tr><td>3<\/td><td>274,37<\/td><td>82,31<\/td><\/tr><tr><td>4<\/td><td>196,10<\/td><td>58,83<\/td><\/tr><tr><td>5<\/td><td>105,32<\/td><td>31,60<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td>1.317,63<\/td><td>395,29<\/td><\/tr><\/tbody><\/table><\/div>"}]}, {"n": 6, "text": "Valor de salvamento.", "fields": [{"label": "Valor de salvamento", "ans": 3497.71, "kind": "amount"}], "steps": [{"t": "Flujo después de impuestos", "h": "<div class=\"formula\">Flujo = (Ingresos − Egresos) × 0,7<\/div><p>Años 6 a 10: 1.800 · 1.700 · 1.500 · 1.200 · 1.000 → × 0,7 = 1.260 · 1.190 · 1.050 · 840 · 700.<\/p>"}, {"t": "Factores al 15,22%", "h": "<div class=\"calc\"><span>Calculadora<\/span>1 ÷ 1,1522 = 0,867905 → 0,753259 → 0,653757 → 0,567399 → 0,492448<\/div>"}, {"t": "Tabla", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>× 0,7<\/th><th>Factor<\/th><th>VP al año 5<\/th><\/tr><\/thead><tbody><tr><td>6<\/td><td>1.260<\/td><td>0,867905<\/td><td>1.093,56<\/td><\/tr><tr><td>7<\/td><td>1.190<\/td><td>0,753259<\/td><td>896,38<\/td><\/tr><tr><td>8<\/td><td>1.050<\/td><td>0,653757<\/td><td>686,44<\/td><\/tr><tr><td>9<\/td><td>840<\/td><td>0,567399<\/td><td>476,62<\/td><\/tr><tr><td>10<\/td><td>700<\/td><td>0,492448<\/td><td>344,71<\/td><\/tr><tr class=\"tot\"><td>Total<\/td><td><\/td><td><\/td><td>3.497,71<\/td><\/tr><\/tbody><\/table><\/div>"}]}, {"n": 7, "text": "Flujo de caja del proyecto: VPN (al WACC) y TIR. Interprete.", "fields": [{"label": "VPN proyecto", "ans": 1754.89, "kind": "amount"}, {"label": "TIR proyecto", "ans": 27.54, "kind": "rate"}], "interp": "Pagando el 15,22% a bancos y socios, el proyecto deja 1.754,89 adicionales en pesos de hoy. Rinde 27,54% EA, más que el WACC. Se acepta.", "steps": [{"t": "Depreciación y amortización", "h": "<div class=\"formula\">1.000 ÷ 5 + 250 ÷ 5 + (150 + 100) ÷ 5 = 200 + 50 + 50 = 300 por año<\/div><p>El terreno no se deprecia. No hay intereses: el flujo del proyecto se hace como si no hubiera deuda.<\/p>"}, {"t": "Flujo del proyecto", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Concepto<\/th><th>0<\/th><th>1<\/th><th>2<\/th><th>3<\/th><th>4<\/th><th>5<\/th><\/tr><\/thead><tbody><tr><td>Ingresos<\/td><td><\/td><td>8.500<\/td><td>9.300<\/td><td>10.000<\/td><td>10.500<\/td><td>11.000<\/td><\/tr><tr><td>− Egresos<\/td><td><\/td><td>7.300<\/td><td>7.800<\/td><td>8.200<\/td><td>8.500<\/td><td>8.800<\/td><\/tr><tr><td>− Depreciación y amortización<\/td><td><\/td><td>300<\/td><td>300<\/td><td>300<\/td><td>300<\/td><td>300<\/td><\/tr><tr class=\"tot\"><td>= Utilidad antes de impuestos<\/td><td><\/td><td>900<\/td><td>1.200<\/td><td>1.500<\/td><td>1.700<\/td><td>1.900<\/td><\/tr><tr><td>− Impuesto 30%<\/td><td><\/td><td>270<\/td><td>360<\/td><td>450<\/td><td>510<\/td><td>570<\/td><\/tr><tr class=\"tot\"><td>= Utilidad neta<\/td><td><\/td><td>630<\/td><td>840<\/td><td>1.050<\/td><td>1.190<\/td><td>1.330<\/td><\/tr><tr><td>+ Depreciación y amortización<\/td><td><\/td><td>300<\/td><td>300<\/td><td>300<\/td><td>300<\/td><td>300<\/td><\/tr><tr><td>− Inversión<\/td><td>4.164,11<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr><td>+ Valor de salvamento<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><td>3.497,71<\/td><\/tr><tr class=\"tot\"><td>= Flujo del proyecto<\/td><td>−4.164,11<\/td><td>930,00<\/td><td>1.140,00<\/td><td>1.350,00<\/td><td>1.490,00<\/td><td>5.127,71<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "VPN al 15,22%", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor<\/th><th>VP<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−4.164,11<\/td><td>1<\/td><td>−4.164,11<\/td><\/tr><tr><td>1<\/td><td>930,00<\/td><td>0,867905<\/td><td>807,15<\/td><\/tr><tr><td>2<\/td><td>1.140,00<\/td><td>0,753259<\/td><td>858,72<\/td><\/tr><tr><td>3<\/td><td>1.350,00<\/td><td>0,653757<\/td><td>882,57<\/td><\/tr><tr><td>4<\/td><td>1.490,00<\/td><td>0,567399<\/td><td>845,42<\/td><\/tr><tr><td>5<\/td><td>5.127,71<\/td><td>0,492448<\/td><td>2.525,13<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td><\/td><td>1.754,89<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "TIR: 27% y 28%", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor 27%<\/th><th>VP 27%<\/th><th>Factor 28%<\/th><th>VP 28%<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−4.164,11<\/td><td>1<\/td><td>−4.164,11<\/td><td>1<\/td><td>−4.164,11<\/td><\/tr><tr><td>1<\/td><td>930,00<\/td><td>0,787402<\/td><td>732,28<\/td><td>0,781250<\/td><td>726,56<\/td><\/tr><tr><td>2<\/td><td>1.140,00<\/td><td>0,620001<\/td><td>706,80<\/td><td>0,610352<\/td><td>695,80<\/td><\/tr><tr><td>3<\/td><td>1.350,00<\/td><td>0,488190<\/td><td>659,06<\/td><td>0,476837<\/td><td>643,73<\/td><\/tr><tr><td>4<\/td><td>1.490,00<\/td><td>0,384402<\/td><td>572,76<\/td><td>0,372529<\/td><td>555,07<\/td><\/tr><tr><td>5<\/td><td>5.127,71<\/td><td>0,302678<\/td><td>1.552,05<\/td><td>0,291038<\/td><td>1.492,36<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td><\/td><td>58,84<\/td><td><\/td><td>−50,59<\/td><\/tr><\/tbody><\/table><\/div><div class=\"formula\">TIR = 0,27 + 0,01 × 58,84 ÷ (58,84 + 50,59) = <b>27,54% EA<\/b><\/div>"}]}, {"n": 8, "text": "Flujo de caja del inversionista: VPN (al Ke) y TIR. Interprete.", "fields": [{"label": "VPN inversionista", "ans": 1289.58, "kind": "amount"}, {"label": "TIR inversionista", "ans": 41.14, "kind": "rate"}], "interp": "Después de pagar el banco y de darles a los socios el 21,50% que exigen, les queda una riqueza adicional de 1.289,58 en pesos de hoy. Los socios ganan 41,14% EA sobre lo que ponen, más que su Ke de 21,50%. Se acepta.", "steps": [{"t": "Qué cambia frente al proyecto", "h": "<p>Se restan los <b>intereses antes de impuestos<\/b> (bajan el impuesto). Después de impuestos se suma el <b>préstamo<\/b> en el año 0 y se resta el <b>abono a capital<\/b> cada año.<\/p>"}, {"t": "Flujo del inversionista", "h": "<div class=\"tw\"><table class=\"wide\"><thead><tr><th>Concepto<\/th><th>0<\/th><th>1<\/th><th>2<\/th><th>3<\/th><th>4<\/th><th>5<\/th><\/tr><\/thead><tbody><tr><td>Ingresos − egresos<\/td><td><\/td><td>1.200,00<\/td><td>1.500,00<\/td><td>1.800,00<\/td><td>2.000,00<\/td><td>2.200,00<\/td><\/tr><tr><td>− Intereses<\/td><td><\/td><td>400,00<\/td><td>341,84<\/td><td>274,37<\/td><td>196,10<\/td><td>105,32<\/td><\/tr><tr><td>− Depreciación y amortización<\/td><td><\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><\/tr><tr class=\"tot\"><td>= Utilidad antes de impuestos<\/td><td><\/td><td>500,00<\/td><td>858,16<\/td><td>1.225,63<\/td><td>1.503,90<\/td><td>1.794,68<\/td><\/tr><tr><td>− Impuesto 30%<\/td><td><\/td><td>150,00<\/td><td>257,45<\/td><td>367,69<\/td><td>451,17<\/td><td>538,40<\/td><\/tr><tr class=\"tot\"><td>= Utilidad neta<\/td><td><\/td><td>350,00<\/td><td>600,71<\/td><td>857,94<\/td><td>1.052,73<\/td><td>1.256,28<\/td><\/tr><tr><td>+ Depreciación y amortización<\/td><td><\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><td>300,00<\/td><\/tr><tr><td>− Inversión<\/td><td>4.164,11<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr><td>+ Préstamo<\/td><td>2.500,00<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr><td>− Abono a capital<\/td><td><\/td><td>363,52<\/td><td>421,68<\/td><td>489,15<\/td><td>567,42<\/td><td>658,23<\/td><\/tr><tr><td>+ Valor de salvamento<\/td><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><td>3.497,71<\/td><\/tr><tr class=\"tot\"><td>= Flujo del inversionista<\/td><td>−1.664,11<\/td><td>286,48<\/td><td>479,03<\/td><td>668,79<\/td><td>785,31<\/td><td>4.395,76<\/td><\/tr><\/tbody><\/table><\/div><p>Comprobación año 1: 930 − 400 + 120 (ahorro) − 363,52 = 286,48 ✔<\/p>"}, {"t": "VPN al Ke 21,50%", "h": "<div class=\"calc\"><span>Calculadora<\/span>1 ÷ 1,215 = 0,823045 → 0,677404 → 0,557534 → 0,458876 → 0,377675<\/div><div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>Factor<\/th><th>VP<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−1.664,11<\/td><td>1<\/td><td>−1.664,11<\/td><\/tr><tr><td>1<\/td><td>286,48<\/td><td>0,823045<\/td><td>235,79<\/td><\/tr><tr><td>2<\/td><td>479,03<\/td><td>0,677404<\/td><td>324,50<\/td><\/tr><tr><td>3<\/td><td>668,79<\/td><td>0,557534<\/td><td>372,87<\/td><\/tr><tr><td>4<\/td><td>785,31<\/td><td>0,458876<\/td><td>360,36<\/td><\/tr><tr><td>5<\/td><td>4.395,76<\/td><td>0,377675<\/td><td>1.660,17<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td><\/td><td>1.289,58<\/td><\/tr><\/tbody><\/table><\/div>"}, {"t": "TIR: 41% y 42%", "h": "<div class=\"tw\"><table class=\"\"><thead><tr><th>Año<\/th><th>Flujo<\/th><th>VP 41%<\/th><th>VP 42%<\/th><\/tr><\/thead><tbody><tr><td>0<\/td><td>−1.664,11<\/td><td>−1.664,11<\/td><td>−1.664,11<\/td><\/tr><tr><td>1<\/td><td>286,48<\/td><td>203,18<\/td><td>201,75<\/td><\/tr><tr><td>2<\/td><td>479,03<\/td><td>240,95<\/td><td>237,57<\/td><\/tr><tr><td>3<\/td><td>668,79<\/td><td>238,58<\/td><td>233,57<\/td><\/tr><tr><td>4<\/td><td>785,31<\/td><td>198,68<\/td><td>193,15<\/td><\/tr><tr><td>5<\/td><td>4.395,76<\/td><td>788,75<\/td><td>761,36<\/td><\/tr><tr class=\"tot\"><td>VPN<\/td><td><\/td><td>6,03<\/td><td>−36,71<\/td><\/tr><\/tbody><\/table><\/div><div class=\"formula\">TIR = 0,41 + 0,01 × 6,03 ÷ (6,03 + 36,71) = <b>41,14% EA<\/b><\/div>"}]}, {"n": 9, "text": "Relación beneficio/costo y CAUE del proyecto. Interprete.", "fields": [{"label": "R B/C", "ans": 1.42, "kind": "ratio"}, {"label": "CAUE", "ans": 526.24, "kind": "amount"}], "interp": "Por cada peso invertido se recuperan 1,42 en pesos de hoy (B/C > 1). El VPN equivale a 526,24 por año durante 5 años por encima del costo de capital. Se acepta.", "steps": [{"t": "R B/C", "h": "<p>Todos los flujos de los años 1 a 5 son positivos, así que lo que sale es solo la inversión.<\/p><div class=\"formula\">VP entradas = 807,15 + 858,72 + 882,57 + 845,42 + 2.525,13 = 5.919,00<\/div><div class=\"formula\">R B/C = 5.919,00 ÷ 4.164,11 = <b>1,42<\/b><\/div>"}, {"t": "CAUE", "h": "<div class=\"formula\">1 − 0,492448 = 0,507552 → 0,1522 ÷ 0,507552 = 0,299871<\/div><div class=\"formula\">CAUE = 1.754,89 × 0,299871 = <b>526,24<\/b><\/div>"}]}, {"n": 10, "text": "Análisis: compare la TIR del proyecto con la del inversionista. ¿Conviene financiarse con el banco? ¿Por qué los intereses van antes de impuestos y el abono a capital después?", "fields": [], "interp": "La TIR sube de 27,54% (proyecto) a 41,14% (inversionista): apalancamiento positivo, porque el banco cuesta 11,20% después de impuestos y el proyecto rinde 27,54%; la diferencia queda para los socios, que además ponen solo 1.664,11. Sí conviene endeudarse, con el riesgo de que la cuota fija de 763,52 se paga aunque caigan las ventas. Los intereses van antes de impuestos porque son gasto deducible (ahorro de 395,29); el abono va después porque es devolver el préstamo, no un gasto.", "steps": [{"t": "Apalancamiento", "h": "<p>TIR proyecto 27,54% → TIR inversionista 41,14%. La deuda cuesta 16% × 0,7 = 11,20% y el proyecto rinde 27,54%: cada peso prestado genera más de lo que cuesta, y esa diferencia es de los socios.<\/p>"}, {"t": "¿Conviene el banco?", "h": "<p>Sí, mientras el costo de la deuda después de impuestos sea menor que la TIR del proyecto. Riesgo: la cuota fija se paga aunque las ventas caigan.<\/p>"}, {"t": "Intereses vs abono", "h": "<p><b>Intereses<\/b>: gasto financiero deducible → van antes de impuestos y generan el ahorro tributario de 395,29. <b>Abono a capital<\/b>: devolución del dinero prestado → no es gasto, va después de impuestos.<\/p>"}, {"t": "Cuidado", "h": "<p>Los dos VPN no se comparan como si fueran lo mismo: el del proyecto mide el negocio con el WACC; el del inversionista mide lo que ganan los socios con el Ke.<\/p>"}]}]};
+const KEY = "simulacro-formulacion-v" + D.num;
+let store = {};
+try { store = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { store = {}; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+
+document.getElementById("vnum").textContent = D.num;
+document.getElementById("ptitle").textContent = D.title;
+document.getElementById("nivel").textContent = D.nivel;
+document.getElementById("enunciado").innerHTML = D.enunciado;
+document.getElementById("orden").textContent = D.orden;
+
+function fmt(x, kind){
+  const d = 2;
+  const s = Math.abs(x).toFixed(d).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return (x < 0 ? "−" : "") + s + (kind === "rate" ? "%" : "");
+}
+function parseNum(raw){
+  if (raw == null) return NaN;
+  let s = String(raw).trim().replace(/\s/g, "").replace(/%/g, "").replace(/[−–]/g, "-").replace(/\$/g, "");
+  if (!s) return NaN;
+  if (s.includes(",")) { s = s.replace(/\./g, "").replace(",", "."); }
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) { s = s.replace(/\./g, ""); }
+  else if ((s.match(/\./g) || []).length > 1) { s = s.replace(/\./g, ""); }
+  return parseFloat(s);
+}
+function grade(v, f){
+  if (isNaN(v)) return null;
+  const a = f.ans, diff = Math.abs(v - a);
+  let tOk, tAl;
+  if (f.kind === "rate") { tOk = 0.06; tAl = 0.35; }
+  else if (f.kind === "ratio") { tOk = 0.011; tAl = 0.031; }
+  else { tOk = Math.max(Math.abs(a) * 0.003, 1); tAl = Math.max(Math.abs(a) * 0.02, 5); }
+  if (diff <= tOk) return "ok";
+  if (diff <= tAl) return "almost";
+  return "no";
+}
+const MSG = {ok:"Correcto.", almost:"Casi: revisa el redondeo o un paso intermedio.", no:"Incorrecto."};
+
+const qs = document.getElementById("qs");
+D.questions.forEach(q => {
+  const el = document.createElement("article");
+  el.className = "q"; el.id = "q" + q.n;
+  const hasInterp = !!q.interp;
+  let html = `<div class="qhead"><div class="qnum">${q.n}</div><div class="qtext">${q.text}</div></div>`;
+  if (q.fields.length) {
+    html += `<div class="inputs">` + q.fields.map((f, i) => `
+      <div class="field">
+        <label for="in-${q.n}-${i}">${f.label}</label>
+        <div class="inrow"><input id="in-${q.n}-${i}" inputmode="decimal" autocomplete="off" placeholder="${f.kind === "rate" ? "0,00" : "0,00"}">${f.kind === "rate" ? '<span class="unit">% EA</span>' : ""}</div>
+        <div class="fb" id="fb-${q.n}-${i}"></div>
+      </div>`).join("") + `</div>`;
+  }
+  if (hasInterp) {
+    html += `<div class="field"><label for="tx-${q.n}">${q.fields.length ? "Tu interpretación" : "Tu respuesta"}</label><textarea id="tx-${q.n}" placeholder="Valor + comparación con el costo de capital + decisión"></textarea></div>
+      <div class="model" id="model-${q.n}" hidden><b>Respuesta modelo:</b> ${q.interp}</div>`;
+  }
+  html += `<div class="actions">
+      <button class="primary" type="button" data-check="${q.n}">${q.fields.length ? "Verificar" : "Ver respuesta modelo"}</button>
+      <button type="button" data-steps="${q.n}">Paso a paso</button>
+    </div>
+    <div class="steps" id="steps-${q.n}" hidden>
+      <div class="stephead"><span id="prog-${q.n}"></span>
+        <span class="actions"><button type="button" data-next="${q.n}">Siguiente paso</button><button type="button" class="ghost" data-all="${q.n}">Ver todos</button></span></div>
+      <div id="steplist-${q.n}" style="display:grid;gap:14px"></div>
+    </div>`;
+  el.innerHTML = html;
+  qs.appendChild(el);
+  q.fields.forEach((f, i) => {
+    const inp = el.querySelector(`#in-${q.n}-${i}`);
+    const k = `${q.n}-${i}`;
+    if (store[k] != null) inp.value = store[k];
+    inp.addEventListener("input", () => { store[k] = inp.value; save(); });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") check(q, true); });
+  });
+  if (hasInterp) {
+    const tx = el.querySelector(`#tx-${q.n}`);
+    if (store["t" + q.n] != null) tx.value = store["t" + q.n];
+    tx.addEventListener("input", () => { store["t" + q.n] = tx.value; save(); });
+  }
+  q._shown = 0;
+});
+
+function check(q, show){
+  const el = document.getElementById("q" + q.n);
+  let states = [];
+  q.fields.forEach((f, i) => {
+    const v = parseNum(document.getElementById(`in-${q.n}-${i}`).value);
+    const g = grade(v, f);
+    const fb = document.getElementById(`fb-${q.n}-${i}`);
+    fb.className = "fb";
+    if (g === null) { fb.textContent = show ? "Sin respuesta. Correcta: " + fmt(f.ans, f.kind) : ""; states.push(null); return; }
+    fb.classList.add(g);
+    fb.textContent = MSG[g] + (g === "ok" ? "" : " Correcta: " + fmt(f.ans, f.kind));
+    states.push(g);
+  });
+  if (q.interp) document.getElementById("model-" + q.n).hidden = false;
+  el.classList.remove("ok", "almost", "no");
+  const got = states.filter(s => s);
+  let overall = null;
+  if (got.length) overall = got.includes("no") ? "no" : got.includes("almost") ? "almost" : "ok";
+  if (got.length && got.length < states.length && overall === "ok") overall = "almost";
+  if (overall) el.classList.add(overall);
+  q._state = overall;
+  updateScore();
+}
+function updateScore(){
+  let ok = 0, al = 0, no = 0, tot = 0;
+  D.questions.forEach(q => { if (!q.fields.length) return; tot++; if (q._state === "ok") ok++; else if (q._state === "almost") al++; else if (q._state === "no") no++; });
+  document.getElementById("sOk").textContent = ok;
+  document.getElementById("sAl").textContent = al;
+  document.getElementById("sNo").textContent = no;
+  document.getElementById("sTot").textContent = (ok + al + no) + "/" + tot;
+}
+function renderStep(q, i){
+  const s = q.steps[i];
+  const d = document.createElement("div");
+  d.className = "step";
+  d.innerHTML = `<h4><span>${i + 1}.</span>${s.t}</h4>${s.h}`;
+  document.getElementById("steplist-" + q.n).appendChild(d);
+}
+function progress(q){
+  document.getElementById("prog-" + q.n).textContent = `Paso ${q._shown} de ${q.steps.length}`;
+  const done = q._shown >= q.steps.length;
+  document.querySelector(`[data-next="${q.n}"]`).hidden = done;
+  document.querySelector(`[data-all="${q.n}"]`).hidden = done;
+}
+function nextStep(q){ if (q._shown < q.steps.length) { renderStep(q, q._shown); q._shown++; } progress(q); }
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const find = n => D.questions.find(q => String(q.n) === n);
+  if (b.dataset.check) check(find(b.dataset.check), true);
+  if (b.dataset.steps) {
+    const q = find(b.dataset.steps), box = document.getElementById("steps-" + q.n);
+    box.hidden = !box.hidden;
+    if (!box.hidden && q._shown === 0) nextStep(q);
+    b.textContent = box.hidden ? "Paso a paso" : "Ocultar paso a paso";
+  }
+  if (b.dataset.next) nextStep(find(b.dataset.next));
+  if (b.dataset.all) { const q = find(b.dataset.all); while (q._shown < q.steps.length) nextStep(q); }
+});
+document.getElementById("checkAll").addEventListener("click", () => D.questions.forEach(q => check(q, true)));
+document.getElementById("reset").addEventListener("click", () => {
+  store = {}; save();
+  document.querySelectorAll("input,textarea").forEach(i => i.value = "");
+  D.questions.forEach(q => {
+    q._state = null;
+    const el = document.getElementById("q" + q.n); el.classList.remove("ok", "almost", "no");
+    q.fields.forEach((f, i) => { const fb = document.getElementById(`fb-${q.n}-${i}`); fb.textContent = ""; fb.className = "fb"; });
+    if (q.interp) document.getElementById("model-" + q.n).hidden = true;
+  });
+  updateScore();
+});
+updateScore();
+</script>
+</body>
+</html>

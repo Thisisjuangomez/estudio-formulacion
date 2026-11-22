@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula Quest · Formulación de proyectos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020;--bg2:#121a33;--card:#151f3d;--card2:#1b2750;--line:#2a3a6e;
+  --tx:#e9eeff;--mut:#9aa7d6;--acc:#7c5cff;--acc2:#22d3ee;--ok:#22c55e;--bad:#f43f5e;--gold:#fbbf24;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:"Space Grotesk",system-ui,sans-serif}
+body{min-height:100vh;background:
+  radial-gradient(900px 500px at 10% -10%,#2b1f6b55,transparent 60%),
+  radial-gradient(800px 500px at 110% 10%,#0e4b6b55,transparent 60%),
+  linear-gradient(#ffffff05 1px,transparent 1px) 0 0/32px 32px,
+  linear-gradient(90deg,#ffffff05 1px,transparent 1px) 0 0/32px 32px,var(--bg)}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 20px;background:#0b1020cc;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{font-weight:700;font-size:20px;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
+.logo span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hud{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-size:14px;white-space:nowrap}
+.xpbar{width:140px;height:8px;background:#0006;border-radius:9px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s}
+.iconbtn{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:12px;padding:6px 10px;font-size:14px}
+main{max-width:1180px;margin:0 auto;padding:22px 18px 80px}
+h1{font-size:34px;margin:6px 0 4px}
+h2{margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 20px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:26px}
+.mode{border-radius:var(--r);padding:18px;border:1px solid var(--line);background:linear-gradient(135deg,#7c5cff33,#22d3ee22);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.mode:hover{transform:translateY(-3px);box-shadow:0 10px 30px #0008}
+.mode b{font-size:18px;display:block;margin-bottom:4px}
+.mode small{color:var(--mut)}
+.worlds{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.world{position:relative;border-radius:var(--r);padding:18px;background:var(--card);border:1px solid var(--line);cursor:pointer;overflow:hidden;transition:transform .15s,border-color .15s}
+.world:hover{transform:translateY(-3px);border-color:var(--wc)}
+.world:before{content:"";position:absolute;inset:auto -40px -60px auto;width:160px;height:160px;border-radius:50%;background:var(--wc);opacity:.18;filter:blur(10px)}
+.world .num{font-size:12px;color:var(--mut);letter-spacing:1px}
+.world .ic{font-size:30px;margin:6px 0}
+.world b{font-size:18px}
+.world p{color:var(--mut);font-size:13px;margin:6px 0 10px;min-height:34px}
+.stars{color:var(--gold);letter-spacing:2px}
+.stars .off{color:#ffffff22}
+.prog{height:6px;background:#0006;border-radius:9px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--wc)}
+/* play */
+.play{display:grid;grid-template-columns:1fr 280px;gap:18px}
+@media(max-width:900px){.play{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.qtop{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--wc,#7c5cff);color:#0b1020;font-weight:700}
+.qcount{color:var(--mut);font-size:13px}
+.prompt{font-size:19px;line-height:1.5;margin:4px 0 14px}
+.prompt b{color:#fff}
+.chart{background:#0b1020;border:1px solid var(--line);border-radius:14px;padding:8px;margin:10px 0 16px}
+.chart svg{width:100%;height:auto;display:block}
+.ans{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.ans input{flex:1;min-width:180px;font-size:22px;padding:12px 16px;border-radius:14px;border:2px solid var(--line);background:#0b1020;color:var(--tx);font-family:"JetBrains Mono",monospace;outline:none}
+.ans input:focus{border-color:var(--acc)}
+.unit{display:flex;align-items:center;padding:0 14px;border-radius:14px;background:var(--card2);color:var(--mut);font-weight:700}
+.btn{border:0;border-radius:14px;padding:12px 20px;font-size:16px;font-weight:700;color:#0b1020;background:linear-gradient(90deg,var(--acc2),#a5f3fc);transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.sec{background:var(--card2);color:var(--tx);border:1px solid var(--line)}
+.btn.pri{background:linear-gradient(90deg,var(--acc),#a78bfa);color:#fff}
+.note{color:var(--mut);font-size:12px;margin-top:8px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:#0b1020;color:var(--tx);font-size:16px;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--acc)}
+.opt.ok{border-color:var(--ok);background:#22c55e22}
+.opt.bad{border-color:var(--bad);background:#f43f5e22}
+.order{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.order{grid-template-columns:1fr}}
+.pool,.built{display:flex;flex-direction:column;gap:8px;min-height:60px}
+.chip{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b1020;color:var(--tx);text-align:left;font-size:14px;font-family:"JetBrains Mono",monospace}
+.chip:hover{border-color:var(--acc2)}
+.chip.ok{border-color:var(--ok)}.chip.bad{border-color:var(--bad);background:#f43f5e1a}
+.built .chip{cursor:default}
+.lbl{font-size:12px;color:var(--mut);letter-spacing:1px;margin-bottom:4px}
+.fb{margin-top:16px;border-radius:16px;padding:16px 18px;display:none;animation:pop .25s}
+.fb.ok{display:block;background:#22c55e18;border:1px solid #22c55e66}
+.fb.bad{display:block;background:#f43f5e14;border:1px solid #f43f5e66}
+.fb h3{margin:0 0 8px}
+.steps{margin:8px 0 0;padding-left:20px}
+.steps li{margin:6px 0;font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.5}
+.hint{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#fbbf2415;border:1px dashed #fbbf2480;color:#fde68a;font-size:14px}
+.side{display:flex;flex-direction:column;gap:14px}
+.stat{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.stat:last-child{border:0}
+.hearts{font-size:22px;letter-spacing:3px}
+.combo{font-size:30px;font-weight:700;background:linear-gradient(90deg,var(--gold),#fb7185);-webkit-background-clip:text;background-clip:text;color:transparent}
+.timer{font-size:40px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.float{position:fixed;pointer-events:none;font-weight:700;font-size:22px;color:var(--gold);animation:up 1s forwards;z-index:50}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.result{text-align:center;padding:30px}
+.big{font-size:56px;margin:10px 0}
+.formulas{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.fcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;border-top:4px solid var(--wc)}
+.fcard h3{margin:0 0 10px}
+.f{font-family:"JetBrains Mono",monospace;background:#0b1020;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13.5px}
+.f em{color:var(--mut);font-style:normal;font-family:"Space Grotesk";display:block;font-size:12px;margin-top:2px}
+table.t{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:13px;margin-top:8px}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{color:var(--mut);font-weight:600}
+.hl{background:#fbbf2422}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+.back{background:none;border:0;color:var(--mut);font-size:14px;padding:0;margin-bottom:10px}
+.back:hover{color:var(--tx)}
+.kbd{font-family:"JetBrains Mono";font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 5px;color:var(--mut)}
+</style>
+</head>
+<body><a href="index.html" style="position:fixed;bottom:14px;left:14px;z-index:9999;font:600 13px system-ui,sans-serif;background:#1c1c1a;color:#fff;padding:7px 12px;border-radius:99px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)">← Ruta de estudio</a>
+<canvas id="fx"></canvas>
+<header>
+  <div class="logo" onclick="go('home')">⚡ <span>FORMULA QUEST</span></div>
+  <div class="hud">
+    <div class="pill">Nivel <b id="lvl">1</b><div class="xpbar"><i id="xpfill" style="width:0"></i></div><span id="xptxt" class="mono" style="font-size:12px;color:var(--mut)">0 XP</span></div>
+    <div class="pill">🔥 Racha <b id="bestStreak">0</b></div>
+    <div class="pill">🎯 <b id="acc">–</b></div>
+    <button class="iconbtn" id="mute" onclick="toggleMute()">🔊</button>
+    <button class="iconbtn" onclick="go('learn')">📖 Aprende</button>
+    <button class="iconbtn" onclick="go('formulas')">📘 Fórmulas</button>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ============ utilidades ============ */
+const R=(a,b)=>a+Math.random()*(b-a);
+const RI=(a,b)=>Math.floor(R(a,b+1));
+const RS=(a,b,s)=>+(a+s*RI(0,Math.round((b-a)/s))).toFixed(6);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=(x,d=2)=>Number(x).toLocaleString('es-CO',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=(x,d=2)=>fmt(x*100,d)+'%';
+const M=(x,d=2)=>'$'+fmt(x,d)+' M';
+const pesos=x=>'$'+fmt(x,0);
+function parseNum(s){
+  if(s==null)return NaN; s=String(s).trim().replace(/[\s$%]/g,'').replace(/[−–]/g,'-');
+  if(!s)return NaN;
+  const dots=(s.match(/\./g)||[]).length, commas=(s.match(/,/g)||[]).length;
+  if(dots&&commas){ s=s.lastIndexOf(',')>s.lastIndexOf('.')? s.replace(/\./g,'').replace(',','.') : s.replace(/,/g,''); }
+  else if(dots>1) s=s.replace(/\./g,'');
+  else if(commas>1) s=s.replace(/,/g,'');
+  else s=s.replace(',','.');
+  return parseFloat(s);
+}
+const CAP={12:{n:'mensual',v:'MV',a:'MA',p:'mes',ps:'meses'},6:{n:'bimestral',v:'BV',a:'BA',p:'bimestre',ps:'bimestres'},4:{n:'trimestral',v:'TV',a:'TA',p:'trimestre',ps:'trimestres'},2:{n:'semestral',v:'SV',a:'SA',p:'semestre',ps:'semestres'}};
+function irr(flows){ // flows[0] negativo
+  const npv=r=>flows.reduce((s,f,t)=>s+f/Math.pow(1+r,t),0);
+  let lo=-0.99,hi=10; if(npv(lo)*npv(hi)>0)return NaN;
+  for(let k=0;k<200;k++){const m=(lo+hi)/2; if(npv(lo)*npv(m)<=0)hi=m; else lo=m;}
+  return (lo+hi)/2;
+}
+const npvAt=(flows,r)=>flows.reduce((s,f,t)=>s+f/Math.pow(1+r,t),0);
+
+/* ============ gráficos SVG ============ */
+function cfChart(items,o={}){
+  const W=640,H=230,pl=36,pr=36; const n=Math.max(1,...items.map(a=>a.t));
+  const mx=Math.max(1e-9,...items.map(a=>Math.abs(a.v||0)));
+  const mid=H/2, sc=(H/2-36)/mx, x=t=>pl+(W-pl-pr)*t/n;
+  let s=`<svg viewBox="0 0 ${W} ${H}"><defs><marker id="ah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14z" fill="context-stroke"/></marker></defs>`;
+  s+=`<line x1="${pl-10}" y1="${mid}" x2="${W-pr+10}" y2="${mid}" stroke="#5b6aa8" stroke-width="2"/>`;
+  for(let t=0;t<=n;t++){s+=`<line x1="${x(t)}" y1="${mid-4}" x2="${x(t)}" y2="${mid+4}" stroke="#5b6aa8"/>`;}
+  items.forEach(a=>{
+    const v=a.v||0, h=Math.max(18,Math.abs(v)*sc), up=v>=0, y2=up?mid-h:mid+h, c=a.unk?'#fbbf24':(up?'#22c55e':'#f43f5e');
+    s+=`<line x1="${x(a.t)}" y1="${mid}" x2="${x(a.t)}" y2="${y2}" stroke="${c}" stroke-width="4" ${a.unk?'stroke-dasharray="6 4"':''} marker-end="url(#ah)"/>`;
+    s+=`<text x="${x(a.t)}" y="${up?y2-12:y2+22}" fill="${c}" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">${a.lab!=null?a.lab:fmt(v,1)}</text>`;
+  });
+  for(let t=0;t<=n;t++){ if(n>14&&t%Math.ceil(n/12)&&t!==n)continue; s+=`<text x="${x(t)}" y="${H-6}" fill="#9aa7d6" font-size="11" text-anchor="middle" font-family="JetBrains Mono, monospace">${t}</text>`;}
+  if(o.title)s+=`<text x="10" y="16" fill="#9aa7d6" font-size="12">${o.title}</text>`;
+  return s+'</svg>';
+}
+function lineChart(series,o={}){
+  const W=640,H=260,pl=58,pr=18,pt=24,pb=36;
+  const all=series.flatMap(s=>s.pts); let xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);
+  (o.marks||[]).forEach(m=>{xs.push(m.x);ys.push(m.y)});
+  let x0=o.xmin??Math.min(...xs),x1=o.xmax??Math.max(...xs),y0=Math.min(0,...ys),y1=Math.max(0,...ys);
+  if(o.ymin!=null)y0=o.ymin; const pad=(y1-y0)*0.08||1; y0-=y0<0?pad:0; y1+=pad;
+  const X=v=>pl+(W-pl-pr)*(v-x0)/((x1-x0)||1), Y=v=>H-pb-(H-pt-pb)*(v-y0)/((y1-y0)||1);
+  let s=`<svg viewBox="0 0 ${W} ${H}" font-family="Space Grotesk, sans-serif">`;
+  for(let k=0;k<=4;k++){const v=y0+(y1-y0)*k/4;s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="#ffffff10"/><text x="${pl-6}" y="${Y(v)+4}" fill="#9aa7d6" font-size="11" text-anchor="end" font-family="JetBrains Mono, monospace">${(o.yfmt||(v=>fmt(v,0)))(v)}</text>`;}
+  for(let k=0;k<=5;k++){const v=x0+(x1-x0)*k/5;s+=`<text x="${X(v)}" y="${H-pb+16}" fill="#9aa7d6" font-size="11" text-anchor="middle" font-family="JetBrains Mono, monospace">${(o.xfmt||(v=>fmt(v,0)))(v)}</text>`;}
+  if(y0<0&&y1>0)s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(0)}" y2="${Y(0)}" stroke="#9aa7d6" stroke-dasharray="4 4"/>`;
+  series.forEach(se=>{
+    if(se.bars){se.pts.forEach(p=>{const bw=(W-pl-pr)/(se.pts.length+1)*0.5;s+=`<rect x="${X(p[0])-bw/2}" y="${Math.min(Y(p[1]),Y(0))}" width="${bw}" height="${Math.abs(Y(p[1])-Y(0))}" fill="${p[1]>=0?'#22c55e66':'#f43f5e66'}" rx="3"/>`});return;}
+    const d=se.pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ');
+    s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="3" stroke-linejoin="round"/>`;
+    if(se.dots)se.pts.forEach(p=>s+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="4" fill="${se.color}"/>`);
+  });
+  let lx=pl+6; series.filter(s=>s.label).forEach(se=>{s+=`<rect x="${lx}" y="6" width="12" height="4" fill="${se.color||'#22c55e'}"/><text x="${lx+16}" y="12" fill="#c7d0f5" font-size="11">${se.label}</text>`;lx+=se.label.length*6.5+34;});
+  (o.marks||[]).forEach(m=>{s+=`<circle cx="${X(m.x)}" cy="${Y(m.y)}" r="7" fill="none" stroke="${m.color||'#fbbf24'}" stroke-width="3"/><text x="${X(m.x)+(m.left?-10:10)}" y="${Y(m.y)+(m.below?22:-10)}" fill="${m.color||'#fbbf24'}" font-size="12" text-anchor="${m.left?'end':'start'}" font-weight="700">${m.label}</text>`;});
+  if(o.xLabel)s+=`<text x="${W-pr}" y="${H-4}" fill="#9aa7d6" font-size="11" text-anchor="end">${o.xLabel}</text>`;
+  return s+'</svg>';
+}
+function growthChart(i,m,label){
+  const pts=[];for(let k=0;k<=m;k++)pts.push([k,100*Math.pow(1+i,k)]);
+  return lineChart([{pts,color:'#22d3ee',dots:true,label}],{ymin:95,yfmt:v=>fmt(v,1),xLabel:'periodos'});
+}
+function amortTable(P,i,n,hl){
+  const A=P*i/(1-Math.pow(1+i,-n));let s=P,rows='';
+  for(let t=1;t<=n;t++){const int=s*i,ab=A-int;s-=ab;rows+=`<tr class="${hl&&hl.includes(t)?'hl':''}"><td>${t}</td><td>${fmt(A)}</td><td>${fmt(int)}</td><td>${fmt(ab)}</td><td>${fmt(Math.max(0,s))}</td></tr>`;}
+  return `<table class="t"><tr><th>Año</th><th>Cuota</th><th>Interés</th><th>Abono</th><th>Saldo</th></tr><tr><td>0</td><td></td><td></td><td></td><td>${fmt(P)}</td></tr>${rows}</table>`;
+}
+
+/* ============ generadores ============ */
+const G={};
+/* --- TASAS --- */
+G.tasas=[
+ function(){const m=pick([12,4,2,6]),j=RS(12,36,1)/100,i=j/m,ea=Math.pow(1+i,m)-1;
+  return{tag:'Nominal → EA',prompt:`Un banco ofrece <b>${pct(j,0)} N${CAP[m].v}</b> (nominal ${CAP[m].n} vencida). ¿Cuál es la tasa <b>efectiva anual</b>?`,type:'num',answer:ea*100,unit:'% EA',tol:{abs:.03},
+  hint:'Divide la nominal entre m para tener la tasa periódica y luego capitaliza m veces: EA = (1+i)^m − 1.',
+  steps:[`i ${CAP[m].n} = j / m = ${pct(j,0)} / ${m} = ${pct(i,4)}`,`EA = (1 + ${pct(i,4)})^${m} − 1`,`EA = ${pct(ea,4)}`],chart:()=>growthChart(i,m,'$100 capitalizándose cada '+CAP[m].p)}},
+ function(){const m=pick([12,4,2]),ea=RS(8,32,1)/100,ip=Math.pow(1+ea,1/m)-1;
+  return{tag:'EA → periódica',prompt:`Un CDT paga <b>${pct(ea,0)} EA</b>. ¿Cuál es la tasa <b>efectiva ${CAP[m].n}</b> equivalente?`,type:'num',answer:ip*100,unit:'% '+CAP[m].p,tol:{abs:.01},
+  hint:'Tasas equivalentes: (1+EA) = (1+i)^m  →  i = (1+EA)^(1/m) − 1.',
+  steps:[`(1 + EA) = (1 + i)^${m}`,`i = (1 + ${pct(ea,0)})^(1/${m}) − 1`,`i = ${pct(ip,4)} efectiva ${CAP[m].n}`],chart:()=>growthChart(ip,m,'Crecimiento por '+CAP[m].p)}},
+ function(){const m=pick([12,4,2]),ea=RS(8,32,1)/100,ip=Math.pow(1+ea,1/m)-1,j=ip*m;
+  return{tag:'EA → nominal',prompt:`Convierte <b>${pct(ea,0)} EA</b> a tasa <b>nominal ${CAP[m].n} vencida (N${CAP[m].v})</b>.`,type:'num',answer:j*100,unit:'% N'+CAP[m].v,tol:{abs:.03},
+  hint:'Primero pasa la EA a periódica: i = (1+EA)^(1/m) − 1; después multiplica por m.',
+  steps:[`i = (1 + ${pct(ea,0)})^(1/${m}) − 1 = ${pct(ip,4)}`,`j = i × m = ${pct(ip,4)} × ${m}`,`j = ${pct(j,4)} N${CAP[m].v}`]}},
+ function(){const m=pick([12,4]),j=RS(12,30,1)/100,ia=j/m,iv=ia/(1-ia),ea=Math.pow(1+iv,m)-1;
+  return{tag:'Anticipada → EA',prompt:`Un crédito cobra <b>${pct(j,0)} N${CAP[m].a}</b> (nominal ${CAP[m].n} <b>anticipada</b>). ¿Cuál es la tasa <b>efectiva anual</b>?`,type:'num',answer:ea*100,unit:'% EA',tol:{abs:.03},
+  hint:'1) ia = j/m. 2) Convierte a vencida: iv = ia / (1 − ia). 3) EA = (1+iv)^m − 1.',
+  steps:[`ia = ${pct(j,0)} / ${m} = ${pct(ia,4)} ${CAP[m].n} anticipada`,`iv = ia / (1 − ia) = ${pct(ia,4)} / ${fmt(1-ia,4)} = ${pct(iv,4)}`,`EA = (1 + ${pct(iv,4)})^${m} − 1 = ${pct(ea,4)}`]}},
+ function(){const m=pick([12,4,2]),iv=RS(10,90,1)/1000,ia=iv/(1+iv);
+  return{tag:'Vencida → anticipada',prompt:`Tienes una tasa del <b>${pct(iv,1)} ${CAP[m].n} vencida</b>. ¿Cuál es su equivalente <b>${CAP[m].n} anticipada</b>?`,type:'num',answer:ia*100,unit:'% ant.',tol:{abs:.01},
+  hint:'ia = iv / (1 + iv). La anticipada siempre es menor que la vencida.',
+  steps:[`ia = iv / (1 + iv)`,`ia = ${pct(iv,1)} / ${fmt(1+iv,3)}`,`ia = ${pct(ia,4)}`]}},
+ function(){const im=RS(8,30,1)/1000,k=pick([3,6]),it=Math.pow(1+im,k)-1;const nm=k===3?'trimestral':'semestral';
+  return{tag:'Periódica → periódica',prompt:`Una tarjeta cobra <b>${pct(im,1)} efectivo mensual</b>. ¿Cuál es la tasa <b>efectiva ${nm}</b>?`,type:'num',answer:it*100,unit:'% '+nm,tol:{abs:.02},
+  hint:`En un ${k===3?'trimestre':'semestre'} hay ${k} meses: (1+i mensual)^${k} − 1.`,
+  steps:[`i ${nm} = (1 + ${pct(im,1)})^${k} − 1`,`i ${nm} = ${pct(it,4)}`],chart:()=>growthChart(im,k,'$100 mes a mes')}},
+ function(){const ea=RS(10,30,1)/100;const opts=shuffle([{t:`${pct(ea*0.95,2)} NMV`,v:ea*0.95},{t:`${pct(ea,0)} EA`,v:ea},{t:`${pct(ea*0.93,2)} NMA`,v:0},{t:`${pct(ea*0.97,2)} NTV`,v:0}]);
+  opts.forEach(o=>{const s=o.t;const j=parseFloat(s.replace('.','').replace(',','.'))/100;if(s.includes('NMV'))o.v=Math.pow(1+j/12,12)-1;else if(s.includes('NMA')){const ia=j/12;o.v=Math.pow(1+ia/(1-ia),12)-1}else if(s.includes('NTV'))o.v=Math.pow(1+j/4,4)-1;});
+  const best=opts.reduce((b,o,i)=>o.v>opts[b].v?i:b,0);
+  return{tag:'¿Cuál cuesta más?',prompt:`Vas a pedir un crédito. ¿Cuál de estas tasas es la <b>más cara</b>? (conviértelas todas a EA)`,type:'mc',options:opts.map(o=>o.t),correct:best,
+  hint:'Compara siempre en la misma base: pasa todas a efectiva anual.',steps:opts.map(o=>`${o.t}  →  ${pct(o.v,3)} EA`)}}
+];
+/* --- VALOR DEL DINERO --- */
+function tvp(){return Math.random()<.5?{i:RS(8,24,1)/100,n:RI(2,10),u:'años',iu:'EA'}:{i:RS(5,30,1)/1000,n:RI(6,36),u:'meses',iu:'mensual'}}
+G.vdt=[
+ function(){const p=tvp(),VP=RS(5,200,5),VF=VP*Math.pow(1+p.i,p.n);
+  return{tag:'Valor futuro',prompt:`Inviertes <b>${M(VP,0)}</b> a una tasa del <b>${pct(p.i,1)} ${p.iu}</b> durante <b>${p.n} ${p.u}</b>. ¿Cuánto tendrás al final?`,type:'num',answer:VF,unit:'M',tol:{abs:.02,rel:.001},
+  hint:'VF = VP × (1 + i)^n',steps:[`VF = ${fmt(VP,0)} × (1 + ${pct(p.i,1)})^${p.n}`,`VF = ${fmt(VP,0)} × ${fmt(Math.pow(1+p.i,p.n),6)}`,`VF = ${M(VF)}`],
+  chart:()=>cfChart([{t:0,v:-VP,lab:'−'+fmt(VP,0)},{t:p.n,v:VP*1.4,lab:'VF = ?',unk:1}],{title:'Diagrama de flujo ('+p.u+')'})}},
+ function(){const p=tvp(),VF=RS(20,400,10),VP=VF/Math.pow(1+p.i,p.n);
+  return{tag:'Valor presente',prompt:`Necesitas <b>${M(VF,0)}</b> dentro de <b>${p.n} ${p.u}</b>. Si la tasa es <b>${pct(p.i,1)} ${p.iu}</b>, ¿cuánto debes invertir hoy?`,type:'num',answer:VP,unit:'M',tol:{abs:.02,rel:.001},
+  hint:'VP = VF / (1 + i)^n',steps:[`VP = ${fmt(VF,0)} / (1 + ${pct(p.i,1)})^${p.n}`,`VP = ${fmt(VF,0)} / ${fmt(Math.pow(1+p.i,p.n),6)}`,`VP = ${M(VP)}`],
+  chart:()=>cfChart([{t:0,v:-VF*0.7,lab:'VP = ?',unk:1},{t:p.n,v:VF,lab:fmt(VF,0)}],{title:'Diagrama de flujo ('+p.u+')'})}},
+ function(){const p=tvp(),VP=RS(10,100,5),n=+(R(2,p.u==='años'?10:36)).toFixed(1),VF=+(VP*Math.pow(1+p.i,n)).toFixed(2),ans=Math.log(VF/VP)/Math.log(1+p.i);
+  return{tag:'Hallar n',prompt:`¿Cuánto tiempo tarda <b>${M(VP,0)}</b> en convertirse en <b>${M(VF)}</b> al <b>${pct(p.i,1)} ${p.iu}</b>?`,type:'num',answer:ans,unit:p.u,tol:{abs:.06},
+  hint:'n = ln(VF / VP) / ln(1 + i)',steps:[`n = ln(${fmt(VF)} / ${fmt(VP,0)}) / ln(1 + ${pct(p.i,1)})`,`n = ${fmt(Math.log(VF/VP),5)} / ${fmt(Math.log(1+p.i),5)}`,`n = ${fmt(ans,2)} ${p.u}`],
+  chart:()=>cfChart([{t:0,v:-VP,lab:'−'+fmt(VP,0)},{t:8,v:VF,lab:fmt(VF,1)}],{title:'n = ? periodos'})}},
+ function(){const p=tvp(),VP=RS(10,100,5),VF=+(VP*Math.pow(1+p.i,p.n)).toFixed(2),ans=Math.pow(VF/VP,1/p.n)-1;
+  return{tag:'Hallar la tasa',prompt:`Invertiste <b>${M(VP,0)}</b> y a los <b>${p.n} ${p.u}</b> recibiste <b>${M(VF)}</b>. ¿Qué tasa efectiva por periodo ganaste?`,type:'num',answer:ans*100,unit:'% '+(p.u==='años'?'EA':'mensual'),tol:{abs:.02},
+  hint:'i = (VF / VP)^(1/n) − 1',steps:[`i = (${fmt(VF)} / ${fmt(VP,0)})^(1/${p.n}) − 1`,`i = ${pct(ans,4)}`],
+  chart:()=>cfChart([{t:0,v:-VP,lab:'−'+fmt(VP,0)},{t:p.n,v:VF,lab:fmt(VF,1)}],{title:'i = ?'})}},
+ function(){const p=tvp(),VP=RS(10,300,10),A=VP*p.i/(1-Math.pow(1+p.i,-p.n));
+  const it=[{t:0,v:VP,lab:'+'+fmt(VP,0)}];for(let t=1;t<=p.n;t++)it.push({t,v:-VP/p.n*1.2,lab:t===1||t===p.n?'A?':'',unk:1});
+  return{tag:'Anualidad: cuota',prompt:`Compras un activo de <b>${M(VP,0)}</b> financiado a <b>${p.n} ${p.u}</b> con cuotas iguales al <b>${pct(p.i,1)} ${p.iu}</b>. ¿Cuál es la cuota?`,type:'num',answer:A,unit:'M',tol:{abs:.02,rel:.001},
+  hint:'A = VP × i / (1 − (1 + i)^−n)',steps:[`A = ${fmt(VP,0)} × ${pct(p.i,1)} / (1 − (1 + ${pct(p.i,1)})^−${p.n})`,`A = ${fmt(VP*p.i,4)} / ${fmt(1-Math.pow(1+p.i,-p.n),6)}`,`A = ${M(A)}`],chart:()=>cfChart(it,{title:'Cuotas iguales'})}},
+ function(){const p=tvp(),A=RS(1,30,0.5),VP=A*(1-Math.pow(1+p.i,-p.n))/p.i;
+  const it=[{t:0,v:-A*p.n*0.6,lab:'VP?',unk:1}];for(let t=1;t<=p.n;t++)it.push({t,v:A,lab:t===1||t===p.n?fmt(A,1):''});
+  return{tag:'Anualidad: VP',prompt:`Un proyecto genera <b>${M(A,1)}</b> cada ${p.u==='años'?'año':'mes'} durante <b>${p.n} ${p.u}</b>. Con una tasa del <b>${pct(p.i,1)} ${p.iu}</b>, ¿cuál es el valor presente de esos flujos?`,type:'num',answer:VP,unit:'M',tol:{abs:.02,rel:.001},
+  hint:'VP = A × (1 − (1 + i)^−n) / i',steps:[`VP = ${fmt(A,1)} × (1 − (1 + ${pct(p.i,1)})^−${p.n}) / ${pct(p.i,1)}`,`VP = ${fmt(A,1)} × ${fmt((1-Math.pow(1+p.i,-p.n))/p.i,5)}`,`VP = ${M(VP)}`],chart:()=>cfChart(it,{title:'Flujos iguales'})}}
+];
+/* --- CRÉDITO --- */
+G.credito=[function(){
+  const P=RS(20,300,10),i=RS(10,24,1)/100,n=RI(3,6),A=P*i/(1-Math.pow(1+i,-n));
+  const int1=P*i,ab1=A-int1,s1=P-ab1,int2=s1*i;
+  const k=pick(['cuota','int1','ab1','s1','int2']);
+  const Q={cuota:['la <b>cuota anual</b>',A,[`A = P × i / (1 − (1+i)^−n)`,`A = ${fmt(P,0)} × ${pct(i,0)} / (1 − (1+${pct(i,0)})^−${n})`,`A = ${M(A)}`],[]],
+    int1:['el <b>interés del año 1</b>',int1,[`Interés 1 = saldo inicial × i`,`= ${fmt(P,0)} × ${pct(i,0)} = ${M(int1)}`],[1]],
+    ab1:['el <b>abono a capital del año 1</b>',ab1,[`Cuota A = ${M(A)}`,`Interés 1 = ${fmt(P,0)} × ${pct(i,0)} = ${fmt(int1)}`,`Abono = A − interés = ${M(ab1)}`],[1]],
+    s1:['el <b>saldo de la deuda al final del año 1</b>',s1,[`A = ${fmt(A)}; interés 1 = ${fmt(int1)}`,`Abono 1 = ${fmt(ab1)}`,`Saldo = ${fmt(P,0)} − ${fmt(ab1)} = ${M(s1)}`],[1]],
+    int2:['el <b>interés del año 2</b>',int2,[`A = ${fmt(A)}; abono 1 = ${fmt(ab1)}`,`Saldo 1 = ${fmt(s1)}`,`Interés 2 = ${fmt(s1)} × ${pct(i,0)} = ${M(int2)}`],[2]]}[k];
+  return{tag:'Tabla de amortización',prompt:`Préstamo de <b>${M(P,0)}</b> a <b>${n} años</b>, cuota fija, tasa <b>${pct(i,0)} EA</b>. Calcula ${Q[0]}.`,type:'num',answer:Q[1],unit:'M',tol:{abs:.02,rel:.001},
+  hint:'Cuota fija: A = P·i/(1−(1+i)^−n). Cada año: interés = saldo × i; abono = cuota − interés; nuevo saldo = saldo − abono. Recuerda: el interés va antes de impuestos y el abono después.',
+  steps:Q[2],after:()=>amortTable(P,i,n,Q[3])};
+}];
+/* --- EVALUACIÓN --- */
+G.eval=[function(){
+  const I=RS(50,500,10),n=RI(3,5),r=RS(10,20,1)/100,mult=R(.2,.5);const f=[-I];
+  for(let t=1;t<=n;t++)f.push(+(I*mult*R(.75,1.3)).toFixed(1));
+  const vpn=npvAt(f,r),tir=irr(f),vpB=vpn+I,rbc=vpB/I;
+  const k=pick(['vpn','vpn','tir','rbc','dec']);
+  const chart=()=>cfChart(f.map((v,t)=>({t,v,lab:fmt(v,1)})),{title:'Flujo de caja (millones, años)'});
+  const after=()=>isNaN(tir)?'':lineChart([{pts:Array.from({length:61},(_,j)=>{const x=j/60*Math.max(.5,tir*1.8,r*2.5);return[x*100,npvAt(f,x)]}),color:'#a78bfa',label:'VPN según la tasa'}],{xfmt:v=>fmt(v,0)+'%',yfmt:v=>fmt(v,0),xLabel:'tasa de descuento',marks:[{x:r*100,y:vpn,label:'VPN @ '+pct(r,0)},{x:tir*100,y:0,label:'TIR '+pct(tir,1),color:'#22d3ee',below:1}]});
+  const base=`Inversión <b>${M(I,0)}</b>, flujos anuales ${f.slice(1).map(v=>'<b>'+fmt(v,1)+'</b>').join(', ')} millones. Tasa de descuento (WACC) <b>${pct(r,0)}</b>.`;
+  const stepsV=f.map((v,t)=>`t=${t}: ${fmt(v,1)} / (1+${pct(r,0)})^${t} = ${fmt(v/Math.pow(1+r,t),3)}`).concat([`VPN = ${M(vpn,3)}`]);
+  if(k==='vpn')return{tag:'VPN',ex:'vpn',prompt:base+' ¿Cuál es el <b>VPN</b>?',type:'num',answer:vpn,unit:'M',tol:{abs:.05,rel:.002},hint:'VPN = Σ Ft / (1+i)^t, con F0 = −inversión.',steps:stepsV,chart,after};
+  if(k==='tir')return{tag:'TIR',ex:'tir',prompt:base+' ¿Cuál es la <b>TIR</b>? (prueba tasas hasta que el VPN = 0)',type:'num',answer:tir*100,unit:'%',tol:{abs:.15},hint:'TIR es la tasa que hace VPN = 0. Ensaya: si el VPN da positivo, sube la tasa; si da negativo, bájala. En Excel: =TIR(rango).',steps:[`Buscamos i tal que Σ Ft/(1+i)^t = 0`,`VPN @ ${pct(r,0)} = ${fmt(vpn,2)} → ${vpn>0?'sube la tasa':'baja la tasa'}`,`TIR ≈ ${pct(tir,2)}`,`Decisión: ${tir>=r?'TIR ≥ WACC → se acepta':'TIR < WACC → se rechaza'}`],chart,after};
+  if(k==='rbc')return{tag:'Relación B/C',ex:'rbc',prompt:base+' ¿Cuál es la <b>relación beneficio/costo</b>?',type:'num',answer:rbc,unit:'veces',tol:{abs:.01},hint:'RBC = VP de los beneficios / VP de la inversión. Acepta si RBC > 1.',steps:[`VP beneficios = ${fmt(vpB,3)}`,`RBC = ${fmt(vpB,3)} / ${fmt(I,0)} = ${fmt(rbc,3)}`,`${rbc>1?'Por cada $1 invertido recupera $'+fmt(rbc,2)+' → se acepta':'Recupera menos de $1 por peso → se rechaza'}`],chart,after};
+  const opts=['Aceptar: VPN > 0, TIR > WACC y RBC > 1','Rechazar: VPN < 0, TIR < WACC y RBC < 1','Indiferente: VPN = 0','No se puede decidir sin el flujo del inversionista'];
+  return{tag:'Decisión',prompt:base+' Calcula y decide: ¿se hace el proyecto?',type:'mc',options:opts,correct:vpn>0?0:1,hint:'Calcula el VPN a la tasa dada. Los tres criterios siempre coinciden en un proyecto simple.',steps:[`VPN = ${fmt(vpn,2)} M`,`TIR = ${pct(tir,2)} vs WACC ${pct(r,0)}`,`RBC = ${fmt(rbc,3)}`],chart,after};
+}];
+/* --- CAPITAL DE TRABAJO --- */
+G.kt=[
+ function(){const Ca=RS(120,900,10),nd=RS(30,120,15),ict=Ca/365*nd;
+  return{tag:'Periodo de desfase',prompt:`Los costos anuales de operación son <b>${M(Ca,0)}</b> y pasan <b>${nd} días</b> entre que se paga a proveedores y se cobra a clientes. ¿Cuánto capital de trabajo se necesita?`,type:'num',answer:ict,unit:'M',tol:{abs:.02,rel:.002},
+  hint:'ICT = (Ca / 365) × nd',steps:[`Costo diario = ${fmt(Ca,0)} / 365 = ${fmt(Ca/365,4)}`,`ICT = ${fmt(Ca/365,4)} × ${nd} = ${M(ict)}`]}},
+ function(){const m=RI(6,8),E=RS(20,80,5),Im=Math.round(E*R(1.3,1.8)),ramp=RI(2,4);const ing=[],acc=[];let s=0;
+  for(let k=1;k<=m;k++){const v=Math.round(Im*Math.min(1,(k-1)/ramp));ing.push(v);s+=v-E;acc.push(s);}
+  const mn=Math.min(...acc),mi=acc.indexOf(mn);
+  const tbl=`<table class="t"><tr><th>Mes</th>${ing.map((_,k)=>`<th>${k+1}</th>`).join('')}</tr><tr><td>Ingresos</td>${ing.map(v=>`<td>${v}</td>`).join('')}</tr><tr><td>Egresos</td>${ing.map(()=>`<td>${E}</td>`).join('')}</tr></table>`;
+  return{tag:'Déficit acumulado máximo',prompt:`Proyección mensual (millones). Con el <b>método del déficit acumulado máximo</b>, ¿cuánto capital de trabajo necesita el proyecto?${tbl}`,type:'num',answer:-mn,unit:'M',tol:{abs:.01},
+  hint:'Calcula el saldo de cada mes (ingresos − egresos) y ve acumulándolo. El valor más negativo del acumulado (en positivo) es el KT.',
+  steps:ing.map((v,k)=>`Mes ${k+1}: ${v} − ${E} = ${v-E}  → acumulado ${acc[k]}`).concat([`Máximo déficit = ${-mn} (mes ${mi+1}) → KT = ${M(-mn,0)}`]),
+  after:()=>lineChart([{pts:ing.map((v,k)=>[k+1,v-E]),bars:1},{pts:acc.map((v,k)=>[k+1,v]),color:'#fbbf24',dots:1,label:'Saldo acumulado'}],{xmin:.5,xmax:m+.5,xfmt:v=>fmt(v,0),marks:[{x:mi+1,y:mn,label:'Déficit máx. '+mn,color:'#f43f5e'}],xLabel:'mes'})}},
+ function(){const ef=RS(5,40,1),cxc=RS(20,120,5),inv=RS(15,100,5),prov=RS(10,60,5),ocp=RS(5,40,5),imp=RS(2,15,1);const kt=ef+cxc+inv-prov-ocp-imp;
+  if(kt<=0)return G.kt[2]();
+  return{tag:'Método contable',prompt:`Balance proyectado (millones): efectivo <b>${ef}</b>, cuentas por cobrar <b>${cxc}</b>, inventarios <b>${inv}</b>, proveedores <b>${prov}</b>, obligaciones financieras de corto plazo <b>${ocp}</b>, impuestos por pagar <b>${imp}</b>. ¿Cuál es el capital de trabajo neto?`,type:'num',answer:kt,unit:'M',tol:{abs:.01},
+  hint:'KT = activo corriente − pasivo corriente.',steps:[`AC = ${ef} + ${cxc} + ${inv} = ${ef+cxc+inv}`,`PC = ${prov} + ${ocp} + ${imp} = ${prov+ocp+imp}`,`KT = ${ef+cxc+inv} − ${prov+ocp+imp} = ${M(kt,0)}`]}}
+];
+/* --- COSTOS Y PUNTO DE EQUILIBRIO --- */
+G.costos=[function(){
+  const P=RS(8000,60000,500),CV=Math.round(P*R(.35,.7)/100)*100,CF=RS(5,80,1),mc=P-CV,pe=CF*1e6/mc;
+  const k=pick(['mc','pe','pe','pes','util','meta']);const Q=Math.round(pe*R(1.2,2)/10)*10,U=RS(2,30,1);
+  const chart=()=>{const qm=Math.max(pe*2,Q*1.1);const pts=n=>Array.from({length:11},(_,j)=>j*qm/10);
+    return lineChart([{pts:pts().map(q=>[q,q*P/1e6]),color:'#22c55e',label:'Ingresos'},{pts:pts().map(q=>[q,CF+q*CV/1e6]),color:'#f43f5e',label:'Costos totales'},{pts:pts().map(q=>[q,CF]),color:'#9aa7d6',label:'Costo fijo'}],{yfmt:v=>fmt(v,0)+'M',xfmt:v=>fmt(v,0),xLabel:'unidades',marks:[{x:pe,y:pe*P/1e6,label:'PE',color:'#fbbf24'}]})};
+  const base=`Precio de venta <b>${pesos(P)}</b> por unidad, costo variable unitario <b>${pesos(CV)}</b>, costos fijos mensuales <b>${M(CF,0)}</b>.`;
+  if(k==='mc')return{tag:'Margen de contribución',prompt:base+' ¿Cuál es el <b>margen de contribución unitario</b>?',type:'num',answer:mc,unit:'$',tol:{abs:1},hint:'Mcu = Pvu − CVu',steps:[`Mcu = ${pesos(P)} − ${pesos(CV)} = ${pesos(mc)}`,`Cada unidad aporta ${pesos(mc)} para cubrir costos fijos y utilidad`],chart};
+  if(k==='pe')return{tag:'Punto de equilibrio',prompt:base+' ¿Cuántas unidades debe vender al mes para <b>no ganar ni perder</b>?',type:'num',answer:pe,unit:'unid.',tol:{abs:1.5},hint:'Q = CF / (Pvu − CVu). Ojo: CF está en millones.',steps:[`Mcu = ${pesos(mc)}`,`Q = ${pesos(CF*1e6)} / ${pesos(mc)}`,`Q = ${fmt(pe,2)} unidades`],chart};
+  if(k==='pes')return{tag:'PE en pesos',prompt:base+' ¿Cuántas <b>ventas en pesos</b> necesita para el punto de equilibrio?',type:'num',answer:pe*P/1e6,unit:'M',tol:{abs:.02,rel:.002},hint:'PE$ = PE unidades × precio, o CF / (1 − CV/P).',steps:[`PEu = ${fmt(CF*1e6,0)} / ${fmt(mc,0)} = ${fmt(pe,2)}`,`PE$ = ${fmt(pe,2)} × ${pesos(P)} = ${M(pe*P/1e6)}`],chart};
+  if(k==='util'){const u=(Q*mc-CF*1e6)/1e6;return{tag:'Utilidad operativa',prompt:base+` Si vende <b>${fmt(Q,0)} unidades</b>, ¿cuál es la utilidad operativa?`,type:'num',answer:u,unit:'M',tol:{abs:.02,rel:.002},hint:'Utilidad = Q × Mcu − CF',steps:[`Q × Mcu = ${fmt(Q,0)} × ${fmt(mc,0)} = ${pesos(Q*mc)}`,`Utilidad = ${pesos(Q*mc)} − ${pesos(CF*1e6)} = ${M(u)}`],chart};}
+  const q=(CF+U)*1e6/mc;return{tag:'Unidades para meta',prompt:base+` ¿Cuántas unidades debe vender para obtener una utilidad de <b>${M(U,0)}</b>?`,type:'num',answer:q,unit:'unid.',tol:{abs:1.5},hint:'Q = (CF + utilidad deseada) / Mcu',steps:[`Q = (${fmt(CF,0)} + ${fmt(U,0)}) millones / ${pesos(mc)}`,`Q = ${fmt(q,2)} unidades`],chart};
+}];
+/* --- DEPRECIACIÓN Y SALVAMENTO --- */
+G.salva=[
+ function(){const C=RS(50,400,10),Rv=RS(0,C*.2,5),v=RI(5,10),d=(C-Rv)/v;
+  return{tag:'Depreciación lineal',prompt:`Una máquina cuesta <b>${M(C,0)}</b>, tiene vida útil de <b>${v} años</b> y valor residual de <b>${M(Rv,0)}</b>. ¿Cuál es la depreciación anual en línea recta?`,type:'num',answer:d,unit:'M/año',tol:{abs:.01},hint:'D = (costo − valor residual) / vida útil. Es un gasto no desembolsable: baja impuestos pero no sale de caja.',steps:[`D = (${fmt(C,0)} − ${fmt(Rv,0)}) / ${v}`,`D = ${M(d)} por año`],
+  after:()=>lineChart([{pts:Array.from({length:v+1},(_,t)=>[t,C-d*t]),color:'#a78bfa',dots:1,label:'Valor en libros'}],{xfmt:v=>fmt(v,0),xLabel:'año'})}},
+ function(){const C=RS(50,400,10),v=RI(5,10),k=RI(2,v-1),d=C/v,VL=C-d*k;
+  return{tag:'Valor en libros',prompt:`Activo de <b>${M(C,0)}</b>, vida útil <b>${v} años</b>, sin valor residual. ¿Cuál es su <b>valor en libros</b> al final del año <b>${k}</b>?`,type:'num',answer:VL,unit:'M',tol:{abs:.01},hint:'VL = costo − depreciación acumulada.',steps:[`D anual = ${fmt(C,0)} / ${v} = ${fmt(d,3)}`,`Dep. acumulada = ${fmt(d,3)} × ${k} = ${fmt(d*k,3)}`,`VL = ${fmt(C,0)} − ${fmt(d*k,3)} = ${M(VL)}`]}},
+ function(){const C=RS(80,400,10),v=RI(8,12),h=RI(4,6),t=pick([.35,.33,.30]),d=C/v,VL=C-d*h,VM=Math.round(VL*R(.8,1.5)),vs=VM-t*(VM-VL);
+  return{tag:'Salvamento comercial',prompt:`Al final del horizonte (año ${h}) vendes una máquina que costó <b>${M(C,0)}</b> (vida útil ${v} años, sin residual) en <b>${M(VM,0)}</b>. Impuesto de renta <b>${pct(t,0)}</b>. ¿Cuál es el valor de salvamento después de impuestos?`,type:'num',answer:vs,unit:'M',tol:{abs:.02},
+  hint:'Valor de salvamento = Valor de venta − impuesto × (valor de venta − valor en libros). Si vendes por debajo del libro, el "impuesto" es un ahorro.',steps:[`VL = ${fmt(C,0)} − ${fmt(d,3)} × ${h} = ${fmt(VL,3)}`,`Utilidad en venta = ${fmt(VM,0)} − ${fmt(VL,3)} = ${fmt(VM-VL,3)}`,`Impuesto = ${pct(t,0)} × ${fmt(VM-VL,3)} = ${fmt(t*(VM-VL),3)}`,`Salvamento = ${fmt(VM,0)} − ${fmt(t*(VM-VL),3)} = ${M(vs)}`]}},
+ function(){const F=RS(20,120,1),i=RS(10,20,1)/100,vs=F/i;
+  return{tag:'Salvamento económico',prompt:`Después del horizonte, el proyecto seguirá generando un flujo neto de <b>${M(F,0)}</b> por año indefinidamente. Con una tasa del <b>${pct(i,0)}</b>, ¿cuál es su valor de salvamento por el método económico?`,type:'num',answer:vs,unit:'M',tol:{abs:.02},hint:'Perpetuidad: VS = flujo anual / tasa.',steps:[`VS = ${fmt(F,0)} / ${pct(i,0)}`,`VS = ${M(vs)}`]}},
+ function(){const opts=['Contable: valor en libros de los activos','Comercial: valor de mercado menos impuestos','Económico: valor presente de los flujos futuros','Ninguno: el salvamento no se incluye'];const q=pick([[0,'Sumas el costo de los activos y restas la depreciación acumulada.'],[1,'Estimas cuánto te pagarían hoy por cada activo y descuentas el impuesto sobre la utilidad en venta.'],[2,'Supones que el negocio sigue operando y calculas flujo / tasa.']]);
+  return{tag:'Métodos de salvamento',prompt:`¿Qué método de valor de salvamento estás usando? <b>"${q[1]}"</b>`,type:'mc',options:opts,correct:q[0],hint:'Hay tres: contable, comercial y económico.',steps:['Contable → valor en libros','Comercial → valor de mercado − impuesto por utilidad en venta','Económico → perpetuidad de los flujos']}}
+];
+/* --- FLUJO DE CAJA --- */
+const FLUJO_INV=['+ Ingresos afectos a impuestos','− Egresos afectos a impuestos','− Intereses del préstamo','− Gastos no desembolsables','= Utilidad antes de impuestos','− Impuestos','= Utilidad después de impuestos','+ Ajuste por gastos no desembolsables','− Egresos no afectos a impuestos','+ Beneficios no afectos a impuestos','+ Préstamo','− Amortización de la deuda','= Flujo de caja del inversionista'];
+const FLUJO_PROY=['+ Ingresos afectos a impuestos','− Egresos afectos a impuestos','− Gastos no desembolsables','= Utilidad antes de impuestos','− Impuestos','= Utilidad después de impuestos','+ Ajuste por gastos no desembolsables','− Egresos no afectos a impuestos','+ Beneficios no afectos a impuestos','= Flujo de caja del proyecto'];
+const CLASIF=[['Ventas del producto',0],['Compra de materia prima',1],['Salarios del personal administrativo',1],['Depreciación de la maquinaria',2],['Amortización de gastos de constitución',2],['Compra de maquinaria (inversión)',3],['Inversión en capital de trabajo',3],['Valor de salvamento',4],['Recuperación del capital de trabajo',4],['Intereses del crédito',5],['Abono a capital del crédito',5],['Desembolso del préstamo',5],['Arriendo de la bodega',1],['Utilidad por venta de un activo',0]];
+const CATS=['Ingreso afecto a impuestos','Egreso afecto a impuestos','Gasto no desembolsable','Egreso no afecto a impuestos (inversión)','Beneficio no afecto a impuestos','Solo en el flujo del inversionista (financiación)'];
+G.flujo=[
+ function(){const inv=Math.random()<.55,L=inv?FLUJO_INV:FLUJO_PROY;
+  return{tag:inv?'Arma el flujo del inversionista':'Arma el flujo del proyecto',prompt:`Toca los renglones en el <b>orden correcto</b> para construir el <b>flujo de caja ${inv?'del inversionista':'del proyecto'}</b> (estructura de Sapag).`,type:'order',items:L,
+  hint:inv?'Los intereses van ANTES de impuestos (son deducibles). El préstamo y el abono a capital van al final, después de impuestos.':'Primero todo lo que afecta impuestos, luego se calcula el impuesto, y después se ajusta lo que no es caja.',steps:L}},
+ function(){const it=pick(CLASIF);
+  return{tag:'Clasifica el renglón',prompt:`¿En qué parte del flujo de caja va: <b>"${it[0]}"</b>?`,type:'mc',options:CATS,correct:it[1],hint:'Pregúntate: ¿afecta la renta? ¿sale efectivo? ¿es financiación?',steps:[`"${it[0]}" → ${CATS[it[1]]}`]}},
+ function(){const I=RS(200,900,10),E=Math.round(I*R(.4,.6)),D=RS(10,60,5),t=pick([.35,.33]),uai=I-E-D,imp=uai*t,udi=uai-imp,fc=udi+D;
+  return{tag:'Flujo operativo del proyecto',prompt:`Año 1: ingresos <b>${I}</b>, costos y gastos desembolsables <b>${E}</b>, depreciación <b>${D}</b> (millones). Impuesto <b>${pct(t,0)}</b>. ¿Cuál es el <b>flujo de caja del proyecto</b> de ese año (sin inversiones)?`,type:'num',answer:fc,unit:'M',tol:{abs:.02},
+  hint:'Resta la depreciación para calcular impuestos y luego vuelve a sumarla: no es salida de caja.',steps:[`UAI = ${I} − ${E} − ${D} = ${fmt(uai,0)}`,`Impuesto = ${pct(t,0)} × ${fmt(uai,0)} = ${fmt(imp,2)}`,`UDI = ${fmt(udi,2)}`,`+ Depreciación ${D} → Flujo = ${M(fc)}`]}},
+ function(){const I=RS(300,900,10),E=Math.round(I*R(.4,.55)),D=RS(10,50,5),int=RS(5,30,1),ab=RS(10,40,1),t=pick([.35,.33]),uai=I-E-int-D,imp=uai*t,udi=uai-imp,fc=udi+D-ab;
+  return{tag:'Flujo del inversionista',prompt:`Año 2: ingresos <b>${I}</b>, egresos desembolsables <b>${E}</b>, depreciación <b>${D}</b>, intereses del crédito <b>${int}</b>, abono a capital <b>${ab}</b> (millones). Impuesto <b>${pct(t,0)}</b>. ¿Cuál es el <b>flujo del inversionista</b>?`,type:'num',answer:fc,unit:'M',tol:{abs:.02},
+  hint:'Intereses antes de impuestos (escudo fiscal); abono a capital después de impuestos.',steps:[`UAI = ${I} − ${E} − ${int} − ${D} = ${fmt(uai,0)}`,`Impuesto = ${fmt(imp,2)} → UDI = ${fmt(udi,2)}`,`+ Depreciación ${D} = ${fmt(udi+D,2)}`,`− Abono ${ab} → Flujo = ${M(fc)}`]}},
+ function(){const int=RS(10,60,1),t=pick([.35,.33]),ah=int*t;
+  return{tag:'Escudo fiscal',prompt:`Este año pagas <b>${M(int,0)}</b> de intereses y la tarifa de renta es <b>${pct(t,0)}</b>. ¿Cuánto te ahorras en impuestos gracias a la deuda?`,type:'num',answer:ah,unit:'M',tol:{abs:.01},hint:'Escudo fiscal = intereses × tasa de impuesto. Por eso el costo real de la deuda es i × (1 − t).',steps:[`Ahorro = ${fmt(int,0)} × ${pct(t,0)} = ${M(ah)}`]}}
+];
+/* --- INDICADORES: VPN, VPGU, TIR, RBC, CAUE --- */
+const frc=(i,n)=>i/(1-Math.pow(1+i,-n));
+function indData(){const I=RS(80,400,10),n=RI(3,5),i=RS(10,20,1)/100,Y=[],E=[];
+  for(let t=1;t<=n;t++){const y=Math.round(I*R(.55,.9));Y.push(y);E.push(Math.round(y*R(.35,.6)));}
+  const vpY=Y.reduce((s,v,k)=>s+v/Math.pow(1+i,k+1),0),vpE=E.reduce((s,v,k)=>s+v/Math.pow(1+i,k+1),0);
+  const net=[-I,...Y.map((y,k)=>y-E[k])];const vpgu=vpY-vpE,vpn=vpgu-I,rbc=vpY/(vpE+I),tir=irr(net),vae=vpn*frc(i,n);
+  const tbl=`<table class="t"><tr><th>Año</th>${net.map((_,t)=>`<th>${t}</th>`).join('')}</tr><tr><td>Inversión</td><td>${I}</td>${Y.map(()=>'<td></td>').join('')}</tr><tr><td>Ingresos</td><td></td>${Y.map(v=>`<td>${v}</td>`).join('')}</tr><tr><td>Egresos</td><td></td>${E.map(v=>`<td>${v}</td>`).join('')}</tr><tr><td>Flujo neto</td>${net.map(v=>`<td>${v}</td>`).join('')}</tr></table>`;
+  return{I,n,i,Y,E,vpY,vpE,net,vpgu,vpn,rbc,tir,vae,tbl};}
+function vpSteps(arr,i,name){return arr.map((v,k)=>`${name} año ${k+1}: ${v} / (1+${pct(i,0)})^${k+1} = ${fmt(v/Math.pow(1+i,k+1),3)}`)}
+G.ind=[
+ function(){const d=indData();
+  return{tag:'VPN',ex:'vpn',prompt:`Proyecto (millones), tasa de oportunidad <b>${pct(d.i,0)}</b>:${d.tbl}Calcula el <b>VPN</b>.`,type:'num',answer:d.vpn,unit:'M',tol:{abs:.05,rel:.002},
+  hint:'VPN = Σ VP ingresos − Σ VP egresos − inversión (o descuenta directamente cada flujo neto).',
+  steps:[...vpSteps(d.Y,d.i,'Ingreso'),`Σ VP ingresos = ${fmt(d.vpY,3)}`,...vpSteps(d.E,d.i,'Egreso'),`Σ VP egresos = ${fmt(d.vpE,3)}`,`VPN = ${fmt(d.vpY,3)} − ${fmt(d.vpE,3)} − ${d.I} = ${M(d.vpn,3)}`,d.vpn>0?'VPN > 0 → el proyecto genera valor por encima de la tasa: se acepta':'VPN < 0 → no alcanza la tasa de oportunidad: se rechaza'],
+  chart:()=>cfChart(d.net.map((v,t)=>({t,v,lab:fmt(v,0)})),{title:'Flujo neto (millones)'})}},
+ function(){const d=indData();
+  return{tag:'VPGU',ex:'vpgu',prompt:`Proyecto (millones), tasa <b>${pct(d.i,0)}</b>:${d.tbl}Calcula el <b>VPGU</b> (valor presente de las ganancias/utilidades de la operación, sin restar la inversión).`,type:'num',answer:d.vpgu,unit:'M',tol:{abs:.05,rel:.002},
+  hint:'VPGU = Σ VP(ingresos − egresos) de los años 1 a n. Luego, VPN = VPGU − inversión.',
+  steps:[...d.Y.map((y,k)=>`Utilidad año ${k+1}: ${y} − ${d.E[k]} = ${y-d.E[k]} → VP = ${fmt((y-d.E[k])/Math.pow(1+d.i,k+1),3)}`),`VPGU = ${M(d.vpgu,3)}`,`Comprobación: VPN = VPGU − I = ${fmt(d.vpgu,3)} − ${d.I} = ${fmt(d.vpn,3)}`,d.vpgu>d.I?'VPGU > inversión → las ganancias traídas a hoy pagan la inversión':'VPGU < inversión → las ganancias no alcanzan a pagar la inversión']}},
+ function(){const d=indData();
+  return{tag:'Relación B/C',ex:'rbc',prompt:`Proyecto (millones), tasa <b>${pct(d.i,0)}</b>:${d.tbl}Calcula la <b>relación beneficio/costo</b> (VP ingresos / VP egresos incluida la inversión).`,type:'num',answer:d.rbc,unit:'veces',tol:{abs:.006},
+  hint:'RBC = Σ VP ingresos / (inversión + Σ VP egresos). Se acepta si es mayor que 1.',
+  steps:[`Σ VP ingresos = ${fmt(d.vpY,3)}`,`Σ VP egresos = ${fmt(d.vpE,3)}; + inversión ${d.I} = ${fmt(d.vpE+d.I,3)}`,`RBC = ${fmt(d.vpY,3)} / ${fmt(d.vpE+d.I,3)} = ${fmt(d.rbc,4)}`,d.rbc>1?`Por cada $1 de costo recibe $${fmt(d.rbc,2)} → se acepta`:`Por cada $1 de costo recibe $${fmt(d.rbc,2)} → se rechaza`,'Ojo: RBC > 1 ⇔ VPN > 0']}},
+ function(){const d=indData();if(isNaN(d.tir))return G.ind[0]();
+  return{tag:'TIR',ex:'tir',prompt:`Proyecto (millones):${d.tbl}Calcula la <b>TIR</b> y compárala con la tasa de oportunidad de <b>${pct(d.i,0)}</b>.`,type:'num',answer:d.tir*100,unit:'%',tol:{abs:.15},
+  hint:'Ensayo y error (o interpolación): busca dos tasas, una con VPN+ y otra con VPN−, y acércate hasta VPN = 0. En Excel: =TIR(flujos netos).',
+  steps:(()=>{const a=Math.floor(d.tir*100)/100,b=a+.01,va=npvAt(d.net,a),vb=npvAt(d.net,b),interp=a+(b-a)*va/(va-vb);return[`VPN @ ${pct(d.i,0)} = ${fmt(npvAt(d.net,d.i),3)}`,`VPN @ ${pct(a,0)} = ${fmt(va,3)} (positivo)`,`VPN @ ${pct(b,0)} = ${fmt(vb,3)} (negativo)`,`Interpolación: ${pct(a,0)} + 1% × ${fmt(va,3)}/(${fmt(va,3)} − (${fmt(vb,3)})) = ${pct(interp,2)}`,`TIR exacta ≈ ${pct(d.tir,2)}`,d.tir>=d.i?'TIR ≥ tasa de oportunidad → se acepta':'TIR < tasa de oportunidad → se rechaza']})(),
+  chart:()=>cfChart(d.net.map((v,t)=>({t,v,lab:fmt(v,0)})),{title:'Flujo neto (millones)'}),
+  after:()=>lineChart([{pts:Array.from({length:61},(_,j)=>{const x=j/60*Math.max(.5,d.tir*1.8);return[x*100,npvAt(d.net,x)]}),color:'#a78bfa',label:'Perfil del VPN'}],{xfmt:v=>fmt(v,0)+'%',xLabel:'tasa',marks:[{x:d.i*100,y:npvAt(d.net,d.i),label:'tasa '+pct(d.i,0)},{x:d.tir*100,y:0,label:'TIR '+pct(d.tir,1),color:'#22d3ee',below:1}]})}},
+ function(){const I=RS(50,300,10),n=RI(4,10),VS=Math.round(I*R(0,.25)),CO=RS(5,60,1),i=RS(8,20,1)/100,f=frc(i,n),caue=(I-VS/Math.pow(1+i,n))*f+CO;
+  return{tag:'CAUE',ex:'caue',prompt:`Una máquina cuesta <b>${M(I,0)}</b>, dura <b>${n} años</b>, su costo de operación es <b>${M(CO,0)}/año</b> y al final se vende en <b>${M(VS,0)}</b>. Con una tasa del <b>${pct(i,0)}</b>, ¿cuál es su <b>CAUE</b>?`,type:'num',answer:caue,unit:'M/año',tol:{abs:.02,rel:.002},
+  hint:'CAUE = (I − VS/(1+i)^n) × i/(1−(1+i)^−n) + costo anual de operación.',
+  steps:[`VP del salvamento = ${VS} / (1+${pct(i,0)})^${n} = ${fmt(VS/Math.pow(1+i,n),3)}`,`Inversión neta en VP = ${I} − ${fmt(VS/Math.pow(1+i,n),3)} = ${fmt(I-VS/Math.pow(1+i,n),3)}`,`Factor de recuperación de capital = ${pct(i,0)} / (1 − (1+${pct(i,0)})^−${n}) = ${fmt(f,5)}`,`Costo anual de la inversión = ${fmt((I-VS/Math.pow(1+i,n))*f,3)}`,`CAUE = ${fmt((I-VS/Math.pow(1+i,n))*f,3)} + ${CO} = ${M(caue,3)}`]}},
+ function(){const i=RS(8,18,1)/100;const mk=()=>{const I=RS(60,300,10),n=RI(3,10),CO=RS(5,50,1);return{I,n,CO,c:I*frc(i,n)+CO}};const A=mk(),B=mk();if(Math.abs(A.c-B.c)<1)return G.ind[5]();
+  return{tag:'CAUE: elegir alternativa',ex:'caue',prompt:`Dos máquinas hacen el mismo trabajo (tasa <b>${pct(i,0)}</b>, sin salvamento):<br>• <b>A</b>: cuesta ${A.I}, dura ${A.n} años, opera con ${A.CO}/año<br>• <b>B</b>: cuesta ${B.I}, dura ${B.n} años, opera con ${B.CO}/año<br>Como tienen vidas distintas, no puedes comparar el VP directamente. ¿Cuál conviene?`,type:'mc',options:['Máquina A (menor CAUE)','Máquina B (menor CAUE)','La de menor inversión inicial','La de mayor vida útil'],correct:A.c<B.c?0:1,
+  hint:'Calcula el CAUE de cada una y escoge el menor costo anual.',steps:[`CAUE A = ${A.I} × ${fmt(frc(i,A.n),5)} + ${A.CO} = ${fmt(A.c,3)}`,`CAUE B = ${B.I} × ${fmt(frc(i,B.n),5)} + ${B.CO} = ${fmt(B.c,3)}`,`Se elige ${A.c<B.c?'A':'B'}: menor costo anual equivalente`]}},
+ function(){const d=indData();
+  return{tag:'VAE (VPN anualizado)',ex:'caue',prompt:`Proyecto (millones), tasa <b>${pct(d.i,0)}</b>:${d.tbl}Convierte su VPN en un <b>valor anual equivalente</b> (VAE = VPN × factor de recuperación de capital).`,type:'num',answer:d.vae,unit:'M/año',tol:{abs:.03,rel:.003},
+  hint:'Primero calcula el VPN; después VAE = VPN × i/(1−(1+i)^−n). Es la misma lógica del CAUE pero con beneficios.',
+  steps:[`VPN = ${fmt(d.vpn,3)}`,`FRC = ${fmt(frc(d.i,d.n),5)}`,`VAE = ${fmt(d.vpn,3)} × ${fmt(frc(d.i,d.n),5)} = ${M(d.vae,3)}`]}},
+ function(){const q=pick([['VPN = 0','La TIR es exactamente igual a la tasa de oportunidad',['La TIR es exactamente igual a la tasa de oportunidad','El proyecto no tiene ingresos','La RBC es cero','El proyecto pierde dinero']],['RBC = 1,25','Por cada peso de costo (en VP) el proyecto devuelve 1,25 pesos',['Por cada peso de costo (en VP) el proyecto devuelve 1,25 pesos','La TIR es 25%','El VPN es 25 millones','El proyecto tarda 1,25 años en recuperarse']],['TIR = 18% y tasa de oportunidad = 22%','Se rechaza: el proyecto rinde menos que la alternativa',['Se rechaza: el proyecto rinde menos que la alternativa','Se acepta: la TIR es positiva','Es indiferente','Se acepta si el VPN es positivo']],['Máquina A: CAUE 42; máquina B: CAUE 38','Se elige B: tiene menor costo anual equivalente',['Se elige B: tiene menor costo anual equivalente','Se elige A: tiene mayor CAUE','Se elige la de menor inversión','No se puede comparar porque tienen vidas distintas']],['VPGU = 520 e inversión = 480','VPN = 40: las ganancias en VP superan la inversión',['VPN = 40: las ganancias en VP superan la inversión','VPN = 1.000','RBC = 0,92','TIR = 40%']]]);
+  const idx=shuffle([0,1,2,3]);
+  return{tag:'Interpreta el indicador',ex:'vpn',prompt:`Si un proyecto tiene <b>${q[0]}</b>, ¿qué significa?`,type:'mc',options:idx.map(k=>q[2][k]),correct:idx.indexOf(0),hint:'Recuerda los criterios: VPN > 0, TIR > tasa, RBC > 1, menor CAUE.',steps:[q[1]]}}
+];
+const EXPL={
+ vpn:{n:'VPN · Valor presente neto',c:'#a78bfa',que:'Lleva todos los ingresos y egresos futuros al momento 0 con la tasa de oportunidad y les resta la inversión. Mide cuánto valor (en pesos de hoy) gana el inversionista por encima de lo que le daría su mejor alternativa.',f:['VPN = Σ Yt/(1+i)^t − Σ Et/(1+i)^t − I0','VPN = Σ FNt/(1+i)^t  (FN0 = −I0)'],crit:'VPN > 0 se acepta · VPN = 0 indiferente (gana justo la tasa) · VPN < 0 se rechaza',ej:'I0 = 100; flujos 50, 60, 40; i = 15% → 43,48 + 45,37 + 26,30 − 100 = 15,15 → se acepta.',tip:'En Excel =VNA(tasa; flujos 1..n) + flujo 0. VNA NO incluye el periodo 0.'},
+ vpgu:{n:'VPGU · Valor presente de las ganancias (utilidades)',c:'#34d399',que:'En tus apuntes: VPGU = utilidad. Es el valor presente de las ganancias de la operación (ingresos − egresos de cada año), antes de restar la inversión. Responde: ¿cuánto valen hoy las utilidades que genera el proyecto? Confirma con el profesor la definición exacta que usa.',f:['VPGU = Σ (Yt − Et)/(1+i)^t,  t = 1..n','VPN = VPGU − I0'],crit:'Si VPGU > I0 las ganancias pagan la inversión (equivale a VPN > 0)',ej:'Utilidades 50, 60, 40 al 15% → VPGU = 115,15. Con I0 = 100 → VPN = 15,15.',tip:'Sirve para separar la parte operativa (ganancias) de la decisión de invertir.'},
+ tir:{n:'TIR · Tasa interna de retorno',c:'#22d3ee',que:'Es la tasa que hace el VPN igual a cero: la rentabilidad propia del proyecto, por periodo, sobre el dinero que permanece invertido. Se compara con la tasa de oportunidad (WACC o la del inversionista).',f:['Σ FNt/(1+TIR)^t = 0','Interpolación: TIR ≈ i1 + (i2 − i1) × VPN1/(VPN1 − VPN2)'],crit:'TIR ≥ tasa de oportunidad se acepta · TIR < tasa se rechaza',ej:'Con I0 = 100 y flujos 50, 60, 40: VPN @ 20% = 6,48 y VPN @ 25% = −1,12 → interpolando 20% + 5% × 6,48/7,60 ≈ 24,3% (exacta ≈ 24,2%) → se acepta si la tasa es 15%.',tip:'Excel =TIR(flujos 0..n). Cuidado: flujos con varios cambios de signo pueden tener varias TIR.'},
+ rbc:{n:'RBC · Relación beneficio/costo',c:'#fbbf24',que:'Divide el valor presente de los beneficios (ingresos) entre el valor presente de los costos (egresos más la inversión). Dice cuántos pesos devuelve el proyecto por cada peso de costo.',f:['RBC = Σ VP ingresos / (I0 + Σ VP egresos)','Variante: VP flujos netos / I0'],crit:'RBC > 1 se acepta · RBC = 1 indiferente · RBC < 1 se rechaza (siempre coincide con el VPN)',ej:'VP ingresos 260, VP egresos 120, I0 = 100 → RBC = 260/220 = 1,18.',tip:'Es un índice, no un valor en pesos: no sirve para comparar proyectos de distinto tamaño.'},
+ caue:{n:'CAUE · Costo anual uniforme equivalente',c:'#f472b6',que:'Convierte todos los costos de una alternativa (inversión, operación, salvamento) en una cuota anual constante. Se usa para comparar alternativas que hacen lo mismo pero tienen vidas útiles distintas. Si hay beneficios, su par es el VAE (VPN anualizado).',f:['FRC = i / (1 − (1+i)^−n)','CAUE = (I0 − VS/(1+i)^n) × FRC + costo anual','VAE = VPN × FRC'],crit:'Entre alternativas de costo: se escoge la de MENOR CAUE · Con beneficios: la de MAYOR VAE',ej:'Máquina de 100, 5 años, opera 20/año, sin salvamento, i = 12% → FRC = 0,27741 → CAUE = 27,74 + 20 = 47,74 por año.',tip:'Excel: =PAGO(tasa; n; −VP de los costos).'}
+};
+/* --- TEORÍA --- */
+const TEO=[
+ ['¿Cuáles son las dos grandes etapas del estudio de un proyecto según Sapag?',['Formulación/preparación y evaluación','Idea y operación','Mercado y técnico','Perfil y factibilidad'],0],
+ ['¿Qué busca principalmente el estudio de PERFIL?',['Encontrar razones para abandonar la idea antes de invertir en estudios','Calcular la TIR con precisión','Definir la localización óptima','Obtener información primaria'],0],
+ ['El estudio de prefactibilidad se basa principalmente en…',['Fuentes secundarias','Fuentes primarias','La intuición del inversionista','Los estados financieros reales'],0],
+ ['El estudio de factibilidad se caracteriza por…',['Información de fuentes primarias y cifras demostrativas','Estimaciones muy globales','No incluir el estudio financiero','Ser opcional en todos los casos'],0],
+ ['¿Cuáles son las etapas del ciclo del proyecto?',['Idea, preinversión, inversión, operación','Perfil, prefactibilidad, factibilidad, evaluación','Mercado, técnico, legal, financiero','Diseño, venta, cierre, liquidación'],0],
+ ['¿En qué etapa se hacen los estudios de perfil, prefactibilidad y factibilidad?',['Preinversión','Inversión','Operación','Idea'],0],
+ ['¿Qué estudio entrega el CAPEX y el OPEX?',['Técnico','Mercado','Legal','Macroentorno'],0],
+ ['¿Qué herramienta se usa típicamente en el estudio de macroentorno?',['PESTEL','Punto de equilibrio','Cuadros de balance','Tabla de amortización'],0],
+ ['¿Qué estudio define el tipo societario y el costo de la formalización?',['Legal','Técnico','Ambiental','Mercado'],0],
+ ['La demanda proyectada del estudio de mercado se usa principalmente para…',['Dimensionar el estudio técnico (capacidad y recursos)','Calcular la depreciación','Elegir el tipo societario','Fijar la tasa de descuento'],0],
+ ['¿Qué son los cuadros de balance?',['Herramientas que sistematizan recursos (obras, equipos, personal, materiales) con sus costos','El balance general proyectado','La tabla del crédito','El estado de resultados'],0],
+ ['¿Qué sistema de producción opera 7×24 con miles de productos idénticos?',['Continua','Por lotes','Por orden de trabajo','Artesanal'],0],
+ ['Un costo que se mantiene constante ante cambios en el volumen es…',['Fijo','Variable','Directo','Primo'],0],
+ ['Costo primo =',['MP directa + MO directa','MO directa + CIF','Costo fijo + costo variable','Precio − costo variable'],0],
+ ['La diferencia entre estado de resultados y flujo de caja es que el flujo…',['Muestra entradas y salidas reales de efectivo (liquidez)','Muestra la utilidad contable','No incluye impuestos','Solo se usa en empresas en marcha'],0],
+ ['La depreciación en el flujo de caja…',['Se resta para calcular impuestos y luego se vuelve a sumar','Se resta y no se vuelve a sumar','No aparece','Se suma antes de impuestos'],0],
+ ['¿Por qué los intereses van antes de impuestos?',['Porque son un gasto deducible (escudo fiscal)','Porque son una inversión','Porque no son salida de caja','Por convención, sin efecto'],0],
+ ['El abono a capital de la deuda va…',['Después de impuestos, solo en el flujo del inversionista','Antes de impuestos','En el flujo del proyecto','Junto con la depreciación'],0],
+ ['¿Qué mide el flujo de caja del PROYECTO?',['La rentabilidad de toda la inversión, sin importar cómo se financia','La rentabilidad solo de los recursos propios','La capacidad de pago','La liquidez del banco'],0],
+ ['El capital de trabajo es…',['Los recursos en activos corrientes para operar mientras llegan los ingresos','La compra de maquinaria','Los gastos de constitución','La deuda de largo plazo'],0],
+ ['¿Qué método de capital de trabajo usa el flujo mensual de ingresos y egresos?',['Déficit acumulado máximo','Periodo de desfase','Contable','Económico'],0],
+ ['La TIR es…',['La tasa que hace el VPN igual a cero','La tasa de descuento del inversionista','El costo de la deuda','La inflación esperada'],0],
+ ['Un proyecto se acepta si…',['VPN > 0, TIR > WACC y RBC > 1','VPN < 0','TIR < WACC','RBC < 1'],0],
+ ['El WACC representa…',['El costo promedio ponderado del capital (deuda + patrimonio)','La tasa de inflación','La TIR mínima del banco','El rendimiento del CDT'],0],
+ ['Al elegir una fuente de financiación lo correcto es…',['Revisar requisitos, plazo y si la cuota encaja en el flujo de caja, no solo la tasa','Escoger siempre la tasa más baja','Usar solo recursos propios','Usar siempre leasing'],0],
+ ['Según Sapag, el impacto ambiental…',['Debe estudiarse siempre por sus efectos económicos','Solo si la ley lo exige','Nunca afecta el flujo','Solo en proyectos públicos'],0],
+ ['La formulación de proyectos es un proceso…',['No lineal: se adapta y se modifica, y puede iniciarse por distintos estudios','Estrictamente lineal','Que solo incluye el estudio financiero','Que termina en el estudio de mercado'],0],
+ ['Analizar la "situación sin proyecto" sirve para…',['Comparar y medir solo los flujos incrementales','Calcular la depreciación','Elegir el tipo societario','Definir el precio'],0]
+];
+G.teoria=[function(){const q=pick(TEO);const idx=shuffle([0,1,2,3]);
+  return{tag:'Teoría',prompt:q[0],type:'mc',options:idx.map(i=>q[1][i]),correct:idx.indexOf(q[2]),hint:'Repasa la guía de estudio del proyecto.',steps:[`Respuesta: ${q[1][q[2]]}`]}}];
+
+/* ============ mundos ============ */
+const WORLDS=[
+ {id:'teoria',name:'Teoría de formulación',ic:'🧠',c:'#a78bfa',d:'Ciclo, niveles de estudio, estudios y criterios'},
+ {id:'tasas',name:'Conversión de tasas',ic:'🔁',c:'#22d3ee',d:'Nominal, efectiva, anticipada, vencida, EA'},
+ {id:'vdt',name:'Valor del dinero',ic:'⏳',c:'#34d399',d:'VF, VP, n, i y anualidades'},
+ {id:'credito',name:'Crédito y amortización',ic:'🏦',c:'#60a5fa',d:'Cuota fija, interés, abono, saldo'},
+ {id:'costos',name:'Costos y equilibrio',ic:'⚖️',c:'#f472b6',d:'Margen de contribución y punto de equilibrio'},
+ {id:'kt',name:'Capital de trabajo',ic:'💧',c:'#38bdf8',d:'Desfase, déficit acumulado y contable'},
+ {id:'salva',name:'Depreciación y salvamento',ic:'🏭',c:'#fb923c',d:'Línea recta, valor en libros, 3 métodos'},
+ {id:'flujo',name:'Flujo de caja',ic:'🧾',c:'#facc15',d:'Arma el flujo del proyecto y del inversionista'},
+ {id:'ind',name:'Indicadores: VPN, VPGU, TIR, RBC, CAUE',ic:'📊',c:'#c084fc',d:'Ingresos y egresos por año, con explicación de cada indicador'},
+ {id:'eval',name:'Evaluación financiera',ic:'🏆',c:'#f43f5e',d:'VPN, TIR, RBC y decisión (jefe final)'}
+];
+
+/* ============ estado ============ */
+let S={xp:0,best:{},bestStreak:0,ans:0,ok:0,mute:false};
+try{const s=JSON.parse(localStorage.getItem('fq_v1')||'null');if(s)S=Object.assign(S,s);}catch(e){}
+const save=()=>{try{localStorage.setItem('fq_v1',JSON.stringify(S))}catch(e){}};
+let run=null,cur=null,timerId=null;
+
+function hud(){const lvl=Math.floor(S.xp/150)+1,into=S.xp%150;
+  $('#lvl').textContent=lvl;$('#xpfill').style.width=(into/150*100)+'%';$('#xptxt').textContent=S.xp+' XP';
+  $('#bestStreak').textContent=S.bestStreak;$('#acc').textContent=S.ans?Math.round(S.ok/S.ans*100)+'%':'–';$('#mute').textContent=S.mute?'🔇':'🔊';}
+const $=q=>document.querySelector(q);
+
+/* ============ sonido y efectos ============ */
+let AC=null;
+function beep(type){if(S.mute)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const seq=type==='ok'?[523,659,784]:type==='bad'?[220,165]:type==='lvl'?[523,659,784,1046]:[440];
+  seq.forEach((f,k)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type==='bad'?'sawtooth':'triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,AC.currentTime+k*.08);g.gain.exponentialRampToValueAtTime(.15,AC.currentTime+k*.08+.01);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+k*.08+.18);o.connect(g).connect(AC.destination);o.start(AC.currentTime+k*.08);o.stop(AC.currentTime+k*.08+.2);});}catch(e){}}
+function toggleMute(){S.mute=!S.mute;save();hud();}
+const cv=$('#fx'),cx=cv.getContext('2d');let parts=[];
+function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener('resize',resize);
+function confetti(n=80){const cols=['#7c5cff','#22d3ee','#22c55e','#fbbf24','#f472b6'];for(let k=0;k<n;k++)parts.push({x:innerWidth/2,y:innerHeight/2.5,vx:R(-8,8),vy:R(-12,-3),c:pick(cols),s:R(4,8),l:R(60,110),r:R(0,6)});if(parts.length===n)tick();}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.l--;p.r+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore();});parts=parts.filter(p=>p.l>0&&p.y<innerHeight+20);if(parts.length)requestAnimationFrame(tick);else cx.clearRect(0,0,cv.width,cv.height);}
+function floatTxt(t,el){const r=el.getBoundingClientRect(),d=document.createElement('div');d.className='float';d.textContent=t;d.style.left=(r.left+r.width/2-30)+'px';d.style.top=(r.top-10)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000);}
+
+/* ============ vistas ============ */
+function go(v){clearInterval(timerId);run=null;
+  if(v==='home')home(); else if(v==='formulas')formulas(); else if(v==='learn')learn(); scrollTo(0,0);}
+function stars(n){return '<span class="stars">'+[1,2,3].map(k=>k<=n?'★':'<span class="off">★</span>').join('')+'</span>'}
+function home(){
+  const tot=WORLDS.reduce((s,w)=>s+(S.best[w.id]||0),0);
+  $('#app').innerHTML=`<h1>Formula Quest</h1><p class="sub">Practica la formulación de proyectos como un videojuego. Cada mundo tiene rondas de 8 retos con números aleatorios: nunca se repiten. Tienes 3 vidas por ronda, las rachas multiplican tus XP. Estrellas totales: <b style="color:var(--gold)">${tot} / ${WORLDS.length*3}</b></p>
+  <div class="modes">
+    <div class="mode" onclick="startTimed()"><b>⏱️ Contrarreloj</b><small>120 segundos, retos de todos los mundos. ¿Cuántos resuelves?</small></div>
+    <div class="mode" style="background:linear-gradient(135deg,#f43f5e33,#fbbf2422)" onclick="startWorld('mix')"><b>🎲 Examen simulado</b><small>12 retos mezclados de todos los temas, como en el final.</small></div>
+    <div class="mode" style="background:linear-gradient(135deg,#c084fc44,#f472b622)" onclick="go('learn')"><b>📖 Aprende: VPN, VPGU, TIR, RBC, CAUE</b><small>Explicación, fórmula, criterio y ejemplo resuelto de cada indicador.</small></div>
+    <div class="mode" style="background:linear-gradient(135deg,#22c55e33,#22d3ee22)" onclick="go('formulas')"><b>📘 Hoja de fórmulas</b><small>Todas las fórmulas en un solo lugar para repasar.</small></div>
+  </div>
+  <div class="worlds">${WORLDS.map((w,k)=>`<div class="world" style="--wc:${w.c}" onclick="startWorld('${w.id}')"><div class="num">MUNDO ${k+1}</div><div class="ic">${w.ic}</div><b>${w.name}</b><p>${w.d}</p>${stars(S.best[w.id]||0)}<div class="prog"><i style="width:${(S.best[w.id]||0)/3*100}%"></i></div></div>`).join('')}</div>`;
+  hud();
+}
+function startWorld(id){
+  const w=id==='mix'?{id:'mix',name:'Examen simulado',c:'#f43f5e',ic:'🎲'}:WORLDS.find(x=>x.id===id);
+  run={w,total:id==='mix'?12:8,i:0,hearts:id==='mix'?99:3,combo:0,ok:0,xp:0,timed:false,bag:[]};next();
+}
+function startTimed(){run={w:{id:'mix',name:'Contrarreloj',c:'#22d3ee',ic:'⏱️'},total:999,i:0,hearts:99,combo:0,ok:0,xp:0,timed:true,time:120,bag:[]};next();
+  timerId=setInterval(()=>{run.time--;const t=$('#timer');if(t){t.textContent=run.time;t.style.color=run.time<=15?'var(--bad)':''}if(run.time<=0){clearInterval(timerId);end();}},1000);}
+function genFor(wid){
+  if(wid==='mix'){wid=pick(WORLDS).id;}
+  const gens=G[wid];
+  if(!run.bag.length||run.bagW!==wid){run.bag=shuffle(gens.map((_,k)=>k));run.bagW=wid;}
+  const q=gens[run.bag.pop()]();q.world=wid;return q;
+}
+function next(){
+  if(!run)return; if(!run.timed&&(run.i>=run.total||run.hearts<=0))return end();
+  run.i++;cur=genFor(run.w.id);cur.done=false;cur.usedHint=false;cur.t0=Date.now();
+  const wc=(WORLDS.find(x=>x.id===cur.world)||run.w).c;
+  let body='';
+  if(cur.type==='num')body=`<div class="ans"><input id="inp" inputmode="decimal" autocomplete="off" placeholder="Tu respuesta"><div class="unit">${cur.unit}</div><button class="btn" id="chk" onclick="check()">Comprobar</button></div><div class="note">Usa coma o punto para decimales, sin separador de miles. Porcentajes sin el símbolo (ej: 26,82). Presiona <span class="kbd">Enter</span>.</div>`;
+  else if(cur.type==='mc')body=`<div class="opts">${cur.options.map((o,k)=>`<button class="opt" onclick="check(${k})"><b style="color:var(--mut)">${'ABCDEF'[k]}.</b> ${o}</button>`).join('')}</div>`;
+  else{cur.pool=shuffle(cur.items.map((t,k)=>k));cur.built=[];body=`<div class="order"><div><div class="lbl">RENGLONES DISPONIBLES</div><div class="pool" id="pool"></div></div><div><div class="lbl">TU FLUJO DE CAJA</div><div class="built" id="built"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn sec" onclick="undoOrder()">↶ Deshacer</button><button class="btn" id="chk" onclick="check()">Comprobar</button></div></div></div>`;}
+  const side=run.timed?`<div class="card" style="text-align:center"><div class="lbl">TIEMPO</div><div class="timer" id="timer">${run.time}</div></div>`:
+    `<div class="card"><div class="stat"><span>Vidas</span><span class="hearts">${run.hearts>10?'∞':'❤️'.repeat(run.hearts)+'<span style="opacity:.2">'+'❤️'.repeat(Math.max(0,3-run.hearts))+'</span>'}</span></div><div class="stat"><span>Progreso</span><b>${run.i} / ${run.total}</b></div><div class="prog" style="--wc:${wc}"><i style="width:${(run.i-1)/run.total*100}%"></i></div></div>`;
+  $('#app').innerHTML=`<button class="back" onclick="go('home')">← Volver al mapa</button>
+  <div class="play"><div class="card" id="qcard" style="--wc:${wc}">
+    <div class="qtop"><span class="tag">${cur.tag}</span><span class="qcount">${run.w.ic} ${run.w.name}${run.timed?' · reto '+run.i:''}</span><span style="margin-left:auto"><button class="btn sec" style="padding:6px 12px;font-size:13px" onclick="showHint()">💡 Pista</button> <button class="btn sec" style="padding:6px 12px;font-size:13px" onclick="skip()">Saltar ⏭</button></span></div>
+    <div class="prompt">${cur.prompt}</div>
+    ${cur.chart?`<div class="chart">${cur.chart()}</div>`:''}
+    ${body}
+    ${cur.ex&&EXPL[cur.ex]?`<details class="expl" style="margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:#0b1020"><summary style="cursor:pointer;font-weight:700">📖 Explicación: ${EXPL[cur.ex].n}</summary>${explHTML(cur.ex,true)}</details>`:''}
+    <div class="hint" id="hint">💡 ${cur.hint}</div>
+    <div class="fb" id="fb"></div>
+  </div>
+  <div class="side">${side}
+    <div class="card"><div class="stat"><span>Combo</span><span class="combo">x${1+Math.min(run.combo,5)*0.5}</span></div><div class="stat"><span>Aciertos</span><b>${run.ok}</b></div><div class="stat"><span>XP de la ronda</span><b style="color:var(--gold)">+${run.xp}</b></div></div>
+    <div class="card" style="font-size:13px;color:var(--mut)">🎮 Rachas de aciertos suben el combo hasta x3.5. Usar la pista no quita vidas, pero da la mitad de XP.</div>
+  </div></div>`;
+  if(cur.type==='order')renderOrder();
+  const inp=$('#inp');if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cur.done?next():check();}});}
+}
+function renderOrder(){
+  $('#pool').innerHTML=cur.pool.map(k=>`<button class="chip" onclick="addOrder(${k})">${cur.items[k]}</button>`).join('')||'<div class="note">¡Listo! Comprueba tu flujo.</div>';
+  $('#built').innerHTML=cur.built.map((k,j)=>`<div class="chip" id="b${j}">${j+1}. ${cur.items[k]}</div>`).join('')||'<div class="note">Toca los renglones de la izquierda en orden.</div>';
+}
+function addOrder(k){if(cur.done)return;cur.pool=cur.pool.filter(x=>x!==k);cur.built.push(k);beep('tap');renderOrder();}
+function undoOrder(){if(cur.done||!cur.built.length)return;cur.pool.push(cur.built.pop());renderOrder();}
+function showHint(){$('#hint').style.display='block';cur.usedHint=true;}
+function skip(){if(cur.done)return next();cur.skipped=true;check(-1);}
+function check(choice){
+  if(!cur||cur.done)return;let ok=false,user='';
+  if(cur.type==='num'){if(choice===-1){ok=false}else{const v=parseNum($('#inp').value);if(isNaN(v)){$('#inp').classList.add('shake');setTimeout(()=>$('#inp').classList.remove('shake'),400);return;}
+    const tol=Math.max(cur.tol.abs||0,(cur.tol.rel||0)*Math.abs(cur.answer));ok=Math.abs(v-cur.answer)<=tol;user=fmt(v,4);}}
+  else if(cur.type==='mc'){ok=choice===cur.correct;document.querySelectorAll('.opt').forEach((b,k)=>{b.disabled=true;if(k===cur.correct)b.classList.add('ok');else if(k===choice)b.classList.add('bad');});}
+  else{if(choice!==-1&&cur.pool.length){floatTxt('Faltan renglones',$('#chk'));return;}ok=choice!==-1&&cur.built.every((k,j)=>k===j);
+    cur.built.forEach((k,j)=>{const el=$('#b'+j);if(el)el.classList.add(k===j?'ok':'bad')});}
+  cur.done=true;S.ans++;
+  const card=$('#qcard');
+  if(ok){S.ok++;run.ok++;run.combo++;const mult=1+Math.min(run.combo-1,5)*0.5;const fast=(Date.now()-cur.t0)<25000?5:0;let g=Math.round((10+fast)*mult*(cur.usedHint?.5:1));run.xp+=g;const lvBefore=Math.floor(S.xp/150);S.xp+=g;
+    if(run.combo>S.bestStreak)S.bestStreak=run.combo;beep(Math.floor(S.xp/150)>lvBefore?'lvl':'ok');confetti(run.combo>=3?140:70);floatTxt('+'+g+' XP',$('#chk')||card);
+    if(run.timed)run.time+=3;}
+  else{run.combo=0;if(!run.timed)run.hearts--;else run.time=Math.max(0,run.time-5);beep('bad');card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),400);}
+  save();hud();
+  const ansTxt=cur.type==='num'?`<b>${fmt(cur.answer,cur.unit==='unid.'?2:4)} ${cur.unit}</b>`:cur.type==='mc'?`<b>${cur.options[cur.correct]}</b>`:'';
+  const fb=$('#fb');fb.className='fb '+(ok?'ok':'bad');
+  fb.innerHTML=`<h3>${ok?pick(['¡Correcto! 🎉','¡Bien jugado! ⚡','¡Exacto! 🔥','¡Crack! 🏆']):(cur.skipped?'Saltado':'Casi…')+' La respuesta es '+ansTxt}</h3>${ok&&cur.type==='num'?`Respuesta exacta: ${ansTxt}`:''}
+   <div class="lbl" style="margin-top:10px">SOLUCIÓN PASO A PASO</div><ol class="steps">${cur.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+   ${cur.after?`<div class="chart">${cur.after()}</div>`:''}
+   <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn pri" id="nx" onclick="next()">${(!run.timed&&(run.i>=run.total||run.hearts<=0))?'Ver resultados 🏁':'Siguiente →'}</button></div>`;
+  const chk=$('#chk');if(chk)chk.disabled=true;
+  setTimeout(()=>{const nx=$('#nx');if(nx){nx.focus();fb.scrollIntoView({behavior:'smooth',block:'nearest'});}},50);
+  if(!run.timed){const sh=document.querySelector('.hearts');if(sh&&run.hearts<=10)sh.innerHTML='❤️'.repeat(Math.max(0,run.hearts))+'<span style="opacity:.2">'+'❤️'.repeat(Math.max(0,3-run.hearts))+'</span>';}
+  const cb=document.querySelector('.combo');if(cb)cb.textContent='x'+(1+Math.min(run.combo,5)*0.5);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&cur&&cur.done&&run&&document.activeElement.id!=='inp'){const nx=$('#nx');if(nx){e.preventDefault();next();}}});
+function end(){
+  clearInterval(timerId);const r=run;if(!r)return;
+  const n=r.timed?r.i:r.i, acc=n?r.ok/n:0;
+  let st=0;if(!r.timed){const full=r.ok/r.total;st=r.hearts<=0?0:full>=.9?3:full>=.7?2:full>=.5?1:0;
+    if(r.w.id!=='mix'&&st>(S.best[r.w.id]||0)){S.best[r.w.id]=st;}}
+  if(st===3||(r.timed&&r.ok>=8)){confetti(200);beep('lvl');}
+  if(r.timed&&r.ok>(S.bestTimed||0))S.bestTimed=r.ok;
+  save();hud();
+  const msg=r.timed?`Resolviste <b>${r.ok}</b> retos en 2 minutos. Récord: <b>${S.bestTimed||0}</b>`:(r.hearts<=0?'Te quedaste sin vidas 💔 ¡Revisa las soluciones y vuelve a intentarlo!':`Acertaste <b>${r.ok} de ${r.total}</b>`);
+  $('#app').innerHTML=`<div class="card result" style="max-width:620px;margin:30px auto"><div class="big">${r.w.ic}</div><h2>${r.w.name}</h2>${r.timed||r.w.id==='mix'?'':'<div style="font-size:40px">'+stars(st)+'</div>'}
+  <p class="sub" style="margin:12px 0">${msg}</p><p>XP ganados: <b style="color:var(--gold)">+${r.xp}</b> · Precisión ${Math.round(acc*100)}%</p>
+  <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap"><button class="btn pri" onclick="${r.timed?'startTimed()':`startWorld('${r.w.id}')`}">🔄 Jugar de nuevo</button><button class="btn sec" onclick="go('home')">🗺️ Mapa</button></div></div>`;
+  run=null;
+}
+function explHTML(k,compact){const e=EXPL[k];
+  return `<p style="line-height:1.55;margin:10px 0">${e.que}</p>${e.f.map(f=>`<div class="f">${f}</div>`).join('')}<p style="margin:10px 0 6px"><b>Criterio:</b> ${e.crit}</p><p style="margin:6px 0;color:#c7d0f5"><b>Ejemplo:</b> ${e.ej}</p><p class="note" style="font-size:13px">💡 ${e.tip}</p>`;}
+function learn(){
+  $('#app').innerHTML=`<button class="back" onclick="go('home')">← Volver al mapa</button><h1>📖 Aprende los indicadores</h1><p class="sub">Qué es cada uno, su fórmula, cómo se interpreta y un ejemplo resuelto. Después practica con números aleatorios.</p>
+  <div class="formulas">${Object.keys(EXPL).map(k=>`<div class="fcard" style="--wc:${EXPL[k].c}"><h3>${EXPL[k].n}</h3>${explHTML(k)}</div>`).join('')}</div>
+  <div class="card" style="margin-top:18px"><h3 style="margin-top:0">¿Cuál uso y cuándo?</h3><table class="t"><tr><th>Indicador</th><th>Responde</th><th>Unidad</th><th>Acepta si</th></tr>
+  <tr><td>VPN</td><td style="text-align:left">¿Cuánto valor crea hoy?</td><td>$</td><td>&gt; 0</td></tr>
+  <tr><td>VPGU</td><td style="text-align:left">¿Cuánto valen hoy las ganancias?</td><td>$</td><td>&gt; inversión</td></tr>
+  <tr><td>TIR</td><td style="text-align:left">¿Qué rentabilidad da?</td><td>%</td><td>≥ tasa de oportunidad</td></tr>
+  <tr><td>RBC</td><td style="text-align:left">¿Cuántos pesos devuelve por peso?</td><td>veces</td><td>&gt; 1</td></tr>
+  <tr><td>CAUE / VAE</td><td style="text-align:left">¿Cuánto cuesta (o rinde) por año?</td><td>$/año</td><td>menor CAUE · mayor VAE</td></tr></table>
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" onclick="startWorld('ind')">🎮 Practicar indicadores</button><button class="btn sec" onclick="startWorld('eval')">🏆 Jefe final: evaluación</button></div></div>`;
+}
+function formulas(){
+  const F=[
+   ['🔁 Conversión de tasas','#22d3ee',[['i periódica = j / m','Nominal → periódica (m = periodos por año)'],['EA = (1 + i)^m − 1','Periódica → efectiva anual'],['i = (1 + EA)^(1/m) − 1','EA → periódica'],['j = i × m','Periódica → nominal'],['iv = ia / (1 − ia)','Anticipada → vencida'],['ia = iv / (1 + iv)','Vencida → anticipada'],['(1 + i₁)^m₁ = (1 + i₂)^m₂','Equivalencia general']]],
+   ['⏳ Valor del dinero en el tiempo','#34d399',[['VF = VP × (1 + i)^n',''],['VP = VF / (1 + i)^n',''],['n = ln(VF/VP) / ln(1 + i)',''],['i = (VF/VP)^(1/n) − 1',''],['A = VP × i / (1 − (1 + i)^−n)','Cuota de una anualidad'],['VP = A × (1 − (1 + i)^−n) / i','Valor presente de una anualidad'],['VP = A / i','Perpetuidad']]],
+   ['🏦 Crédito','#60a5fa',[['Interés t = saldo t−1 × i',''],['Abono t = cuota − interés t',''],['Saldo t = saldo t−1 − abono t',''],['Escudo fiscal = intereses × t','Ahorro de impuestos por la deuda'],['Kd después de impuestos = i × (1 − t)','']]],
+   ['⚖️ Costos','#f472b6',[['Mcu = Pvu − CVu','Margen de contribución unitario'],['Qe = CF / (Pvu − CVu)','Punto de equilibrio en unidades'],['PE$ = Qe × Pvu = CF / (1 − CVu/Pvu)','Punto de equilibrio en pesos'],['Q meta = (CF + U) / Mcu','Unidades para una utilidad'],['Costo primo = MPD + MOD',''],['Costo de conversión = MOD + CIF','']]],
+   ['💧 Capital de trabajo','#38bdf8',[['KT = AC − PC','Método contable'],['ICT = (Ca / 365) × nd','Periodo de desfase'],['KT = |mínimo saldo acumulado|','Déficit acumulado máximo']]],
+   ['🏭 Depreciación y salvamento','#fb923c',[['D = (costo − residual) / vida útil','Línea recta'],['VL = costo − D × años','Valor en libros'],['VS = VM − t × (VM − VL)','Comercial'],['VS = flujo / i','Económico (perpetuidad)']]],
+   ['🧾 Flujo de caja','#facc15',[['UAI = ingresos − egresos − (intereses) − depreciación',''],['Flujo = UAI × (1 − t) + depreciación − inversiones + salvamento','Proyecto'],['… + préstamo − abono a capital','Inversionista']]],
+   ['🏆 Evaluación','#f43f5e',[['VPN = Σ Ft / (1 + i)^t','Aceptar si VPN > 0'],['TIR: Σ Ft / (1 + TIR)^t = 0','Aceptar si TIR ≥ WACC'],['RBC = Σ VP ingresos / (I0 + Σ VP egresos)','Aceptar si RBC > 1'],['VPGU = Σ (Yt − Et)/(1+i)^t','VP de las ganancias; VPN = VPGU − I0'],['CAUE = (I0 − VS/(1+i)^n) × i/(1−(1+i)^−n) + CO','Elegir el menor CAUE'],['VAE = VPN × i/(1−(1+i)^−n)','VPN anualizado: elegir el mayor'],['WACC = Wd × Kd × (1 − t) + We × Ke','Costo promedio ponderado del capital']]]
+  ];
+  $('#app').innerHTML=`<button class="back" onclick="go('home')">← Volver al mapa</button><h1>📘 Hoja de fórmulas</h1><p class="sub">Todo lo que necesitas para el examen final.</p><div class="formulas">${F.map(c=>`<div class="fcard" style="--wc:${c[1]}"><h3>${c[0]}</h3>${c[2].map(f=>`<div class="f">${f[0]}${f[1]?`<em>${f[1]}</em>`:''}</div>`).join('')}</div>`).join('')}</div>`;
+}
+home();
+</script>
+</body>
+</html>
