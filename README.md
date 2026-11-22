@@ -5,6 +5,7 @@ Ruta de estudio, guías, simulacros interactivos y Formula Quest para el parcial
 **Abrir online:** https://thisisjuangomez.github.io/estudio-formulacion/
 
 - `index.html` – ruta de estudio con progreso
+- `formulas.html` – práctica de las 18 fórmulas: símbolos, cálculo paso a paso y ejercicios
 - `formula-quest.html` – práctica de fórmulas tipo juego
 - `simulacros/` – parciales V1, V2, V3 y versión imprimible
 - `guias/` – guía de teoría y guía del parcial modelo (PDF)
